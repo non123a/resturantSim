@@ -1,0 +1,65 @@
+[gd_resource type="SpriteFrames" load_steps=9 format=3 uid="uid://cpntpsoqnu8j4"]
+
+[ext_resource type="Texture2D" uid="uid://fpvxxx1dy3j" path="res://assets/sprites/FREE Mana Seed Character Base Demo 2.0/char_a_p1/char_a_p1_0bas_humn_v00.png" id="1_2h6cu"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_duem0"]
+atlas = ExtResource("1_2h6cu")
+region = Rect2(0, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_qqtjw"]
+atlas = ExtResource("1_2h6cu")
+region = Rect2(0, 256, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_fd46v"]
+atlas = ExtResource("1_2h6cu")
+region = Rect2(64, 256, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_k1bqq"]
+atlas = ExtResource("1_2h6cu")
+region = Rect2(128, 256, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_6bdyt"]
+atlas = ExtResource("1_2h6cu")
+region = Rect2(192, 256, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_jy5aj"]
+atlas = ExtResource("1_2h6cu")
+region = Rect2(256, 256, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_lu5oa"]
+atlas = ExtResource("1_2h6cu")
+region = Rect2(320, 256, 64, 64)
+
+[resource]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_duem0")
+}],
+"loop": true,
+"name": &"idle",
+"speed": 1.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_qqtjw")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_fd46v")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_k1bqq")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_6bdyt")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_jy5aj")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_lu5oa")
+}],
+"loop": true,
+"name": &"walkingInAnimation",
+"speed": 5.0
+}]

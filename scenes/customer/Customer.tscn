@@ -1,0 +1,28 @@
+[gd_scene load_steps=4 format=3 uid="uid://cfdfnvo3bltnn"]
+
+[ext_resource type="Script" uid="uid://vbq1u8dvq52l" path="res://scripts/customer.gd" id="1_weugq"]
+[ext_resource type="SpriteFrames" uid="uid://cpntpsoqnu8j4" path="res://assets/sprites/customer_frames.tres" id="2_2hfkh"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_2hfkh"]
+radius = 41.01219
+
+[node name="Customer" type="CharacterBody2D"]
+input_pickable = true
+script = ExtResource("1_weugq")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+position = Vector2(602, 120)
+scale = Vector2(3.890625, 3.125)
+sprite_frames = ExtResource("2_2hfkh")
+animation = &"walkingInAnimation"
+frame_progress = 0.55802536
+
+[node name="ProgressBar" type="ProgressBar" parent="."]
+offset_left = 570.0
+offset_top = 20.0
+offset_right = 626.0
+offset_bottom = 47.0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(601, 113)
+shape = SubResource("CircleShape2D_2hfkh")
