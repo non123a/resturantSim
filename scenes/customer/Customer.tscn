@@ -15,7 +15,7 @@ position = Vector2(602, 120)
 scale = Vector2(3.890625, 3.125)
 sprite_frames = ExtResource("2_2hfkh")
 animation = &"walkingInAnimation"
-frame_progress = 0.55802536
+frame_progress = 0.1792138
 
 [node name="ProgressBar" type="ProgressBar" parent="."]
 offset_left = 570.0
@@ -26,3 +26,9 @@ offset_bottom = 47.0
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(601, 113)
 shape = SubResource("CircleShape2D_2hfkh")
+
+[node name="OrderLabel" type="Label" parent="."]
+offset_left = 456.0
+offset_top = 14.0
+offset_right = 533.0
+offset_bottom = 61.0
