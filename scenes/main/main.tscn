@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=3 uid="uid://bqi216w3j6cmc"]
+[gd_scene load_steps=3 format=3 uid="uid://bqi216w3j6cmc"]
 
 [ext_resource type="Script" uid="uid://cg6d44c6l386l" path="res://scripts/GameManager.gd" id="1_hyk8p"]
+[ext_resource type="Script" uid="uid://bilgtac0cdn7o" path="res://scripts/Station.gd" id="2_iuonh"]
 
 [node name="Main" type="Node2D"]
 script = ExtResource("1_hyk8p")
@@ -73,6 +74,14 @@ offset_left = 315.0
 offset_top = 28.0
 offset_right = 696.0
 offset_bottom = 86.0
+
+[node name="PrepStation" type="Node" parent="."]
+script = ExtResource("2_iuonh")
+station_type = "prep"
+
+[node name="StoveStation" type="Node" parent="."]
+script = ExtResource("2_iuonh")
+station_type = "stove"
 
 [connection signal="pressed" from="CanvasLayer/CookFishButton" to="." method="_on_cook_fish_button_pressed"]
 [connection signal="pressed" from="CanvasLayer/CookShrimpButton" to="." method="_on_cook_shrimp_button_pressed"]

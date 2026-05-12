@@ -1,9 +1,15 @@
 extends Node2D
 
-var coins = 0
 var customer_scene = preload("res://scenes/customer/Customer.tscn")
 
+@onready var prep_station = $PrepStation
+@onready var stove_station = $StoveStation
+
+var active_jobs = []
+
 var customers = []
+
+var run_coins = 0 
 
 var food_types = ["fish", "shrimp"]
 var current_food = ""
@@ -22,12 +28,55 @@ var cooking = false
 var cook_time = 2.0
 var timer = 0.0
 
+var job = preload("res://scripts/FoodJob.gd").new()
+
+func _on_station_finished(job):
+	job.is_processing = false
+	job.advance_step()
+	
+	if job.is_complete:
+		print(job.food_name, " READY!")
 
 func _ready():
-	for i in range(2):   # start with 2 customers
-		spawn_customer()
-	$CanvasLayer/CoinLabel.text = "Coins: 0"
+	prep_station.process_finished.connect(_on_station_finished)
+	stove_station.process_finished.connect(_on_station_finished)
 	
+	job.setup("burger", ["prep", "stove"])
+
+	active_jobs.append(job)
+	
+	for i in range(2):
+		spawn_customer()
+	
+	# ✅ show actual coins
+	$CanvasLayer/CoinLabel.text = "Coins: " + str(GameData.coins)
+
+func process_jobs():
+	for job in active_jobs:
+		
+		#if job.is_complete:
+			#continue
+		if job.is_complete or job.is_processing:
+			continue
+		
+		var needed_station = job.get_current_station()
+		
+		if needed_station == "prep":
+			
+			if not prep_station.is_busy:
+				#prep_station.start_process(job.food_name, 2.0)
+				prep_station.start_process(job, 2.0)
+				
+		
+		
+		elif needed_station == "stove":
+			
+			if not stove_station.is_busy:
+				#stove_station.start_process(job.food_name, 3.0)
+				stove_station.start_process(job, 3.0)
+			
+				
+
 var spawn_positions = [
 	Vector2(200, 500),
 	Vector2(360, 500),
@@ -35,6 +84,8 @@ var spawn_positions = [
 ]
 
 func spawn_customer():
+	if not game_active:
+		return
 	var c = customer_scene.instantiate()
 	add_child(c)
 	
@@ -53,21 +104,8 @@ func reset_combo():
 	update_combo_ui()
 	print("Combo reset")
 
-#func end_game():
-	#game_active = false
-	#
-	#print("Game Over!")
-	#print("Final Coins:", coins)
-	#
-	## stop everything
-	#cooking = false
-	#food_ready = false
-	#
-	## disable buttons
-	#$CanvasLayer/CookFishButton.disabled = true
-	#$CanvasLayer/CookShrimpButton.disabled = true
-
 func _process(delta):
+	process_jobs()
 	if game_active:
 		time_left -= delta
 		
@@ -106,7 +144,9 @@ func start_cooking(food_type):
 		return
 	if not cooking and not food_ready:
 		cooking = true
-		timer = cook_time
+		#timer = cook_time
+		var speed_bonus = GameData.upgrades["cook_speed"] * 0.3
+		timer = max(0.5, cook_time - speed_bonus)
 		
 		current_food = food_type
 		
@@ -128,7 +168,11 @@ func serve_food(customer):
 		combo_timer = combo_window
 		update_combo_ui()
 		
-		var reward = 10 + (combo * 2)
+		#var reward = 10 + (combo * 2)
+		var base_reward = 10 + (combo * 2)
+		var bonus = 1 + (GameData.upgrades["income"] * 0.1)
+
+		var reward = int(base_reward * bonus)
 		add_coins(reward)
 		
 		print("Correct! Combo:", combo, "Reward:", reward)
@@ -155,11 +199,13 @@ func _on_cook_fish_button_pressed() -> void:
 
 
 func add_coins(amount):
-	coins += amount
-	print("Coins:", coins)
+	run_coins += amount
+	GameData.coins += amount
 	
-	$CanvasLayer/CoinLabel.text = "Coins: " + str(coins)
-
+	print("Run Coins:", run_coins)
+	print("Total Coins:", GameData.coins)
+	
+	$CanvasLayer/CoinLabel.text = "Coins: " + str(GameData.coins)
 
 func update_combo_ui():
 	if combo > 0:
@@ -173,18 +219,26 @@ func end_game():
 	game_active = false
 	
 	print("Game Over!")
-	print("Final Coins:", coins)
+	print("Run Coins:", run_coins)
 	
 	cooking = false
 	food_ready = false
 	
+	# ✅ SAVE BEST RECORD (ONLY THIS)
+	if run_coins > GameData.best_coins:
+		GameData.best_coins = run_coins
+		print("NEW RECORD!")
+	
 	$CanvasLayer/CookFishButton.disabled = true
 	$CanvasLayer/CookShrimpButton.disabled = true
 	
-	# 👇 SHOW END SCREEN
+	# ✅ SHOW CORRECT DATA
 	$CanvasLayer/EndPanel.visible = true
-	$CanvasLayer/EndPanel/ResultLabel.text = "Coins: " + str(coins)
-
+	$CanvasLayer/EndPanel/ResultLabel.text = \
+		"Run: " + str(run_coins) + \
+		"\nBest: " + str(GameData.best_coins)
+	for c in customers:
+		c.stop_all()
 
 func _on_restart_button_pressed() -> void:
 	get_tree().reload_current_scene()

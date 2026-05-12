@@ -11,13 +11,6 @@ var order = ""
 var patience = 10.0
 var max_patience = 10.0
 
-#func _ready():
-	#$OrderLabel.text = order
-#
-	#$ProgressBar.max_value = max_patience
-	#order = ["fish", "shrimp"].pick_random()
-	#print("Customer wants:", order)
-	#$AnimatedSprite2D.play("walkingInAnimation")
 func _ready():
 	$ProgressBar.max_value = max_patience
 	
@@ -29,7 +22,11 @@ func _ready():
 	$AnimatedSprite2D.play("walkingInAnimation")
 	print("Label text:", $OrderLabel.text)
 	
+
 func _physics_process(delta):
+	if state == "stopped":
+		wait_for_food(delta)
+	
 	if state == "walking":
 		move_to_target(delta)
 	elif state == "waiting":
@@ -83,3 +80,10 @@ func _input_event(viewport, event, shape_idx):
 
 		if game_manager.food_ready:
 			game_manager.serve_food(self)
+
+
+func stop_all():
+	state = "stopped"
+	velocity = Vector2.ZERO
+	
+	$AnimatedSprite2D.stop()
