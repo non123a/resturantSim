@@ -5,6 +5,7 @@ var steps = []
 
 var current_step = 0
 var is_complete = false
+var waiting_for_station = false
 
 var is_processing = false
 

@@ -5,6 +5,8 @@ var customer_scene = preload("res://scenes/customer/Customer.tscn")
 @onready var prep_station = $PrepStation
 @onready var stove_station = $StoveStation
 
+
+var selected_food = ""
 var active_jobs = []
 
 var customers = []
@@ -28,22 +30,31 @@ var cooking = false
 var cook_time = 2.0
 var timer = 0.0
 
-var job = preload("res://scripts/FoodJob.gd").new()
 
+#func _on_station_finished(job):
+	#job.is_processing = false
+	#job.advance_step()
+	#
+	#if job.is_complete:
+		#print(job.food_name, " READY!")
 func _on_station_finished(job):
 	job.is_processing = false
+	
 	job.advance_step()
 	
 	if job.is_complete:
 		print(job.food_name, " READY!")
-
+		return
+	
+	job.waiting_for_station = true
+	
+	print(job.food_name, " waiting for:", job.get_current_station())
+	
 func _ready():
+	selected_food = "burger"
 	prep_station.process_finished.connect(_on_station_finished)
 	stove_station.process_finished.connect(_on_station_finished)
 	
-	job.setup("burger", ["prep", "stove"])
-
-	active_jobs.append(job)
 	
 	for i in range(2):
 		spawn_customer()
@@ -56,7 +67,9 @@ func process_jobs():
 		
 		#if job.is_complete:
 			#continue
-		if job.is_complete or job.is_processing:
+		#if job.is_complete or job.is_processing:
+			#continue
+		if job.is_complete or job.is_processing or job.waiting_for_station:
 			continue
 		
 		var needed_station = job.get_current_station()
@@ -242,3 +255,56 @@ func end_game():
 
 func _on_restart_button_pressed() -> void:
 	get_tree().reload_current_scene()
+
+
+#func _on_stove_area_input_event(viewport: Node, event: InputEvent, shape_idx: int) -> void:
+	#if event is InputEventMouseButton and event.pressed:
+		#print("Stove clicked")
+func _on_stove_area_input_event(viewport, event, shape_idx):
+	if event is InputEventMouseButton and event.pressed:
+		
+		for job in active_jobs:
+			
+			if job.waiting_for_station:
+				
+				if job.get_current_station() == "stove":
+					
+					job.waiting_for_station = false
+					
+					stove_station.start_process(job, 3.0)
+					
+					job.is_processing = true
+					
+					print(job.food_name, " sent to stove")
+					
+					return
+					
+func _on_prep_area_input_event(viewport, event, shape_idx):
+	if event is InputEventMouseButton and event.pressed:
+		
+		if selected_food == "":
+			return
+		
+		var data = FoodData.foods[selected_food]
+		
+		var job = preload("res://scripts/FoodJob.gd").new()
+		
+		job.setup(selected_food, data["steps"])
+		
+		active_jobs.append(job)
+		selected_food = ""
+		
+		print(selected_food, " sent to prep")
+
+
+func _on_burger_button_pressed():
+	selected_food = "burger"
+	print("Selected:", selected_food)
+
+func _on_steak_button_pressed():
+	selected_food = "steak"
+	print("Selected:", selected_food)
+
+func _on_donut_button_pressed():
+	selected_food = "donut"
+	print("Selected:", selected_food)
