@@ -1055,3 +1055,4 @@ shape = SubResource("RectangleShape2D_b1x3f")
 [connection signal="pressed" from="CanvasLayer/FoodPanel/DonutButton" to="." method="_on_donut_button_pressed"]
 [connection signal="input_event" from="Stations/StoveArea" to="." method="_on_stove_area_input_event"]
 [connection signal="input_event" from="Stations/PrepArea" to="." method="_on_prep_area_input_event"]
+[connection signal="input_event" from="Stations/DisplayArea" to="." method="_on_display_area_input_event"]

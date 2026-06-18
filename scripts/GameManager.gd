@@ -5,6 +5,10 @@ var customer_scene = preload("res://scenes/customer/Customer.tscn")
 @onready var prep_station = $PrepStation
 @onready var stove_station = $StoveStation
 
+var display_food = ""
+var display_timer = 0.0
+var display_processing = false
+var ready_foods = []
 
 var selected_food = ""
 var active_jobs = []
@@ -118,6 +122,14 @@ func reset_combo():
 	print("Combo reset")
 
 func _process(delta):
+	if display_processing:
+		display_timer -= delta
+		
+		if display_timer <= 0:
+			display_processing = false
+			ready_foods.append(display_food)
+
+			print(display_food, " READY!")
 	process_jobs()
 	if game_active:
 		time_left -= delta
@@ -284,8 +296,14 @@ func _on_prep_area_input_event(viewport, event, shape_idx):
 		
 		if selected_food == "":
 			return
-		
 		var data = FoodData.foods[selected_food]
+
+		if data["steps"].size() == 0:
+			return
+
+		if data["steps"][0] != "prep":
+			print(selected_food, " does not use prep")
+			return
 		
 		var job = preload("res://scripts/FoodJob.gd").new()
 		
@@ -308,3 +326,24 @@ func _on_steak_button_pressed():
 func _on_donut_button_pressed():
 	selected_food = "donut"
 	print("Selected:", selected_food)
+
+
+func _on_display_area_input_event(viewport, event, shape_idx):
+	if event is InputEventMouseButton and event.pressed:
+		
+		if selected_food == "":
+			return
+		
+		var data = FoodData.foods[selected_food]
+		
+		if data["type"] != "display":
+			print(selected_food, " is not display food")
+			return
+		
+		display_food = selected_food
+		display_timer = data["cook_time"]
+		display_processing = true
+		
+		print("Preparing:", display_food)
+		
+		selected_food = ""
