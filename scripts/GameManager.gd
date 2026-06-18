@@ -34,20 +34,17 @@ var cooking = false
 var cook_time = 2.0
 var timer = 0.0
 
-
-#func _on_station_finished(job):
-	#job.is_processing = false
-	#job.advance_step()
-	#
-	#if job.is_complete:
-		#print(job.food_name, " READY!")
 func _on_station_finished(job):
 	job.is_processing = false
 	
 	job.advance_step()
 	
 	if job.is_complete:
+
+		ready_foods.append(job.food_name)
+
 		print(job.food_name, " READY!")
+
 		return
 	
 	job.waiting_for_station = true
@@ -55,7 +52,6 @@ func _on_station_finished(job):
 	print(job.food_name, " waiting for:", job.get_current_station())
 	
 func _ready():
-	selected_food = "burger"
 	prep_station.process_finished.connect(_on_station_finished)
 	stove_station.process_finished.connect(_on_station_finished)
 	
@@ -269,10 +265,8 @@ func _on_restart_button_pressed() -> void:
 	get_tree().reload_current_scene()
 
 
-#func _on_stove_area_input_event(viewport: Node, event: InputEvent, shape_idx: int) -> void:
-	#if event is InputEventMouseButton and event.pressed:
-		#print("Stove clicked")
 func _on_stove_area_input_event(viewport, event, shape_idx):
+
 	if event is InputEventMouseButton and event.pressed:
 		
 		for job in active_jobs:
@@ -290,7 +284,25 @@ func _on_stove_area_input_event(viewport, event, shape_idx):
 					print(job.food_name, " sent to stove")
 					
 					return
-					
+		if selected_food != "":
+
+			var data = FoodData.foods[selected_food]
+
+			if data["type"] != "stove":
+				print(selected_food, " is not stove food")
+				return
+
+			var job = preload("res://scripts/FoodJob.gd").new()
+
+			job.setup(selected_food, data["steps"])
+
+			active_jobs.append(job)
+
+			var food_name = selected_food
+
+			selected_food = ""
+
+			print(food_name, " sent to stove")
 func _on_prep_area_input_event(viewport, event, shape_idx):
 	if event is InputEventMouseButton and event.pressed:
 		
@@ -309,10 +321,15 @@ func _on_prep_area_input_event(viewport, event, shape_idx):
 		
 		job.setup(selected_food, data["steps"])
 		
+		var food_name = selected_food
+
+		job.setup(food_name, data["steps"])
+
 		active_jobs.append(job)
+
 		selected_food = ""
-		
-		print(selected_food, " sent to prep")
+
+		print(food_name, " sent to prep")
 
 
 func _on_burger_button_pressed():
@@ -347,3 +364,28 @@ func _on_display_area_input_event(viewport, event, shape_idx):
 		print("Preparing:", display_food)
 		
 		selected_food = ""
+
+
+func try_serve_customer(customer):
+
+	if customer.order in ready_foods:
+
+		ready_foods.erase(customer.order)
+
+		customer.serve()
+
+		combo += 1
+		combo_timer = combo_window
+		update_combo_ui()
+
+		var reward = FoodData.foods[customer.order]["price"]
+
+		add_coins(reward)
+
+		print("Served:", customer.order)
+
+		customers.erase(customer)
+		spawn_customer()
+
+	else:
+		print("Food not ready")

@@ -14,7 +14,9 @@ var max_patience = 10.0
 func _ready():
 	$ProgressBar.max_value = max_patience
 	
-	order = ["fish", "shrimp"].pick_random()
+	#var food_names = FoodData.foods.keys()
+	#order = food_names.pick_random()
+	order = GameData.unlocked_foods.pick_random()
 	print("Customer wants:", order)
 
 	$OrderLabel.text = order   # ✅ AFTER setting order
@@ -78,8 +80,8 @@ func _input_event(viewport, event, shape_idx):
 	if (event is InputEventMouseButton and event.pressed) \
 	or (event is InputEventScreenTouch and event.pressed):
 
-		if game_manager.food_ready:
-			game_manager.serve_food(self)
+
+		game_manager.try_serve_customer(self)
 
 
 func stop_all():
