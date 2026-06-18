@@ -4,6 +4,7 @@ var customer_scene = preload("res://scenes/customer/Customer.tscn")
 
 @onready var prep_station = $PrepStation
 @onready var stove_station = $StoveStation
+@onready var microwave_station = $MicrowaveStation
 
 var display_food = ""
 var display_timer = 0.0
@@ -42,7 +43,7 @@ func _on_station_finished(job):
 	if job.is_complete:
 
 		ready_foods.append(job.food_name)
-
+		update_ready_food_ui()
 		print(job.food_name, " READY!")
 
 		return
@@ -54,6 +55,7 @@ func _on_station_finished(job):
 func _ready():
 	prep_station.process_finished.connect(_on_station_finished)
 	stove_station.process_finished.connect(_on_station_finished)
+	microwave_station.process_finished.connect(_on_station_finished)
 	
 	
 	for i in range(2):
@@ -65,10 +67,6 @@ func _ready():
 func process_jobs():
 	for job in active_jobs:
 		
-		#if job.is_complete:
-			#continue
-		#if job.is_complete or job.is_processing:
-			#continue
 		if job.is_complete or job.is_processing or job.waiting_for_station:
 			continue
 		
@@ -80,15 +78,25 @@ func process_jobs():
 				#prep_station.start_process(job.food_name, 2.0)
 				prep_station.start_process(job, 2.0)
 				
+				
 		
 		
 		elif needed_station == "stove":
 			
 			if not stove_station.is_busy:
 				#stove_station.start_process(job.food_name, 3.0)
-				stove_station.start_process(job, 3.0)
+				var cook_time = FoodData.foods[job.food_name]["cook_time"]
+				stove_station.start_process(job, cook_time)
+				#stove_station.start_process(job, 3.0)
 			
-				
+
+		elif needed_station == "microwave":
+
+			if not microwave_station.is_busy:
+				#microwave_station.start_process(job, 2.0)
+				var cook_time = FoodData.foods[job.food_name]["cook_time"]
+				microwave_station.start_process(job, cook_time)
+
 
 var spawn_positions = [
 	Vector2(200, 500),
@@ -123,6 +131,7 @@ func _process(delta):
 		
 		if display_timer <= 0:
 			display_processing = false
+			update_ready_food_ui()
 			ready_foods.append(display_food)
 
 			print(display_food, " READY!")
@@ -258,8 +267,11 @@ func end_game():
 	$CanvasLayer/EndPanel/ResultLabel.text = \
 		"Run: " + str(run_coins) + \
 		"\nBest: " + str(GameData.best_coins)
+	#for c in customers:
+		#c.stop_all()
 	for c in customers:
-		c.stop_all()
+		if is_instance_valid(c):
+			c.stop_all()
 
 func _on_restart_button_pressed() -> void:
 	get_tree().reload_current_scene()
@@ -277,7 +289,9 @@ func _on_stove_area_input_event(viewport, event, shape_idx):
 					
 					job.waiting_for_station = false
 					
-					stove_station.start_process(job, 3.0)
+					#stove_station.start_process(job, 3.0)
+					var cook_time = FoodData.foods[job.food_name]["cook_time"]
+					stove_station.start_process(job, cook_time)
 					
 					job.is_processing = true
 					
@@ -319,7 +333,6 @@ func _on_prep_area_input_event(viewport, event, shape_idx):
 		
 		var job = preload("res://scripts/FoodJob.gd").new()
 		
-		job.setup(selected_food, data["steps"])
 		
 		var food_name = selected_food
 
@@ -388,4 +401,65 @@ func try_serve_customer(customer):
 		spawn_customer()
 
 	else:
-		print("Food not ready")
+		if ready_foods.size() > 0:
+			print("Wrong food!")
+			reset_combo()
+		else:
+			print("Food not ready")
+
+
+func _on_microwave_area_input_event(viewport, event, shape_idx):
+
+	if not (event is InputEventMouseButton and event.pressed):
+		return
+
+	# waiting microwave jobs
+	for job in active_jobs:
+
+		if job.waiting_for_station:
+
+			if job.get_current_station() == "microwave":
+
+				job.waiting_for_station = false
+				job.is_processing = true
+
+				microwave_station.start_process(job, 2.0)
+
+				print(job.food_name, " sent to microwave")
+
+				return
+
+	# direct microwave foods
+	if selected_food != "":
+
+		var data = FoodData.foods[selected_food]
+
+		if data["type"] != "microwave":
+			print(selected_food, " is not microwave food")
+			return
+
+		var food_name = selected_food
+
+		var job = preload("res://scripts/FoodJob.gd").new()
+
+		job.setup(food_name, data["steps"])
+
+		active_jobs.append(job)
+
+		selected_food = ""
+
+		print(food_name, " sent to microwave")
+
+
+func _on_bread_button_pressed():
+	selected_food = "bread"
+	print("Selected:", selected_food)
+
+
+func update_ready_food_ui():
+	var text = "Ready:\n"
+
+	for food in ready_foods:
+		text += food + "\n"
+
+	$CanvasLayer/ReadyFoodLabel.text = text

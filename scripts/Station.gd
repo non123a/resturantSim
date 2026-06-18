@@ -10,18 +10,6 @@ var current_job = null
 
 signal process_finished(job)
 
-#
-#func start_process(food_name, process_time):
-	#if is_busy:
-		#return false
-	#
-	#is_busy = true
-	#current_food = food_name
-	#timer = process_time
-	#
-	#print(station_type, " started:", food_name)
-	#
-	#return true
 
 func start_process(job, process_time):
 	if is_busy:

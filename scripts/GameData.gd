@@ -10,5 +10,7 @@ var upgrades = {
 var unlocked_foods = [
 	"burger",
 	"steak",
-	"donut"
+	"donut",
+	"bread"
+	
 ]

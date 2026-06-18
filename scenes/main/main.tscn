@@ -990,6 +990,11 @@ offset_bottom = 350.88
 layout_mode = 2
 text = "Burger"
 
+[node name="BreadButton" type="Button" parent="CanvasLayer/FoodPanel"]
+layout_mode = 2
+text = "Bread
+"
+
 [node name="SteakButton" type="Button" parent="CanvasLayer/FoodPanel"]
 layout_mode = 2
 text = "Steak"
@@ -998,9 +1003,22 @@ text = "Steak"
 layout_mode = 2
 text = "Donut"
 
+[node name="ReadyFoodLabel" type="Label" parent="CanvasLayer"]
+anchors_preset = -1
+anchor_right = 0.132
+anchor_bottom = 0.098000005
+offset_left = 907.0
+offset_top = 7.0
+offset_right = 939.04004
+offset_bottom = 48.439995
+
 [node name="PrepStation" type="Node" parent="."]
 script = ExtResource("2_iuonh")
 station_type = "prep"
+
+[node name="MicrowaveStation" type="Node" parent="."]
+script = ExtResource("2_iuonh")
+station_type = "Microwave"
 
 [node name="StoveStation" type="Node" parent="."]
 script = ExtResource("2_iuonh")
@@ -1051,8 +1069,10 @@ shape = SubResource("RectangleShape2D_b1x3f")
 [connection signal="pressed" from="CanvasLayer/CookShrimpButton" to="." method="_on_cook_shrimp_button_pressed"]
 [connection signal="pressed" from="CanvasLayer/EndPanel/RestartButton" to="." method="_on_restart_button_pressed"]
 [connection signal="pressed" from="CanvasLayer/FoodPanel/BurgerButton" to="." method="_on_burger_button_pressed"]
+[connection signal="pressed" from="CanvasLayer/FoodPanel/BreadButton" to="." method="_on_bread_button_pressed"]
 [connection signal="pressed" from="CanvasLayer/FoodPanel/SteakButton" to="." method="_on_steak_button_pressed"]
 [connection signal="pressed" from="CanvasLayer/FoodPanel/DonutButton" to="." method="_on_donut_button_pressed"]
 [connection signal="input_event" from="Stations/StoveArea" to="." method="_on_stove_area_input_event"]
+[connection signal="input_event" from="Stations/MicrowaveArea" to="." method="_on_microwave_area_input_event"]
 [connection signal="input_event" from="Stations/PrepArea" to="." method="_on_prep_area_input_event"]
 [connection signal="input_event" from="Stations/DisplayArea" to="." method="_on_display_area_input_event"]
