@@ -313,6 +313,16 @@ func _on_stove_area_input_event(viewport, event, shape_idx):
 					
 					#stove_station.start_process(job, 3.0)
 					var cook_time = FoodData.foods[job.food_name]["cook_time"]
+					var speed_bonus = GameData.upgrades["cook_speed"] * 0.3
+					cook_time = max(0.5, cook_time - speed_bonus)
+					print(
+						"STOVE CLICK ->",
+						job.food_name,
+						" CookTime:",
+						cook_time,
+						" UpgradeLv:",
+						GameData.upgrades["cook_speed"]
+					)
 					stove_station.start_process(job, cook_time)
 					
 					job.is_processing = true
@@ -453,8 +463,11 @@ func _on_microwave_area_input_event(viewport, event, shape_idx):
 				job.waiting_for_station = false
 				job.is_processing = true
 
-				microwave_station.start_process(job, 2.0)
+				var cook_time = FoodData.foods[job.food_name]["cook_time"]
+				var speed_bonus = GameData.upgrades["cook_speed"] * 0.3
+				cook_time = max(0.5, cook_time - speed_bonus)
 
+				microwave_station.start_process(job, cook_time)
 				print(job.food_name, " sent to microwave")
 
 				return
