@@ -65,4 +65,6 @@ offset_right = 70.0
 offset_bottom = 299.0
 text = "BACK "
 
+[connection signal="pressed" from="CookUpgradeButton" to="." method="_on_cook_upgrade_button_pressed"]
+[connection signal="pressed" from="IncomeUpgradeButton" to="." method="_on_income_upgrade_button_pressed"]
 [connection signal="pressed" from="BackButton" to="." method="_on_back_button_pressed"]

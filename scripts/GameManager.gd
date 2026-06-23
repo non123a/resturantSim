@@ -76,8 +76,15 @@ func process_jobs():
 			
 			if not prep_station.is_busy:
 				#prep_station.start_process(job.food_name, 2.0)
-				prep_station.start_process(job, 2.0)
-				
+				var cook_time = FoodData.foods[job.food_name]["cook_time"]
+				var speed_bonus = GameData.upgrades["cook_speed"] * 0.3
+				cook_time = max(0.5, cook_time - speed_bonus)
+				prep_station.start_process(job, cook_time)
+				print(
+					"Food:", job.food_name,
+					" CookTime:", cook_time,
+					" UpgradeLv:", GameData.upgrades["cook_speed"]
+				)
 				
 		
 		
@@ -90,6 +97,11 @@ func process_jobs():
 				cook_time = max(0.5, cook_time - speed_bonus)
 				stove_station.start_process(job, cook_time)
 				#stove_station.start_process(job, 3.0)
+				print(
+					"Food:", job.food_name,
+					" CookTime:", cook_time,
+					" UpgradeLv:", GameData.upgrades["cook_speed"]
+				)
 			
 
 		elif needed_station == "microwave":
@@ -100,6 +112,12 @@ func process_jobs():
 				var speed_bonus = GameData.upgrades["cook_speed"] * 0.3
 				cook_time = max(0.5, cook_time - speed_bonus)
 				microwave_station.start_process(job, cook_time)
+				print(
+					"Food:", job.food_name,
+					" CookTime:", cook_time,
+					" UpgradeLv:", GameData.upgrades["cook_speed"]
+				)
+		
 
 
 var spawn_positions = [
@@ -394,8 +412,16 @@ func try_serve_customer(customer):
 		combo += 1
 		combo_timer = combo_window
 		update_combo_ui()
-
-		var reward = FoodData.foods[customer.order]["price"]
+		var base_reward = FoodData.foods[customer.order]["price"]
+		var bonus = 1 + (GameData.upgrades["income"] * 0.1)
+		#var reward = FoodData.foods[customer.order]["price"]
+		var reward = int(base_reward * bonus)
+		print(
+			"Food:", customer.order,
+			" Base:", base_reward,
+			" IncomeLv:", GameData.upgrades["income"],
+			" Final:", reward
+		)
 
 		add_coins(reward)
 

@@ -1,6 +1,6 @@
 extends Node
 
-var coins = 0
+var coins = 500
 var best_coins = 0
 var upgrades = {
 	"cook_speed": 0,

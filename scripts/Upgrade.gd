@@ -11,7 +11,6 @@ func update_ui():
 
 
 func _on_cook_upgrade_button_pressed():
-	#var cost = 50
 	var cost = 50 + (GameData.upgrades["cook_speed"] * 25)
 	
 	if GameData.coins >= cost:
