@@ -86,6 +86,8 @@ func process_jobs():
 			if not stove_station.is_busy:
 				#stove_station.start_process(job.food_name, 3.0)
 				var cook_time = FoodData.foods[job.food_name]["cook_time"]
+				var speed_bonus = GameData.upgrades["cook_speed"] * 0.3
+				cook_time = max(0.5, cook_time - speed_bonus)
 				stove_station.start_process(job, cook_time)
 				#stove_station.start_process(job, 3.0)
 			
@@ -95,6 +97,8 @@ func process_jobs():
 			if not microwave_station.is_busy:
 				#microwave_station.start_process(job, 2.0)
 				var cook_time = FoodData.foods[job.food_name]["cook_time"]
+				var speed_bonus = GameData.upgrades["cook_speed"] * 0.3
+				cook_time = max(0.5, cook_time - speed_bonus)
 				microwave_station.start_process(job, cook_time)
 
 

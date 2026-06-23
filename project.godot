@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="UnderseaRestaurant"
-run/main_scene="uid://bqi216w3j6cmc"
+run/main_scene="uid://bqers1v50jyal"
 config/features=PackedStringArray("4.5", "Forward Plus")
 config/icon="res://icon.svg"
 
