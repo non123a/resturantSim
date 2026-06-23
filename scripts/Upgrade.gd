@@ -11,7 +11,8 @@ func update_ui():
 
 
 func _on_cook_upgrade_button_pressed():
-	var cost = 50
+	#var cost = 50
+	var cost = 50 + (GameData.upgrades["cook_speed"] * 25)
 	
 	if GameData.coins >= cost:
 		GameData.coins -= cost
@@ -21,7 +22,8 @@ func _on_cook_upgrade_button_pressed():
 
 
 func _on_income_upgrade_button_pressed():
-	var cost = 50
+	#var cost = 50
+	var cost = 50 + (GameData.upgrades["income"] * 25)
 	
 	if GameData.coins >= cost:
 		GameData.coins -= cost
@@ -31,4 +33,4 @@ func _on_income_upgrade_button_pressed():
 
 
 func _on_back_button_pressed():
-	get_tree().change_scene_to_file("res://scenes/main/Dashboard.tscn")
+	get_tree().change_scene_to_file("res://scenes/dashboard/dashboard.tscn")

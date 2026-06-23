@@ -1,0 +1,68 @@
+[gd_scene load_steps=2 format=3 uid="uid://c3wp7rwid3o83"]
+
+[ext_resource type="Script" uid="uid://c7lo00piibm7k" path="res://scripts/Upgrade.gd" id="1_qk1f7"]
+
+[node name="Control" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+offset_left = 46.0
+offset_top = 49.0
+offset_right = 86.0
+offset_bottom = 89.0
+script = ExtResource("1_qk1f7")
+
+[node name="TitleLabel" type="Label" parent="."]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 23.0
+text = "TITLE LABEL: 
+"
+
+[node name="CoinLabel" type="Label" parent="."]
+layout_mode = 0
+offset_top = 44.0
+offset_right = 45.0
+offset_bottom = 67.0
+text = "COIN:"
+
+[node name="CookLevelLabel" type="Label" parent="."]
+layout_mode = 0
+offset_left = 1.0
+offset_top = 83.0
+offset_right = 100.0
+offset_bottom = 106.0
+text = "COIN LEVEL: "
+
+[node name="IncomeLevelLabel" type="Label" parent="."]
+layout_mode = 0
+offset_left = 3.0
+offset_top = 116.0
+offset_right = 74.0
+offset_bottom = 139.0
+text = "IMCOME:"
+
+[node name="CookUpgradeButton" type="Button" parent="."]
+layout_mode = 0
+offset_left = 8.0
+offset_top = 157.0
+offset_right = 141.0
+offset_bottom = 188.0
+text = "COOK UPGRADE"
+
+[node name="IncomeUpgradeButton" type="Button" parent="."]
+layout_mode = 0
+offset_left = 10.0
+offset_top = 207.0
+offset_right = 161.0
+offset_bottom = 238.0
+text = "INCOME UPGRADE"
+
+[node name="BackButton" type="Button" parent="."]
+layout_mode = 0
+offset_left = 16.0
+offset_top = 268.0
+offset_right = 70.0
+offset_bottom = 299.0
+text = "BACK "
+
+[connection signal="pressed" from="BackButton" to="." method="_on_back_button_pressed"]
