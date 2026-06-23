@@ -970,6 +970,14 @@ offset_right = 270.0
 offset_bottom = 188.0
 text = "Restart"
 
+[node name="BackButton" type="Button" parent="CanvasLayer/EndPanel"]
+layout_mode = 0
+offset_left = 212.0
+offset_top = 200.0
+offset_right = 262.0
+offset_bottom = 231.0
+text = "BACK"
+
 [node name="CookingBar" type="ProgressBar" parent="CanvasLayer"]
 visible = false
 offset_left = 315.0
@@ -1068,6 +1076,7 @@ shape = SubResource("RectangleShape2D_b1x3f")
 [connection signal="pressed" from="CanvasLayer/CookFishButton" to="." method="_on_cook_fish_button_pressed"]
 [connection signal="pressed" from="CanvasLayer/CookShrimpButton" to="." method="_on_cook_shrimp_button_pressed"]
 [connection signal="pressed" from="CanvasLayer/EndPanel/RestartButton" to="." method="_on_restart_button_pressed"]
+[connection signal="pressed" from="CanvasLayer/EndPanel/BackButton" to="." method="_on_button_pressed"]
 [connection signal="pressed" from="CanvasLayer/FoodPanel/BurgerButton" to="." method="_on_burger_button_pressed"]
 [connection signal="pressed" from="CanvasLayer/FoodPanel/BreadButton" to="." method="_on_bread_button_pressed"]
 [connection signal="pressed" from="CanvasLayer/FoodPanel/SteakButton" to="." method="_on_steak_button_pressed"]

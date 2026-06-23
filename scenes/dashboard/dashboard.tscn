@@ -33,10 +33,10 @@ text = "UPGRADE"
 
 [node name="RecordLabel" type="Label" parent="."]
 layout_mode = 0
-offset_left = 886.0
-offset_top = 229.0
-offset_right = 1198.0
-offset_bottom = 545.0
+offset_left = 861.0
+offset_top = 226.0
+offset_right = 1173.0
+offset_bottom = 542.0
 text = "RECORD:"
 
 [connection signal="pressed" from="PlayButton" to="." method="_on_play_button_pressed"]

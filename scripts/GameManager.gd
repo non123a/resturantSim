@@ -463,3 +463,8 @@ func update_ready_food_ui():
 		text += food + "\n"
 
 	$CanvasLayer/ReadyFoodLabel.text = text
+
+
+func _on_button_pressed() -> void:
+	get_tree().change_scene_to_file("res://scenes/dashboard/dashboard.tscn")
+	

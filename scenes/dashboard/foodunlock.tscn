@@ -5,8 +5,10 @@
 [node name="foodunlock" type="Control"]
 layout_mode = 3
 anchors_preset = 0
-offset_right = 40.0
-offset_bottom = 40.0
+offset_left = 51.0
+offset_top = 21.0
+offset_right = 394.0
+offset_bottom = 340.0
 script = ExtResource("1_rarpg")
 
 [node name="CoinLabel" type="Label" parent="."]
