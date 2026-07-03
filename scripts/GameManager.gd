@@ -63,6 +63,8 @@ func _ready():
 	
 	# ✅ show actual coins
 	$CanvasLayer/CoinLabel.text = "Coins: " + str(GameData.coins)
+	$CanvasLayer/FoodPanel/BreadButton.visible = "bread" in GameData.unlocked_foods
+	$CanvasLayer/FoodPanel/SteakButton.visible = "steak" in GameData.unlocked_foods
 
 func process_jobs():
 	for job in active_jobs:
@@ -294,6 +296,7 @@ func end_game():
 	for c in customers:
 		if is_instance_valid(c):
 			c.stop_all()
+	GameData.save_game()
 
 func _on_restart_button_pressed() -> void:
 	get_tree().reload_current_scene()

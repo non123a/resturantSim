@@ -39,5 +39,14 @@ offset_right = 1173.0
 offset_bottom = 542.0
 text = "RECORD:"
 
+[node name="Unlock New Food" type="Button" parent="."]
+layout_mode = 0
+offset_left = 411.0
+offset_top = 356.0
+offset_right = 684.0
+offset_bottom = 454.0
+text = "Unlock New Food"
+
 [connection signal="pressed" from="PlayButton" to="." method="_on_play_button_pressed"]
 [connection signal="pressed" from="Upgrade" to="." method="_on_upgrade_pressed"]
+[connection signal="pressed" from="Unlock New Food" to="." method="_on_unlock_new_food_pressed"]

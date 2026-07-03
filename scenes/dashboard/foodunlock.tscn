@@ -5,10 +5,10 @@
 [node name="foodunlock" type="Control"]
 layout_mode = 3
 anchors_preset = 0
-offset_left = 51.0
-offset_top = 21.0
-offset_right = 394.0
-offset_bottom = 340.0
+offset_left = 50.0
+offset_top = 46.0
+offset_right = 393.0
+offset_bottom = 365.0
 script = ExtResource("1_rarpg")
 
 [node name="CoinLabel" type="Label" parent="."]
@@ -59,3 +59,9 @@ offset_top = 261.0
 offset_right = 182.0
 offset_bottom = 292.0
 text = "BACK"
+
+[connection signal="pressed" from="BreadButton" to="." method="_on_bread_button_pressed"]
+[connection signal="pressed" from="SteakButton" to="." method="_on_steak_button_pressed"]
+[connection signal="pressed" from="BurgerButton" to="." method="_on_burger_button_pressed"]
+[connection signal="pressed" from="PieButton" to="." method="_on_pie_button_pressed"]
+[connection signal="pressed" from="BackButton" to="." method="_on_back_button_pressed"]

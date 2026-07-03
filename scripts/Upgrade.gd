@@ -16,6 +16,7 @@ func _on_cook_upgrade_button_pressed():
 	if GameData.coins >= cost:
 		GameData.coins -= cost
 		GameData.upgrades["cook_speed"] += 1
+		GameData.save_game()
 	
 	update_ui()
 
@@ -27,6 +28,7 @@ func _on_income_upgrade_button_pressed():
 	if GameData.coins >= cost:
 		GameData.coins -= cost
 		GameData.upgrades["income"] += 1
+		GameData.save_game()
 	
 	update_ui()
 

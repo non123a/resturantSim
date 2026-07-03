@@ -14,3 +14,7 @@ func _ready():
 
 func _on_upgrade_pressed() -> void:
 	get_tree().change_scene_to_file("res://scenes/dashboard/upgrade.tscn")
+
+
+func _on_unlock_new_food_pressed() -> void:
+	get_tree().change_scene_to_file("res://scenes/dashboard/foodunlock.tscn")
