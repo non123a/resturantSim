@@ -1,0 +1,19 @@
+[gd_scene load_steps=3 format=3 uid="uid://cv3n6a334xap5"]
+
+[ext_resource type="Script" uid="uid://04eef84spbsj" path="res://scenes/food/ingredient.gd" id="1_1ouse"]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_35auj"]
+radius = 32.442963
+height = 120.62145
+
+[node name="Ingredient" type="Area2D"]
+script = ExtResource("1_1ouse")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(1.9999695, -1.0000305)
+scale = Vector2(0.18028004, 0.18267831)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(3, 1.0000005)
+rotation = -2.1380284
+shape = SubResource("CapsuleShape2D_35auj")

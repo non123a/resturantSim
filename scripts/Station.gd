@@ -33,15 +33,6 @@ func _process(delta):
 		if timer <= 0:
 			finish_process()
 
-
-#func finish_process():
-	#is_busy = false
-	#
-	#print(station_type, " finished:", current_food)
-	#
-	#current_food = ""
-#
-
 func finish_process():
 	is_busy = false
 	

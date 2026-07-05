@@ -1,8 +1,13 @@
-[gd_scene load_steps=10 format=4 uid="uid://bqi216w3j6cmc"]
+[gd_scene load_steps=15 format=4 uid="uid://bqi216w3j6cmc"]
 
 [ext_resource type="Script" uid="uid://cg6d44c6l386l" path="res://scripts/GameManager.gd" id="1_hyk8p"]
 [ext_resource type="Script" uid="uid://bilgtac0cdn7o" path="res://scripts/Station.gd" id="2_iuonh"]
 [ext_resource type="Texture2D" uid="uid://b2ayflvuyv8bl" path="res://professional_kitchen/professional_kitchen_withshadows.png" id="3_k2fmo"]
+[ext_resource type="PackedScene" uid="uid://cv3n6a334xap5" path="res://scenes/food/Ingredient.tscn" id="4_6q06x"]
+[ext_resource type="Script" uid="uid://cl0bnmhe6b8b2" path="res://scripts/stove_area.gd" id="4_yyfjg"]
+[ext_resource type="Texture2D" uid="uid://c87iv7v831pyv" path="res://assets/chimengAsset/steak/raw.png" id="5_ow5a4"]
+[ext_resource type="Texture2D" uid="uid://w5v1o5xk0uvh" path="res://assets/chimengAsset/steak/beefs.png" id="6_hujxm"]
+[ext_resource type="Texture2D" uid="uid://blerxr4pqu723" path="res://assets/chimengAsset/steak/vegetables.png" id="6_ow5a4"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_l3cfh"]
 texture = ExtResource("3_k2fmo")
@@ -989,10 +994,10 @@ offset_bottom = 86.0
 anchors_preset = -1
 anchor_right = 0.15400001
 anchor_bottom = 0.22100002
-offset_left = 850.0
-offset_top = 299.0
-offset_right = 1039.88
-offset_bottom = 350.88
+offset_left = 869.0
+offset_top = 6.0
+offset_right = 1058.88
+offset_bottom = 57.87999
 
 [node name="BurgerButton" type="Button" parent="CanvasLayer/FoodPanel"]
 layout_mode = 2
@@ -1048,6 +1053,7 @@ tile_set = SubResource("TileSet_6q06x")
 [node name="Stations" type="Node2D" parent="."]
 
 [node name="StoveArea" type="Area2D" parent="Stations"]
+script = ExtResource("4_yyfjg")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Stations/StoveArea"]
 position = Vector2(227, 565.5)
@@ -1073,6 +1079,31 @@ position = Vector2(107, 360)
 position = Vector2(550, 207)
 shape = SubResource("RectangleShape2D_b1x3f")
 
+[node name="CanvasLayer2" type="CanvasLayer" parent="."]
+
+[node name="IngredientPanel" type="Control" parent="CanvasLayer2"]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="RawSteak" parent="CanvasLayer2/IngredientPanel" instance=ExtResource("4_6q06x")]
+position = Vector2(1082, 555)
+ingredient_name = "raw_beef"
+ingredient_texture = ExtResource("5_ow5a4")
+next_stage = "cooked_steak"
+
+[node name="CookedSteak" parent="CanvasLayer2/IngredientPanel" instance=ExtResource("4_6q06x")]
+visible = false
+position = Vector2(1082, 555)
+ingredient_name = "raw_beef"
+ingredient_texture = ExtResource("6_hujxm")
+
+[node name="Vegetables" parent="CanvasLayer2/IngredientPanel" instance=ExtResource("4_6q06x")]
+position = Vector2(1066, 393)
+ingredient_name = "vegetables"
+ingredient_texture = ExtResource("6_ow5a4")
+
 [connection signal="pressed" from="CanvasLayer/CookFishButton" to="." method="_on_cook_fish_button_pressed"]
 [connection signal="pressed" from="CanvasLayer/CookShrimpButton" to="." method="_on_cook_shrimp_button_pressed"]
 [connection signal="pressed" from="CanvasLayer/EndPanel/RestartButton" to="." method="_on_restart_button_pressed"]
@@ -1081,7 +1112,9 @@ shape = SubResource("RectangleShape2D_b1x3f")
 [connection signal="pressed" from="CanvasLayer/FoodPanel/BreadButton" to="." method="_on_bread_button_pressed"]
 [connection signal="pressed" from="CanvasLayer/FoodPanel/SteakButton" to="." method="_on_steak_button_pressed"]
 [connection signal="pressed" from="CanvasLayer/FoodPanel/DonutButton" to="." method="_on_donut_button_pressed"]
+[connection signal="area_entered" from="Stations/StoveArea" to="." method="_on_stove_area_area_entered"]
 [connection signal="input_event" from="Stations/StoveArea" to="." method="_on_stove_area_input_event"]
 [connection signal="input_event" from="Stations/MicrowaveArea" to="." method="_on_microwave_area_input_event"]
+[connection signal="area_entered" from="Stations/PrepArea" to="." method="_on_prep_area_area_entered"]
 [connection signal="input_event" from="Stations/PrepArea" to="." method="_on_prep_area_input_event"]
 [connection signal="input_event" from="Stations/DisplayArea" to="." method="_on_display_area_input_event"]

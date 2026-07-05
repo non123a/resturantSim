@@ -5,6 +5,9 @@ var customer_scene = preload("res://scenes/customer/Customer.tscn")
 @onready var prep_station = $PrepStation
 @onready var stove_station = $StoveStation
 @onready var microwave_station = $MicrowaveStation
+@onready var raw_steak = $CanvasLayer2/IngredientPanel/RawSteak
+@onready var cooked_steak = $CanvasLayer2/IngredientPanel/CookedSteak
+
 
 var display_food = ""
 var display_timer = 0.0
@@ -514,3 +517,22 @@ func update_ready_food_ui():
 func _on_button_pressed() -> void:
 	get_tree().change_scene_to_file("res://scenes/dashboard/dashboard.tscn")
 	
+
+
+func _on_prep_area_area_entered(area: Area2D) -> void:
+	if area.has_method("get_ingredient_name"):
+		print("Dropped:", area.get_ingredient_name())
+
+
+func _on_stove_area_area_entered(area):
+
+	if area.get_ingredient_name() != "raw_steak":
+		return
+
+	print("Cooking Steak...")
+
+	area.visible = false
+
+	await get_tree().create_timer(2.0).timeout
+
+	cooked_steak.visible = true
