@@ -1,9 +1,12 @@
 extends CharacterBody2D
 
+signal served(customer)
+signal left_angry(customer)
+
 var speed = 100
 var target_position = Vector2(360, 500)
-var game_manager = null
 var state = "walking"
+var has_left = false
 
 var order = ""
 
@@ -13,10 +16,8 @@ var max_patience = 10.0
 
 func _ready():
 	$ProgressBar.max_value = max_patience
-	
-	#var food_names = FoodData.foods.keys()
-	#order = food_names.pick_random()
-	order = GameData.unlocked_foods.pick_random()
+
+	order = GameData.get_random_order_food()
 	print("Customer wants:", order)
 
 	$OrderLabel.text = order   # ✅ AFTER setting order
@@ -27,7 +28,7 @@ func _ready():
 
 func _physics_process(delta):
 	if state == "stopped":
-		wait_for_food(delta)
+		return
 	
 	if state == "walking":
 		move_to_target(delta)
@@ -54,6 +55,9 @@ func arrive():
 	$AnimatedSprite2D.stop() 
 
 func wait_for_food(delta):
+	if has_left:
+		return
+
 	if grace_timer > 0:
 		grace_timer -= delta
 		return   # ⬅️ no patience loss yet
@@ -67,22 +71,22 @@ func serve():
 	leave_happy()
 
 func leave_happy():
+	if has_left:
+		return
+
+	has_left = true
 	print("Customer happy")
+	served.emit(self)
 	queue_free()
 
 func leave_angry():
+	if has_left:
+		return
+
+	has_left = true
 	print("Customer angry")
+	left_angry.emit(self)
 	queue_free()
-
-@warning_ignore("unused_parameter")
-
-func _input_event(viewport, event, shape_idx):
-	if (event is InputEventMouseButton and event.pressed) \
-	or (event is InputEventScreenTouch and event.pressed):
-
-
-		game_manager.try_serve_customer(self)
-
 
 func stop_all():
 	state = "stopped"

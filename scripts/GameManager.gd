@@ -5,19 +5,16 @@ var customer_scene = preload("res://scenes/customer/Customer.tscn")
 @onready var prep_station = $PrepStation
 @onready var stove_station = $StoveStation
 @onready var microwave_station = $MicrowaveStation
-@onready var raw_steak = $CanvasLayer2/IngredientPanel/RawSteak
-@onready var cooked_steak = $CanvasLayer2/IngredientPanel/CookedSteak
-
-
-var display_food = ""
-var display_timer = 0.0
-var display_processing = false
-var ready_foods = []
-
-var selected_food = ""
-var active_jobs = []
+@onready var raw_steak = $IngredientShelf/RawSteak
+@onready var cooked_steak = $IngredientShelf/CookedSteak
+@onready var stove_area = $Stations/StoveArea
+@onready var prep_area = $Stations/PrepArea
+@onready var vegetables = $IngredientShelf/Vegetables
+@onready var beef_plate = $IngredientShelf/BeefPlate
+var prep_ingredients = []
 
 var customers = []
+var customer_slots = {}
 
 var run_coins = 0 
 
@@ -45,8 +42,6 @@ func _on_station_finished(job):
 	
 	if job.is_complete:
 
-		ready_foods.append(job.food_name)
-		update_ready_food_ui()
 		print(job.food_name, " READY!")
 
 		return
@@ -69,62 +64,6 @@ func _ready():
 	$CanvasLayer/FoodPanel/BreadButton.visible = "bread" in GameData.unlocked_foods
 	$CanvasLayer/FoodPanel/SteakButton.visible = "steak" in GameData.unlocked_foods
 
-func process_jobs():
-	for job in active_jobs:
-		
-		if job.is_complete or job.is_processing or job.waiting_for_station:
-			continue
-		
-		var needed_station = job.get_current_station()
-		
-		if needed_station == "prep":
-			
-			if not prep_station.is_busy:
-				#prep_station.start_process(job.food_name, 2.0)
-				var cook_time = FoodData.foods[job.food_name]["cook_time"]
-				var speed_bonus = GameData.upgrades["cook_speed"] * 0.3
-				cook_time = max(0.5, cook_time - speed_bonus)
-				prep_station.start_process(job, cook_time)
-				print(
-					"Food:", job.food_name,
-					" CookTime:", cook_time,
-					" UpgradeLv:", GameData.upgrades["cook_speed"]
-				)
-				
-		
-		
-		elif needed_station == "stove":
-			
-			if not stove_station.is_busy:
-				#stove_station.start_process(job.food_name, 3.0)
-				var cook_time = FoodData.foods[job.food_name]["cook_time"]
-				var speed_bonus = GameData.upgrades["cook_speed"] * 0.3
-				cook_time = max(0.5, cook_time - speed_bonus)
-				stove_station.start_process(job, cook_time)
-				#stove_station.start_process(job, 3.0)
-				print(
-					"Food:", job.food_name,
-					" CookTime:", cook_time,
-					" UpgradeLv:", GameData.upgrades["cook_speed"]
-				)
-			
-
-		elif needed_station == "microwave":
-
-			if not microwave_station.is_busy:
-				#microwave_station.start_process(job, 2.0)
-				var cook_time = FoodData.foods[job.food_name]["cook_time"]
-				var speed_bonus = GameData.upgrades["cook_speed"] * 0.3
-				cook_time = max(0.5, cook_time - speed_bonus)
-				microwave_station.start_process(job, cook_time)
-				print(
-					"Food:", job.food_name,
-					" CookTime:", cook_time,
-					" UpgradeLv:", GameData.upgrades["cook_speed"]
-				)
-		
-
-
 var spawn_positions = [
 	Vector2(200, 500),
 	Vector2(360, 500),
@@ -137,13 +76,34 @@ func spawn_customer():
 	var c = customer_scene.instantiate()
 	add_child(c)
 	
-	var index = customers.size() % spawn_positions.size()
+	var index = get_open_spawn_index()
 	c.position = Vector2(spawn_positions[index].x, 1400)
 	c.target_position = spawn_positions[index]
 	
-	c.game_manager = self
+	c.served.connect(_on_customer_served)
+	c.left_angry.connect(_on_customer_left_angry)
 	
 	customers.append(c)
+	customer_slots[c] = index
+
+func get_open_spawn_index():
+	for i in range(spawn_positions.size()):
+		if not customer_slots.values().has(i):
+			return i
+
+	return customers.size() % spawn_positions.size()
+
+func _on_customer_served(customer):
+	remove_customer(customer)
+	spawn_customer()
+
+func _on_customer_left_angry(customer):
+	remove_customer(customer)
+	spawn_customer()
+
+func remove_customer(customer):
+	customers.erase(customer)
+	customer_slots.erase(customer)
 
 
 func reset_combo():
@@ -153,16 +113,6 @@ func reset_combo():
 	print("Combo reset")
 
 func _process(delta):
-	if display_processing:
-		display_timer -= delta
-		
-		if display_timer <= 0:
-			display_processing = false
-			update_ready_food_ui()
-			ready_foods.append(display_food)
-
-			print(display_food, " READY!")
-	process_jobs()
 	if game_active:
 		time_left -= delta
 		
@@ -212,42 +162,6 @@ func start_cooking(food_type):
 		$CanvasLayer/CookFishButton.text = "Cooking fish..."
 		$CanvasLayer/CookShrimpButton.text = "Cooking shrimp..."
 
-func serve_food(customer):
-	if not game_active:
-		return
-	if not food_ready or customer == null:
-		return
-	
-	if current_food == customer.order:
-		customer.serve()
-		
-		combo += 1
-		combo_timer = combo_window
-		update_combo_ui()
-		
-		#var reward = 10 + (combo * 2)
-		var base_reward = 10 + (combo * 2)
-		var bonus = 1 + (GameData.upgrades["income"] * 0.1)
-
-		var reward = int(base_reward * bonus)
-		add_coins(reward)
-		
-		print("Correct! Combo:", combo, "Reward:", reward)
-	else:
-		print("Wrong order!")
-		customer.leave_angry()
-		reset_combo()
-	
-	# Reset cooking state
-	food_ready = false
-	
-	$CanvasLayer/CookFishButton.text = "Fish"
-	$CanvasLayer/CookShrimpButton.text = "Shrimp"
-	
-	customers.erase(customer)
-	spawn_customer()
-	
-	
 func _on_cook_shrimp_button_pressed():
 	start_cooking("shrimp")
 
@@ -305,234 +219,134 @@ func _on_restart_button_pressed() -> void:
 	get_tree().reload_current_scene()
 
 
-func _on_stove_area_input_event(viewport, event, shape_idx):
-
-	if event is InputEventMouseButton and event.pressed:
-		
-		for job in active_jobs:
-			
-			if job.waiting_for_station:
-				
-				if job.get_current_station() == "stove":
-					
-					job.waiting_for_station = false
-					
-					#stove_station.start_process(job, 3.0)
-					var cook_time = FoodData.foods[job.food_name]["cook_time"]
-					var speed_bonus = GameData.upgrades["cook_speed"] * 0.3
-					cook_time = max(0.5, cook_time - speed_bonus)
-					print(
-						"STOVE CLICK ->",
-						job.food_name,
-						" CookTime:",
-						cook_time,
-						" UpgradeLv:",
-						GameData.upgrades["cook_speed"]
-					)
-					stove_station.start_process(job, cook_time)
-					
-					job.is_processing = true
-					
-					print(job.food_name, " sent to stove")
-					
-					return
-		if selected_food != "":
-
-			var data = FoodData.foods[selected_food]
-
-			if data["type"] != "stove":
-				print(selected_food, " is not stove food")
-				return
-
-			var job = preload("res://scripts/FoodJob.gd").new()
-
-			job.setup(selected_food, data["steps"])
-
-			active_jobs.append(job)
-
-			var food_name = selected_food
-
-			selected_food = ""
-
-			print(food_name, " sent to stove")
-func _on_prep_area_input_event(viewport, event, shape_idx):
-	if event is InputEventMouseButton and event.pressed:
-		
-		if selected_food == "":
-			return
-		var data = FoodData.foods[selected_food]
-
-		if data["steps"].size() == 0:
-			return
-
-		if data["steps"][0] != "prep":
-			print(selected_food, " does not use prep")
-			return
-		
-		var job = preload("res://scripts/FoodJob.gd").new()
-		
-		
-		var food_name = selected_food
-
-		job.setup(food_name, data["steps"])
-
-		active_jobs.append(job)
-
-		selected_food = ""
-
-		print(food_name, " sent to prep")
-
-
-func _on_burger_button_pressed():
-	selected_food = "burger"
-	print("Selected:", selected_food)
-
-func _on_steak_button_pressed():
-	selected_food = "steak"
-	print("Selected:", selected_food)
-
-func _on_donut_button_pressed():
-	selected_food = "donut"
-	print("Selected:", selected_food)
-
-
-func _on_display_area_input_event(viewport, event, shape_idx):
-	if event is InputEventMouseButton and event.pressed:
-		
-		if selected_food == "":
-			return
-		
-		var data = FoodData.foods[selected_food]
-		
-		if data["type"] != "display":
-			print(selected_food, " is not display food")
-			return
-		
-		display_food = selected_food
-		display_timer = data["cook_time"]
-		display_processing = true
-		
-		print("Preparing:", display_food)
-		
-		selected_food = ""
-
-
-func try_serve_customer(customer):
-
-	if customer.order in ready_foods:
-
-		ready_foods.erase(customer.order)
-
-		customer.serve()
-
-		combo += 1
-		combo_timer = combo_window
-		update_combo_ui()
-		var base_reward = FoodData.foods[customer.order]["price"]
-		var bonus = 1 + (GameData.upgrades["income"] * 0.1)
-		#var reward = FoodData.foods[customer.order]["price"]
-		var reward = int(base_reward * bonus)
-		print(
-			"Food:", customer.order,
-			" Base:", base_reward,
-			" IncomeLv:", GameData.upgrades["income"],
-			" Final:", reward
-		)
-
-		add_coins(reward)
-
-		print("Served:", customer.order)
-
-		customers.erase(customer)
-		spawn_customer()
-
-	else:
-		if ready_foods.size() > 0:
-			print("Wrong food!")
-			reset_combo()
-		else:
-			print("Food not ready")
-
-
-func _on_microwave_area_input_event(viewport, event, shape_idx):
-
-	if not (event is InputEventMouseButton and event.pressed):
-		return
-
-	# waiting microwave jobs
-	for job in active_jobs:
-
-		if job.waiting_for_station:
-
-			if job.get_current_station() == "microwave":
-
-				job.waiting_for_station = false
-				job.is_processing = true
-
-				var cook_time = FoodData.foods[job.food_name]["cook_time"]
-				var speed_bonus = GameData.upgrades["cook_speed"] * 0.3
-				cook_time = max(0.5, cook_time - speed_bonus)
-
-				microwave_station.start_process(job, cook_time)
-				print(job.food_name, " sent to microwave")
-
-				return
-
-	# direct microwave foods
-	if selected_food != "":
-
-		var data = FoodData.foods[selected_food]
-
-		if data["type"] != "microwave":
-			print(selected_food, " is not microwave food")
-			return
-
-		var food_name = selected_food
-
-		var job = preload("res://scripts/FoodJob.gd").new()
-
-		job.setup(food_name, data["steps"])
-
-		active_jobs.append(job)
-
-		selected_food = ""
-
-		print(food_name, " sent to microwave")
-
-
-func _on_bread_button_pressed():
-	selected_food = "bread"
-	print("Selected:", selected_food)
-
-
-func update_ready_food_ui():
-	var text = "Ready:\n"
-
-	for food in ready_foods:
-		text += food + "\n"
-
-	$CanvasLayer/ReadyFoodLabel.text = text
-
-
 func _on_button_pressed() -> void:
 	get_tree().change_scene_to_file("res://scenes/dashboard/dashboard.tscn")
-	
 
 
-func _on_prep_area_area_entered(area: Area2D) -> void:
-	if area.has_method("get_ingredient_name"):
-		print("Dropped:", area.get_ingredient_name())
+func try_drop_ingredient(ingredient):
+
+	# ---------- STOVE ----------
+	var station_accepted = await try_drop_on_station(ingredient)
+	if station_accepted:
+		return true
+
+	return try_drop_on_customer(ingredient)
+
+func try_drop_on_station(ingredient):
+
+	if stove_area.overlaps_area(ingredient):
+
+		if ingredient.ingredient_name == "raw_steak":
+
+			print("Cooking Steak...")
+
+			ingredient.dragging = false
+
+			await get_tree().create_timer(2.0).timeout
+
+			ingredient.visible = false
+
+			cooked_steak.food_id = ""
+			cooked_steak.set_home_position(ingredient.global_position)
+			cooked_steak.visible = true
+			cooked_steak.monitoring = true
+			cooked_steak.set_process(true)
+
+			return true
+
+	if prep_area.overlaps_area(ingredient):
+		if not ["vegetables", "cooked_steak"].has(ingredient.ingredient_name):
+			return false
+
+		prep_ingredients.append(ingredient.ingredient_name)
+
+		print(prep_ingredients)
+		var offset = Vector2(prep_ingredients.size() * 35, 0)
+		ingredient.set_home_position(prep_area.global_position + offset)
+		ingredient.dragging = false
+
+		# ===== Steak Recipe =====
+		if prep_ingredients.has("vegetables") and prep_ingredients.has("cooked_steak"):
+
+			print("Recipe Complete!")
+
+			await get_tree().create_timer(1.0).timeout
+
+			prep_ingredients.clear()
+
+			#beef_plate.global_position = prep_area.global_position
+			ingredient.visible = false
+			vegetables.visible = false
+			cooked_steak.visible = false
+
+			beef_plate.food_id = "steak"
+			beef_plate.set_home_position(prep_area.global_position)
+			beef_plate.visible = true
+			beef_plate.monitoring = true
+			beef_plate.set_process(true)
+
+			return true
+
+		return true
 
 
-func _on_stove_area_area_entered(area):
+	return false
 
-	if area.get_ingredient_name() != "raw_steak":
-		return
+func try_drop_on_customer(ingredient):
+	if not game_active:
+		return false
 
-	print("Cooking Steak...")
+	for customer in customers.duplicate():
+		if not is_instance_valid(customer):
+			remove_customer(customer)
+			continue
 
-	area.visible = false
+		if ingredient.overlaps_body(customer):
+			return try_serve_customer_with_food(customer, ingredient)
 
-	await get_tree().create_timer(2.0).timeout
+	return false
 
-	cooked_steak.visible = true
+func try_serve_customer_with_food(customer, food_item):
+	var served_food_id = food_item.get_food_id()
+
+	if served_food_id != customer.order:
+		print("Wrong food!")
+		reset_combo()
+		return false
+
+	combo += 1
+	combo_timer = combo_window
+	update_combo_ui()
+
+	var reward = calculate_reward(served_food_id)
+	add_coins(reward)
+
+	print("Served:", served_food_id)
+
+	consume_food_item(food_item)
+	customer.serve()
+
+	return true
+
+func calculate_reward(food_id):
+	if not FoodData.foods.has(food_id):
+		return 0
+
+	var base_reward = FoodData.foods[food_id]["price"]
+	var bonus = 1 + (GameData.upgrades["income"] * 0.1)
+	var reward = int(base_reward * bonus)
+
+	print(
+		"Food:", food_id,
+		" Base:", base_reward,
+		" IncomeLv:", GameData.upgrades["income"],
+		" Final:", reward
+	)
+
+	return reward
+
+func consume_food_item(food_item):
+	food_item.dragging = false
+	food_item.visible = false
+	food_item.monitoring = false
+	food_item.set_process(false)

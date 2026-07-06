@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=4 uid="uid://bqi216w3j6cmc"]
+[gd_scene load_steps=16 format=4 uid="uid://bqi216w3j6cmc"]
 
 [ext_resource type="Script" uid="uid://cg6d44c6l386l" path="res://scripts/GameManager.gd" id="1_hyk8p"]
 [ext_resource type="Script" uid="uid://bilgtac0cdn7o" path="res://scripts/Station.gd" id="2_iuonh"]
@@ -8,6 +8,7 @@
 [ext_resource type="Texture2D" uid="uid://c87iv7v831pyv" path="res://assets/chimengAsset/steak/raw.png" id="5_ow5a4"]
 [ext_resource type="Texture2D" uid="uid://w5v1o5xk0uvh" path="res://assets/chimengAsset/steak/beefs.png" id="6_hujxm"]
 [ext_resource type="Texture2D" uid="uid://blerxr4pqu723" path="res://assets/chimengAsset/steak/vegetables.png" id="6_ow5a4"]
+[ext_resource type="Texture2D" uid="uid://m8ony3vwoxdq" path="res://assets/chimengAsset/steak/steaks.png" id="8_yyfjg"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_l3cfh"]
 texture = ExtResource("3_k2fmo")
@@ -1066,10 +1067,10 @@ position = Vector2(99, 573.5)
 shape = SubResource("RectangleShape2D_hujxm")
 
 [node name="PrepArea" type="Area2D" parent="Stations"]
-position = Vector2(146, 337)
+position = Vector2(451, 549)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Stations/PrepArea"]
-position = Vector2(318, 229)
+position = Vector2(16, 18)
 shape = SubResource("RectangleShape2D_yyfjg")
 
 [node name="DisplayArea" type="Area2D" parent="Stations"]
@@ -1079,30 +1080,30 @@ position = Vector2(107, 360)
 position = Vector2(550, 207)
 shape = SubResource("RectangleShape2D_b1x3f")
 
-[node name="CanvasLayer2" type="CanvasLayer" parent="."]
+[node name="IngredientShelf" type="Node" parent="."]
 
-[node name="IngredientPanel" type="Control" parent="CanvasLayer2"]
-layout_mode = 3
-anchors_preset = 0
-offset_right = 40.0
-offset_bottom = 40.0
-
-[node name="RawSteak" parent="CanvasLayer2/IngredientPanel" instance=ExtResource("4_6q06x")]
+[node name="RawSteak" parent="IngredientShelf" instance=ExtResource("4_6q06x")]
 position = Vector2(1082, 555)
-ingredient_name = "raw_beef"
+ingredient_name = "raw_steak"
 ingredient_texture = ExtResource("5_ow5a4")
-next_stage = "cooked_steak"
 
-[node name="CookedSteak" parent="CanvasLayer2/IngredientPanel" instance=ExtResource("4_6q06x")]
-visible = false
-position = Vector2(1082, 555)
-ingredient_name = "raw_beef"
-ingredient_texture = ExtResource("6_hujxm")
-
-[node name="Vegetables" parent="CanvasLayer2/IngredientPanel" instance=ExtResource("4_6q06x")]
+[node name="Vegetables" parent="IngredientShelf" instance=ExtResource("4_6q06x")]
 position = Vector2(1066, 393)
 ingredient_name = "vegetables"
 ingredient_texture = ExtResource("6_ow5a4")
+
+[node name="CookedSteak" parent="IngredientShelf" instance=ExtResource("4_6q06x")]
+visible = false
+position = Vector2(1082, 555)
+ingredient_name = "cooked_steak"
+ingredient_texture = ExtResource("6_hujxm")
+
+[node name="BeefPlate" parent="IngredientShelf" instance=ExtResource("4_6q06x")]
+visible = false
+position = Vector2(1082, 555)
+ingredient_name = "beef_plate"
+ingredient_texture = ExtResource("8_yyfjg")
+food_id = "steak"
 
 [connection signal="pressed" from="CanvasLayer/CookFishButton" to="." method="_on_cook_fish_button_pressed"]
 [connection signal="pressed" from="CanvasLayer/CookShrimpButton" to="." method="_on_cook_shrimp_button_pressed"]
@@ -1112,9 +1113,7 @@ ingredient_texture = ExtResource("6_ow5a4")
 [connection signal="pressed" from="CanvasLayer/FoodPanel/BreadButton" to="." method="_on_bread_button_pressed"]
 [connection signal="pressed" from="CanvasLayer/FoodPanel/SteakButton" to="." method="_on_steak_button_pressed"]
 [connection signal="pressed" from="CanvasLayer/FoodPanel/DonutButton" to="." method="_on_donut_button_pressed"]
-[connection signal="area_entered" from="Stations/StoveArea" to="." method="_on_stove_area_area_entered"]
 [connection signal="input_event" from="Stations/StoveArea" to="." method="_on_stove_area_input_event"]
 [connection signal="input_event" from="Stations/MicrowaveArea" to="." method="_on_microwave_area_input_event"]
-[connection signal="area_entered" from="Stations/PrepArea" to="." method="_on_prep_area_area_entered"]
 [connection signal="input_event" from="Stations/PrepArea" to="." method="_on_prep_area_input_event"]
 [connection signal="input_event" from="Stations/DisplayArea" to="." method="_on_display_area_input_event"]
