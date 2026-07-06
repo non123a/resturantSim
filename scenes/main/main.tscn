@@ -1,10 +1,8 @@
-[gd_scene load_steps=16 format=4 uid="uid://bqi216w3j6cmc"]
+[gd_scene load_steps=14 format=4 uid="uid://bqi216w3j6cmc"]
 
 [ext_resource type="Script" uid="uid://cg6d44c6l386l" path="res://scripts/GameManager.gd" id="1_hyk8p"]
-[ext_resource type="Script" uid="uid://bilgtac0cdn7o" path="res://scripts/Station.gd" id="2_iuonh"]
 [ext_resource type="Texture2D" uid="uid://b2ayflvuyv8bl" path="res://professional_kitchen/professional_kitchen_withshadows.png" id="3_k2fmo"]
 [ext_resource type="PackedScene" uid="uid://cv3n6a334xap5" path="res://scenes/food/Ingredient.tscn" id="4_6q06x"]
-[ext_resource type="Script" uid="uid://cl0bnmhe6b8b2" path="res://scripts/stove_area.gd" id="4_yyfjg"]
 [ext_resource type="Texture2D" uid="uid://c87iv7v831pyv" path="res://assets/chimengAsset/steak/raw.png" id="5_ow5a4"]
 [ext_resource type="Texture2D" uid="uid://w5v1o5xk0uvh" path="res://assets/chimengAsset/steak/beefs.png" id="6_hujxm"]
 [ext_resource type="Texture2D" uid="uid://blerxr4pqu723" path="res://assets/chimengAsset/steak/vegetables.png" id="6_ow5a4"]
@@ -916,20 +914,6 @@ script = ExtResource("1_hyk8p")
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 
-[node name="CookFishButton" type="Button" parent="CanvasLayer"]
-offset_left = 242.0
-offset_top = 247.0
-offset_right = 281.0
-offset_bottom = 278.0
-text = "Fish"
-
-[node name="CookShrimpButton" type="Button" parent="CanvasLayer"]
-offset_left = 241.0
-offset_top = 195.0
-offset_right = 305.0
-offset_bottom = 226.0
-text = "Shrimp"
-
 [node name="CoinLabel" type="Label" parent="CanvasLayer"]
 offset_left = 348.0
 offset_top = 106.0
@@ -984,68 +968,6 @@ offset_right = 262.0
 offset_bottom = 231.0
 text = "BACK"
 
-[node name="CookingBar" type="ProgressBar" parent="CanvasLayer"]
-visible = false
-offset_left = 315.0
-offset_top = 28.0
-offset_right = 696.0
-offset_bottom = 86.0
-
-[node name="FoodPanel" type="HBoxContainer" parent="CanvasLayer"]
-anchors_preset = -1
-anchor_right = 0.15400001
-anchor_bottom = 0.22100002
-offset_left = 869.0
-offset_top = 6.0
-offset_right = 1058.88
-offset_bottom = 57.87999
-
-[node name="BurgerButton" type="Button" parent="CanvasLayer/FoodPanel"]
-layout_mode = 2
-text = "Burger"
-
-[node name="BreadButton" type="Button" parent="CanvasLayer/FoodPanel"]
-layout_mode = 2
-text = "Bread
-"
-
-[node name="SteakButton" type="Button" parent="CanvasLayer/FoodPanel"]
-layout_mode = 2
-text = "Steak"
-
-[node name="DonutButton" type="Button" parent="CanvasLayer/FoodPanel"]
-layout_mode = 2
-text = "Donut"
-
-[node name="ReadyFoodLabel" type="Label" parent="CanvasLayer"]
-anchors_preset = -1
-anchor_right = 0.132
-anchor_bottom = 0.098000005
-offset_left = 907.0
-offset_top = 7.0
-offset_right = 939.04004
-offset_bottom = 48.439995
-
-[node name="PrepStation" type="Node" parent="."]
-script = ExtResource("2_iuonh")
-station_type = "prep"
-
-[node name="MicrowaveStation" type="Node" parent="."]
-script = ExtResource("2_iuonh")
-station_type = "Microwave"
-
-[node name="StoveStation" type="Node" parent="."]
-script = ExtResource("2_iuonh")
-station_type = "stove"
-
-[node name="StoveArea" type="Area2D" parent="."]
-
-[node name="Sprite2D" type="Sprite2D" parent="StoveArea"]
-position = Vector2(0, -25)
-scale = Vector2(1, 0.9131944)
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="StoveArea"]
-
 [node name="KitchenMap" type="TileMapLayer" parent="."]
 scale = Vector2(2, 2)
 tile_map_data = PackedByteArray("AAANABAAAAAVABgAAAANABEAAAAVABkAAAANABIAAAAVABoAAAAOABAAAAAWABgAAAAOABEAAAAWABkAAAAOABIAAAAWABoAAAAPABAAAAAXABgAAAAPABEAAAAXABkAAAAPABIAAAAXABoAAAAGABAAAAAGAAoAAAAGABEAAAAGAAsAAAAGABIAAAAGAAwAAAAHABAAAAAHAAoAAAAHABEAAAAHAAsAAAAHABIAAAAHAAwAAAACABEAAAAUAAAAAAACABIAAAAUAAEAAAADABEAAAAVAAAAAAADABIAAAAVAAEAAAATABAAAAAVAA4AAAATABEAAAAVAA8AAAATABIAAAAVABAAAAAUABAAAAAWAA4AAAAUABEAAAAWAA8AAAAUABIAAAAWABAAAAAVABAAAAAXAA4AAAAVABEAAAAXAA8AAAAVABIAAAAXABAAAAA=")
@@ -1054,7 +976,6 @@ tile_set = SubResource("TileSet_6q06x")
 [node name="Stations" type="Node2D" parent="."]
 
 [node name="StoveArea" type="Area2D" parent="Stations"]
-script = ExtResource("4_yyfjg")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Stations/StoveArea"]
 position = Vector2(227, 565.5)
@@ -1105,15 +1026,5 @@ ingredient_name = "beef_plate"
 ingredient_texture = ExtResource("8_yyfjg")
 food_id = "steak"
 
-[connection signal="pressed" from="CanvasLayer/CookFishButton" to="." method="_on_cook_fish_button_pressed"]
-[connection signal="pressed" from="CanvasLayer/CookShrimpButton" to="." method="_on_cook_shrimp_button_pressed"]
 [connection signal="pressed" from="CanvasLayer/EndPanel/RestartButton" to="." method="_on_restart_button_pressed"]
 [connection signal="pressed" from="CanvasLayer/EndPanel/BackButton" to="." method="_on_button_pressed"]
-[connection signal="pressed" from="CanvasLayer/FoodPanel/BurgerButton" to="." method="_on_burger_button_pressed"]
-[connection signal="pressed" from="CanvasLayer/FoodPanel/BreadButton" to="." method="_on_bread_button_pressed"]
-[connection signal="pressed" from="CanvasLayer/FoodPanel/SteakButton" to="." method="_on_steak_button_pressed"]
-[connection signal="pressed" from="CanvasLayer/FoodPanel/DonutButton" to="." method="_on_donut_button_pressed"]
-[connection signal="input_event" from="Stations/StoveArea" to="." method="_on_stove_area_input_event"]
-[connection signal="input_event" from="Stations/MicrowaveArea" to="." method="_on_microwave_area_input_event"]
-[connection signal="input_event" from="Stations/PrepArea" to="." method="_on_prep_area_input_event"]
-[connection signal="input_event" from="Stations/DisplayArea" to="." method="_on_display_area_input_event"]

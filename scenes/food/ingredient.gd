@@ -2,7 +2,6 @@ extends Area2D
 
 @export var ingredient_name = ""
 @export var ingredient_texture : Texture2D
-@export var next_stage = ""
 @export var food_id = ""
 var start_position
 var home_position
@@ -39,18 +38,11 @@ func _input_event(viewport, event, shape_idx):
 					global_position = start_position
 func get_ingredient_name():
 	return ingredient_name
-	
-func get_next_stage():
-	return next_stage
 
 func get_food_id():
 	if food_id != "":
 		return food_id
 	return ingredient_name
-	
-func move_to_home():
-	global_position = home_position
-	visible = true
 
 func set_home_position(position):
 	start_position = position

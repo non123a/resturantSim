@@ -2,9 +2,6 @@ extends Node2D
 
 var customer_scene = preload("res://scenes/customer/Customer.tscn")
 
-@onready var prep_station = $PrepStation
-@onready var stove_station = $StoveStation
-@onready var microwave_station = $MicrowaveStation
 @onready var raw_steak = $IngredientShelf/RawSteak
 @onready var cooked_steak = $IngredientShelf/CookedSteak
 @onready var stove_area = $Stations/StoveArea
@@ -18,10 +15,6 @@ var customer_slots = {}
 
 var run_coins = 0 
 
-var food_types = ["fish", "shrimp"]
-var current_food = ""
-
-var round_time = 60.0
 var time_left = 60.0
 var game_active = true
 
@@ -30,39 +23,12 @@ var combo = 0
 var combo_timer = 0.0
 var combo_window = 10.0  # seconds to keep combo alive
 
-var food_ready = false
-var cooking = false
-var cook_time = 2.0
-var timer = 0.0
-
-func _on_station_finished(job):
-	job.is_processing = false
-	
-	job.advance_step()
-	
-	if job.is_complete:
-
-		print(job.food_name, " READY!")
-
-		return
-	
-	job.waiting_for_station = true
-	
-	print(job.food_name, " waiting for:", job.get_current_station())
-	
 func _ready():
-	prep_station.process_finished.connect(_on_station_finished)
-	stove_station.process_finished.connect(_on_station_finished)
-	microwave_station.process_finished.connect(_on_station_finished)
-	
-	
 	for i in range(2):
 		spawn_customer()
 	
 	# ✅ show actual coins
 	$CanvasLayer/CoinLabel.text = "Coins: " + str(GameData.coins)
-	$CanvasLayer/FoodPanel/BreadButton.visible = "bread" in GameData.unlocked_foods
-	$CanvasLayer/FoodPanel/SteakButton.visible = "steak" in GameData.unlocked_foods
 
 var spawn_positions = [
 	Vector2(200, 500),
@@ -120,53 +86,11 @@ func _process(delta):
 			end_game()
 		
 		$CanvasLayer/TimerLabel.text = "Time: " + str(int(time_left))
-	if combo > 0 and not cooking:
+	if combo > 0:
 		combo_timer -= delta
 		
 		if combo_timer <= 0:
 			reset_combo()
-	if cooking:
-		timer -= delta
-		
-		var progress = (1 - (timer / cook_time)) * 100
-		$CanvasLayer/CookingBar.value = progress
-		
-		print("Progress:", progress)   # debug
-		
-		if timer <= 0:
-			cooking = false
-			food_ready = true
-			$CanvasLayer/CookingBar.visible = false
-			
-			print("Food Ready!")
-			
-			$CanvasLayer/CookFishButton.text = "Fish"
-			$CanvasLayer/CookShrimpButton.text = "Shrimp"
-
-		
-func start_cooking(food_type):
-	$CanvasLayer/CookingBar.visible = true
-	$CanvasLayer/CookingBar.value = 0
-	if not game_active:
-		return
-	if not cooking and not food_ready:
-		cooking = true
-		#timer = cook_time
-		var speed_bonus = GameData.upgrades["cook_speed"] * 0.3
-		timer = max(0.5, cook_time - speed_bonus)
-		
-		current_food = food_type
-		
-		print("Cooking:", current_food)
-		
-		$CanvasLayer/CookFishButton.text = "Cooking fish..."
-		$CanvasLayer/CookShrimpButton.text = "Cooking shrimp..."
-
-func _on_cook_shrimp_button_pressed():
-	start_cooking("shrimp")
-
-func _on_cook_fish_button_pressed() -> void:
-	start_cooking("fish")
 
 
 func add_coins(amount):
@@ -192,16 +116,10 @@ func end_game():
 	print("Game Over!")
 	print("Run Coins:", run_coins)
 	
-	cooking = false
-	food_ready = false
-	
 	# ✅ SAVE BEST RECORD (ONLY THIS)
 	if run_coins > GameData.best_coins:
 		GameData.best_coins = run_coins
 		print("NEW RECORD!")
-	
-	$CanvasLayer/CookFishButton.disabled = true
-	$CanvasLayer/CookShrimpButton.disabled = true
 	
 	# ✅ SHOW CORRECT DATA
 	$CanvasLayer/EndPanel.visible = true
@@ -235,27 +153,10 @@ func try_drop_ingredient(ingredient):
 func try_drop_on_station(ingredient):
 
 	if stove_area.overlaps_area(ingredient):
-
-		if ingredient.ingredient_name == "raw_steak":
-
-			print("Cooking Steak...")
-
-			ingredient.dragging = false
-
-			await get_tree().create_timer(2.0).timeout
-
-			ingredient.visible = false
-
-			cooked_steak.food_id = ""
-			cooked_steak.set_home_position(ingredient.global_position)
-			cooked_steak.visible = true
-			cooked_steak.monitoring = true
-			cooked_steak.set_process(true)
-
-			return true
+		return await try_process_single_input_recipe("stove", ingredient)
 
 	if prep_area.overlaps_area(ingredient):
-		if not ["vegetables", "cooked_steak"].has(ingredient.ingredient_name):
+		if not RecipeData.can_accept_ingredient("prep", prep_ingredients, ingredient.ingredient_name):
 			return false
 
 		prep_ingredients.append(ingredient.ingredient_name)
@@ -265,25 +166,10 @@ func try_drop_on_station(ingredient):
 		ingredient.set_home_position(prep_area.global_position + offset)
 		ingredient.dragging = false
 
-		# ===== Steak Recipe =====
-		if prep_ingredients.has("vegetables") and prep_ingredients.has("cooked_steak"):
-
-			print("Recipe Complete!")
-
-			await get_tree().create_timer(1.0).timeout
-
+		var recipe = RecipeData.get_recipe("prep", prep_ingredients)
+		if not recipe.is_empty():
+			await process_recipe(recipe, prep_area.global_position)
 			prep_ingredients.clear()
-
-			#beef_plate.global_position = prep_area.global_position
-			ingredient.visible = false
-			vegetables.visible = false
-			cooked_steak.visible = false
-
-			beef_plate.food_id = "steak"
-			beef_plate.set_home_position(prep_area.global_position)
-			beef_plate.visible = true
-			beef_plate.monitoring = true
-			beef_plate.set_process(true)
 
 			return true
 
@@ -291,6 +177,58 @@ func try_drop_on_station(ingredient):
 
 
 	return false
+
+func try_process_single_input_recipe(station, ingredient):
+	if not RecipeData.can_accept_ingredient(station, [], ingredient.ingredient_name):
+		return false
+
+	var recipe = RecipeData.get_recipe(station, [ingredient.ingredient_name])
+	if recipe.is_empty():
+		return false
+
+	ingredient.dragging = false
+
+	await process_recipe(recipe, ingredient.global_position)
+
+	return true
+
+func process_recipe(recipe, output_position):
+	print("Processing recipe:", recipe["recipe_id"])
+
+	await get_tree().create_timer(recipe["duration"]).timeout
+
+	clear_recipe_inputs(recipe)
+
+	var output = get_ingredient_node(recipe["output_ingredient"])
+	if output == null:
+		return
+
+	output.food_id = recipe["output_food_id"]
+	output.set_home_position(output_position)
+	output.visible = true
+	output.monitoring = true
+	output.set_process(true)
+
+func clear_recipe_inputs(recipe):
+	for input in recipe["inputs"]:
+		var ingredient = get_ingredient_node(input)
+		if ingredient == null:
+			continue
+
+		ingredient.visible = false
+
+func get_ingredient_node(ingredient_name):
+	match ingredient_name:
+		"raw_steak":
+			return raw_steak
+		"cooked_steak":
+			return cooked_steak
+		"vegetables":
+			return vegetables
+		"beef_plate":
+			return beef_plate
+		_:
+			return null
 
 func try_drop_on_customer(ingredient):
 	if not game_active:
