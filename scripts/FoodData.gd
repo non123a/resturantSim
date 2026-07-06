@@ -53,13 +53,6 @@ var foods = {
 		"price": 13
 	},
 	
-	"bread": {
-		"type": "microwave",
-		"steps": ["microwave"],
-		"cook_time": 1.5,
-		"price": 9
-	},
-	
 	"bun": {
 		"type": "microwave",
 		"steps": ["microwave"],

@@ -19,6 +19,9 @@ var customer_scene = preload("res://scenes/customer/Customer.tscn")
 @onready var burger_bread_beef_sauce = $IngredientShelf/BurgerBreadBeefSauce
 @onready var burger_bread_vegetable_beef = $IngredientShelf/BurgerBreadVegetableBeef
 @onready var burger = $IngredientShelf/Burger
+@onready var donut = $IngredientShelf/Donut
+@onready var burrito = $IngredientShelf/Burrito
+@onready var jelly = $IngredientShelf/Jelly
 var prep_ingredients = []
 
 var customers = []
@@ -40,6 +43,7 @@ func _ready():
 	
 	# ✅ show actual coins
 	$CanvasLayer/CoinLabel.text = "Coins: " + str(GameData.coins)
+	update_progression_food_visibility()
 
 var spawn_positions = [
 	Vector2(200, 500),
@@ -81,6 +85,21 @@ func _on_customer_left_angry(customer):
 func remove_customer(customer):
 	customers.erase(customer)
 	customer_slots.erase(customer)
+
+func update_progression_food_visibility():
+	var steak_unlocked = GameData.is_food_unlocked("steak")
+	raw_steak.visible = steak_unlocked
+	vegetables.visible = steak_unlocked
+
+	var burger_unlocked = GameData.is_food_unlocked("burger")
+	burger_raw_beef.visible = burger_unlocked
+	burger_bread.visible = burger_unlocked
+	burger_vegetable.visible = burger_unlocked
+	burger_sauce.visible = burger_unlocked
+
+	donut.visible = GameData.is_food_unlocked("donut")
+	burrito.visible = GameData.is_food_unlocked("burrito")
+	jelly.visible = GameData.is_food_unlocked("jelly")
 
 
 func reset_combo():
@@ -262,6 +281,12 @@ func get_ingredient_node(ingredient_name):
 			return burger_bread_vegetable_beef
 		"burger":
 			return burger
+		"donut":
+			return donut
+		"burrito":
+			return burrito
+		"jelly":
+			return jelly
 		_:
 			return null
 

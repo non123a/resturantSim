@@ -1,65 +1,53 @@
 extends Control
 
+@onready var food_buttons = {
+	"donut": $DonutButton,
+	"steak": $SteakButton,
+	"burger": $BurgerButton,
+	"burrito": $BurritoButton,
+	"jelly": $JellyButton
+}
 
-# Called when the node enters the scene tree for the first time.
 func _ready():
+	update_ui()
 
-	if "bread" in GameData.unlocked_foods:
-		$BreadButton.disabled = true
-	if "steak" in GameData.unlocked_foods:
-		$SteakButton.disabled = true
+func update_ui():
+	$CoinLabel.text = "Coins: " + str(GameData.coins)
 
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta: float) -> void:
-	pass
+	for food_id in GameData.get_progression_food_ids():
+		var button = food_buttons[food_id]
+		var display_name = GameData.get_food_display_name(food_id)
 
+		if GameData.is_food_unlocked(food_id):
+			button.text = display_name + "\nUnlocked"
+			button.disabled = true
+		else:
+			button.text = display_name + "\nUnlock (" + str(GameData.get_food_unlock_cost(food_id)) + ")"
+			button.disabled = false
 
-func _on_bread_button_pressed() -> void:
-
-	if "bread" in GameData.unlocked_foods:
-		print("Bread already unlocked")
+func try_unlock_food(food_id):
+	if GameData.is_food_unlocked(food_id):
 		return
 
-	var cost = 100
-
-	if GameData.coins < cost:
+	if not GameData.unlock_food(food_id):
 		print("Not enough coins")
-		return
 
-	GameData.coins -= cost
-	GameData.unlocked_foods.append("bread")
-	GameData.save_game()
-	$BreadButton.disabled = true
+	update_ui()
 
-	print("Bread unlocked!")
+func _on_donut_button_pressed() -> void:
+	try_unlock_food("donut")
 
 func _on_steak_button_pressed() -> void:
-
-	if "steak" in GameData.unlocked_foods:
-		print("Steak already unlocked")
-		return
-
-	var cost = 200
-
-	if GameData.coins < cost:
-		print("Not enough coins")
-		return
-
-	GameData.coins -= cost
-	GameData.unlocked_foods.append("steak")
-	GameData.save_game()
-
-	$SteakButton.disabled = true
-
-	print("Steak unlocked!")
+	try_unlock_food("steak")
 
 func _on_burger_button_pressed() -> void:
-	pass # Replace with function body.
+	try_unlock_food("burger")
 
+func _on_burrito_button_pressed() -> void:
+	try_unlock_food("burrito")
 
-func _on_pie_button_pressed() -> void:
-	pass # Replace with function body.
-
+func _on_jelly_button_pressed() -> void:
+	try_unlock_food("jelly")
 
 func _on_back_button_pressed():
 	get_tree().change_scene_to_file("res://scenes/dashboard/dashboard.tscn")
