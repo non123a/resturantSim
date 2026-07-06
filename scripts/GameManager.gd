@@ -8,6 +8,17 @@ var customer_scene = preload("res://scenes/customer/Customer.tscn")
 @onready var prep_area = $Stations/PrepArea
 @onready var vegetables = $IngredientShelf/Vegetables
 @onready var beef_plate = $IngredientShelf/BeefPlate
+@onready var burger_raw_beef = $IngredientShelf/BurgerRawBeef
+@onready var burger_beef = $IngredientShelf/BurgerBeef
+@onready var burger_bread = $IngredientShelf/BurgerBread
+@onready var burger_vegetable = $IngredientShelf/BurgerVegetable
+@onready var burger_sauce = $IngredientShelf/BurgerSauce
+@onready var burger_bread_vegetable = $IngredientShelf/BurgerBreadVegetable
+@onready var burger_bread_vegetable_sauce = $IngredientShelf/BurgerBreadVegetableSauce
+@onready var burger_bread_beef = $IngredientShelf/BurgerBreadBeef
+@onready var burger_bread_beef_sauce = $IngredientShelf/BurgerBreadBeefSauce
+@onready var burger_bread_vegetable_beef = $IngredientShelf/BurgerBreadVegetableBeef
+@onready var burger = $IngredientShelf/Burger
 var prep_ingredients = []
 
 var customers = []
@@ -156,10 +167,11 @@ func try_drop_on_station(ingredient):
 		return await try_process_single_input_recipe("stove", ingredient)
 
 	if prep_area.overlaps_area(ingredient):
-		if not RecipeData.can_accept_ingredient("prep", prep_ingredients, ingredient.ingredient_name):
+		var ingredient_name = ingredient.get_ingredient_name()
+		if not RecipeData.can_accept_ingredient("prep", prep_ingredients, ingredient_name):
 			return false
 
-		prep_ingredients.append(ingredient.ingredient_name)
+		prep_ingredients.append(ingredient_name)
 
 		print(prep_ingredients)
 		var offset = Vector2(prep_ingredients.size() * 35, 0)
@@ -179,10 +191,11 @@ func try_drop_on_station(ingredient):
 	return false
 
 func try_process_single_input_recipe(station, ingredient):
-	if not RecipeData.can_accept_ingredient(station, [], ingredient.ingredient_name):
+	var ingredient_name = ingredient.get_ingredient_name()
+	if not RecipeData.can_accept_ingredient(station, [], ingredient_name):
 		return false
 
-	var recipe = RecipeData.get_recipe(station, [ingredient.ingredient_name])
+	var recipe = RecipeData.get_recipe(station, [ingredient_name])
 	if recipe.is_empty():
 		return false
 
@@ -227,6 +240,28 @@ func get_ingredient_node(ingredient_name):
 			return vegetables
 		"beef_plate":
 			return beef_plate
+		"burger_raw_beef":
+			return burger_raw_beef
+		"burger_beef":
+			return burger_beef
+		"burger_bread":
+			return burger_bread
+		"burger_vegetable":
+			return burger_vegetable
+		"burger_sauce":
+			return burger_sauce
+		"burger_bread_vegetable":
+			return burger_bread_vegetable
+		"burger_bread_vegetable_sauce":
+			return burger_bread_vegetable_sauce
+		"burger_bread_beef":
+			return burger_bread_beef
+		"burger_bread_beef_sauce":
+			return burger_bread_beef_sauce
+		"burger_bread_vegetable_beef":
+			return burger_bread_vegetable_beef
+		"burger":
+			return burger
 		_:
 			return null
 

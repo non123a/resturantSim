@@ -1,6 +1,7 @@
 extends Area2D
 
 @export var ingredient_name = ""
+@export var ingredient_id = ""
 @export var ingredient_texture : Texture2D
 @export var food_id = ""
 var start_position
@@ -37,12 +38,14 @@ func _input_event(viewport, event, shape_idx):
 				if not accepted:
 					global_position = start_position
 func get_ingredient_name():
+	if ingredient_id != "":
+		return ingredient_id
 	return ingredient_name
 
 func get_food_id():
 	if food_id != "":
 		return food_id
-	return ingredient_name
+	return get_ingredient_name()
 
 func set_home_position(position):
 	start_position = position

@@ -16,6 +16,78 @@ var recipes = [
 		"duration": 1.0,
 		"output_ingredient": "beef_plate",
 		"output_food_id": "steak"
+	},
+	{
+		"recipe_id": "cook_burger_beef",
+		"station": "stove",
+		"inputs": ["burger_raw_beef"],
+		"duration": 2.0,
+		"output_ingredient": "burger_beef",
+		"output_food_id": ""
+	},
+	{
+		"recipe_id": "burger_bread_plus_vegetable",
+		"station": "prep",
+		"inputs": ["burger_bread", "burger_vegetable"],
+		"duration": 1.0,
+		"output_ingredient": "burger_bread_vegetable",
+		"output_food_id": ""
+	},
+	{
+		"recipe_id": "burger_bread_plus_beef",
+		"station": "prep",
+		"inputs": ["burger_bread", "burger_beef"],
+		"duration": 1.0,
+		"output_ingredient": "burger_bread_beef",
+		"output_food_id": ""
+	},
+	{
+		"recipe_id": "burger_bread_vegetable_plus_sauce",
+		"station": "prep",
+		"inputs": ["burger_bread_vegetable", "burger_sauce"],
+		"duration": 1.0,
+		"output_ingredient": "burger_bread_vegetable_sauce",
+		"output_food_id": ""
+	},
+	{
+		"recipe_id": "burger_bread_vegetable_plus_beef",
+		"station": "prep",
+		"inputs": ["burger_bread_vegetable", "burger_beef"],
+		"duration": 1.0,
+		"output_ingredient": "burger_bread_vegetable_beef",
+		"output_food_id": ""
+	},
+	{
+		"recipe_id": "burger_bread_beef_plus_sauce",
+		"station": "prep",
+		"inputs": ["burger_bread_beef", "burger_sauce"],
+		"duration": 1.0,
+		"output_ingredient": "burger_bread_beef_sauce",
+		"output_food_id": ""
+	},
+	{
+		"recipe_id": "finish_burger_from_vegetable_sauce",
+		"station": "prep",
+		"inputs": ["burger_bread_vegetable_sauce", "burger_beef"],
+		"duration": 1.0,
+		"output_ingredient": "burger",
+		"output_food_id": "burger"
+	},
+	{
+		"recipe_id": "finish_burger_from_vegetable_beef",
+		"station": "prep",
+		"inputs": ["burger_bread_vegetable_beef", "burger_sauce"],
+		"duration": 1.0,
+		"output_ingredient": "burger",
+		"output_food_id": "burger"
+	},
+	{
+		"recipe_id": "finish_burger_from_beef_sauce",
+		"station": "prep",
+		"inputs": ["burger_bread_beef_sauce", "burger_vegetable"],
+		"duration": 1.0,
+		"output_ingredient": "burger",
+		"output_food_id": "burger"
 	}
 ]
 

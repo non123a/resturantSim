@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=4 uid="uid://bqi216w3j6cmc"]
+[gd_scene load_steps=25 format=4 uid="uid://bqi216w3j6cmc"]
 
 [ext_resource type="Script" uid="uid://cg6d44c6l386l" path="res://scripts/GameManager.gd" id="1_hyk8p"]
 [ext_resource type="Texture2D" uid="uid://b2ayflvuyv8bl" path="res://professional_kitchen/professional_kitchen_withshadows.png" id="3_k2fmo"]
@@ -7,6 +7,17 @@
 [ext_resource type="Texture2D" uid="uid://w5v1o5xk0uvh" path="res://assets/chimengAsset/steak/beefs.png" id="6_hujxm"]
 [ext_resource type="Texture2D" uid="uid://blerxr4pqu723" path="res://assets/chimengAsset/steak/vegetables.png" id="6_ow5a4"]
 [ext_resource type="Texture2D" uid="uid://m8ony3vwoxdq" path="res://assets/chimengAsset/steak/steaks.png" id="8_yyfjg"]
+[ext_resource type="Texture2D" uid="uid://b06qjyfs02r8v" path="res://assets/chimengAsset/hamburger/raw beefs.png" id="10_rawbeef"]
+[ext_resource type="Texture2D" uid="uid://12ilrv22ax0e" path="res://assets/chimengAsset/hamburger/beefs.png" id="11_beef"]
+[ext_resource type="Texture2D" uid="uid://boibp0u1c874u" path="res://assets/chimengAsset/hamburger/breads.png" id="12_bread"]
+[ext_resource type="Texture2D" uid="uid://ckmnb7560bd4t" path="res://assets/chimengAsset/hamburger/vegetable.png" id="13_veg"]
+[ext_resource type="Texture2D" uid="uid://b4h05j5cob05b" path="res://assets/chimengAsset/hamburger/sauces.png" id="14_sauce"]
+[ext_resource type="Texture2D" uid="uid://efofwmpf7dxj" path="res://assets/chimengAsset/hamburger/bread vegeatable.png" id="15_breadveg"]
+[ext_resource type="Texture2D" uid="uid://0ridla01d7ou" path="res://assets/chimengAsset/hamburger/bread vegetable and sauces.png" id="16_breadvegsauce"]
+[ext_resource type="Texture2D" uid="uid://dm2ac0dvuqt4f" path="res://assets/chimengAsset/hamburger/bread withe beefs.png" id="17_breadbeef"]
+[ext_resource type="Texture2D" uid="uid://b6rmjrwlr6g73" path="res://assets/chimengAsset/hamburger/beef bread sauce.png" id="18_breadbeefsauce"]
+[ext_resource type="Texture2D" uid="uid://bf8qibqfb71fj" path="res://assets/chimengAsset/hamburger/bread vegetable beef.png" id="19_breadvegbeef"]
+[ext_resource type="Texture2D" uid="uid://c4ub26mwuyi74" path="res://assets/chimengAsset/hamburger/hamburgers.png" id="20_burger"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_l3cfh"]
 texture = ExtResource("3_k2fmo")
@@ -1025,6 +1036,70 @@ position = Vector2(1082, 555)
 ingredient_name = "beef_plate"
 ingredient_texture = ExtResource("8_yyfjg")
 food_id = "steak"
+
+[node name="BurgerRawBeef" parent="IngredientShelf" instance=ExtResource("4_6q06x")]
+position = Vector2(1180, 555)
+ingredient_name = "burger_raw_beef"
+ingredient_texture = ExtResource("10_rawbeef")
+
+[node name="BurgerBread" parent="IngredientShelf" instance=ExtResource("4_6q06x")]
+position = Vector2(1180, 455)
+ingredient_name = "burger_bread"
+ingredient_texture = ExtResource("12_bread")
+
+[node name="BurgerVegetable" parent="IngredientShelf" instance=ExtResource("4_6q06x")]
+position = Vector2(1180, 355)
+ingredient_name = "burger_vegetable"
+ingredient_texture = ExtResource("13_veg")
+
+[node name="BurgerSauce" parent="IngredientShelf" instance=ExtResource("4_6q06x")]
+position = Vector2(1180, 255)
+ingredient_name = "burger_sauce"
+ingredient_texture = ExtResource("14_sauce")
+
+[node name="BurgerBeef" parent="IngredientShelf" instance=ExtResource("4_6q06x")]
+visible = false
+position = Vector2(1180, 555)
+ingredient_name = "burger_beef"
+ingredient_texture = ExtResource("11_beef")
+
+[node name="BurgerBreadVegetable" parent="IngredientShelf" instance=ExtResource("4_6q06x")]
+visible = false
+position = Vector2(1180, 455)
+ingredient_name = "burger_bread_vegetable"
+ingredient_texture = ExtResource("15_breadveg")
+
+[node name="BurgerBreadVegetableSauce" parent="IngredientShelf" instance=ExtResource("4_6q06x")]
+visible = false
+position = Vector2(1180, 455)
+ingredient_name = "burger_bread_vegetable_sauce"
+ingredient_texture = ExtResource("16_breadvegsauce")
+
+[node name="BurgerBreadBeef" parent="IngredientShelf" instance=ExtResource("4_6q06x")]
+visible = false
+position = Vector2(1180, 455)
+ingredient_name = "burger_bread_beef"
+ingredient_texture = ExtResource("17_breadbeef")
+
+[node name="BurgerBreadBeefSauce" parent="IngredientShelf" instance=ExtResource("4_6q06x")]
+visible = false
+position = Vector2(1180, 455)
+ingredient_name = "burger_bread_beef_sauce"
+ingredient_texture = ExtResource("18_breadbeefsauce")
+
+[node name="BurgerBreadVegetableBeef" parent="IngredientShelf" instance=ExtResource("4_6q06x")]
+visible = false
+position = Vector2(1180, 455)
+ingredient_name = "burger_bread_vegetable_beef"
+ingredient_texture = ExtResource("19_breadvegbeef")
+
+[node name="Burger" parent="IngredientShelf" instance=ExtResource("4_6q06x")]
+visible = false
+position = Vector2(1180, 455)
+ingredient_name = "burger"
+ingredient_id = "burger"
+ingredient_texture = ExtResource("20_burger")
+food_id = "burger"
 
 [connection signal="pressed" from="CanvasLayer/EndPanel/RestartButton" to="." method="_on_restart_button_pressed"]
 [connection signal="pressed" from="CanvasLayer/EndPanel/BackButton" to="." method="_on_button_pressed"]

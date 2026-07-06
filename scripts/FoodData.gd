@@ -95,7 +95,7 @@ var foods = {
 		"type": "multi",
 		"steps": ["prep", "stove"],
 		"cook_time": 5.0,
-		"price": 20
+		"price": 25
 	},
 	
 	"burrito": {

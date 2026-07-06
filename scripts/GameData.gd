@@ -15,7 +15,8 @@ var unlocked_foods = [
 ]
 
 var implemented_foods = [
-	"steak"
+	"steak",
+	"burger"
 ]
 
 func get_available_order_foods():
