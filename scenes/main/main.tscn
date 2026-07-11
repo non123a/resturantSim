@@ -1021,11 +1021,13 @@ shape = SubResource("RectangleShape2D_b1x3f")
 position = Vector2(1082, 555)
 ingredient_name = "raw_steak"
 ingredient_texture = ExtResource("5_ow5a4")
+is_source = true
 
 [node name="Vegetables" parent="IngredientShelf" instance=ExtResource("4_6q06x")]
 position = Vector2(1066, 393)
 ingredient_name = "vegetables"
 ingredient_texture = ExtResource("6_ow5a4")
+is_source = true
 
 [node name="CookedSteak" parent="IngredientShelf" instance=ExtResource("4_6q06x")]
 visible = false
@@ -1044,21 +1046,25 @@ food_id = "steak"
 position = Vector2(1180, 555)
 ingredient_id = "burger_raw_beef"
 ingredient_texture = ExtResource("10_rawbeef")
+is_source = true
 
 [node name="BurgerBread" parent="IngredientShelf" instance=ExtResource("4_6q06x")]
 position = Vector2(1180, 455)
 ingredient_id = "burger_bread"
 ingredient_texture = ExtResource("12_bread")
+is_source = true
 
 [node name="BurgerVegetable" parent="IngredientShelf" instance=ExtResource("4_6q06x")]
 position = Vector2(1180, 355)
 ingredient_id = "burger_vegetable"
 ingredient_texture = ExtResource("13_veg")
+is_source = true
 
 [node name="BurgerSauce" parent="IngredientShelf" instance=ExtResource("4_6q06x")]
 position = Vector2(1180, 255)
 ingredient_id = "burger_sauce"
 ingredient_texture = ExtResource("14_sauce")
+is_source = true
 
 [node name="BurgerBeef" parent="IngredientShelf" instance=ExtResource("4_6q06x")]
 visible = false
@@ -1108,6 +1114,7 @@ position = Vector2(970, 555)
 ingredient_id = "donut"
 ingredient_texture = ExtResource("21_donut")
 food_id = "donut"
+is_source = true
 
 [node name="Burrito" parent="IngredientShelf" instance=ExtResource("4_6q06x")]
 visible = false
@@ -1115,6 +1122,7 @@ position = Vector2(970, 455)
 ingredient_id = "burrito"
 ingredient_texture = ExtResource("22_burrito")
 food_id = "burrito"
+is_source = true
 
 [node name="Jelly" parent="IngredientShelf" instance=ExtResource("4_6q06x")]
 visible = false
@@ -1122,6 +1130,7 @@ position = Vector2(970, 355)
 ingredient_id = "jelly"
 ingredient_texture = ExtResource("23_jelly")
 food_id = "jelly"
+is_source = true
 
 [connection signal="pressed" from="CanvasLayer/EndPanel/RestartButton" to="." method="_on_restart_button_pressed"]
 [connection signal="pressed" from="CanvasLayer/EndPanel/BackButton" to="." method="_on_button_pressed"]

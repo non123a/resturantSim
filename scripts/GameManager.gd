@@ -22,7 +22,7 @@ var customer_scene = preload("res://scenes/customer/Customer.tscn")
 @onready var donut = $IngredientShelf/Donut
 @onready var burrito = $IngredientShelf/Burrito
 @onready var jelly = $IngredientShelf/Jelly
-var prep_ingredients = []
+var prep_ingredient_instances = []
 
 var customers = []
 var customer_slots = {}
@@ -187,20 +187,23 @@ func try_drop_on_station(ingredient):
 
 	if prep_area.overlaps_area(ingredient):
 		var ingredient_name = ingredient.get_ingredient_name()
-		if not RecipeData.can_accept_ingredient("prep", prep_ingredients, ingredient_name):
+		var prep_ingredient_names = get_ingredient_names(prep_ingredient_instances)
+		if not RecipeData.can_accept_ingredient("prep", prep_ingredient_names, ingredient_name):
 			return false
 
-		prep_ingredients.append(ingredient_name)
+		prep_ingredient_instances.append(ingredient)
+		prep_ingredient_names.append(ingredient_name)
 
-		print(prep_ingredients)
-		var offset = Vector2(prep_ingredients.size() * 35, 0)
+		print(prep_ingredient_names)
+		var offset = Vector2(prep_ingredient_instances.size() * 35, 0)
 		ingredient.set_home_position(prep_area.global_position + offset)
 		ingredient.dragging = false
 
-		var recipe = RecipeData.get_recipe("prep", prep_ingredients)
+		var recipe = RecipeData.get_recipe("prep", prep_ingredient_names)
 		if not recipe.is_empty():
-			await process_recipe(recipe, prep_area.global_position)
-			prep_ingredients.clear()
+			var input_instances = prep_ingredient_instances.duplicate()
+			prep_ingredient_instances.clear()
+			await process_recipe(recipe, prep_area.global_position, input_instances)
 
 			return true
 
@@ -220,34 +223,62 @@ func try_process_single_input_recipe(station, ingredient):
 
 	ingredient.dragging = false
 
-	await process_recipe(recipe, ingredient.global_position)
+	await process_recipe(recipe, ingredient.global_position, [ingredient])
 
 	return true
 
-func process_recipe(recipe, output_position):
+func process_recipe(recipe, output_position, input_instances):
 	print("Processing recipe:", recipe["recipe_id"])
 
 	await get_tree().create_timer(recipe["duration"]).timeout
 
-	clear_recipe_inputs(recipe)
+	consume_ingredient_instances(input_instances)
 
-	var output = get_ingredient_node(recipe["output_ingredient"])
+	var output = spawn_ingredient_instance(
+		recipe["output_ingredient"],
+		recipe["output_food_id"],
+		output_position
+	)
 	if output == null:
 		return
 
-	output.food_id = recipe["output_food_id"]
-	output.set_home_position(output_position)
-	output.visible = true
-	output.monitoring = true
-	output.set_process(true)
-
-func clear_recipe_inputs(recipe):
-	for input in recipe["inputs"]:
-		var ingredient = get_ingredient_node(input)
-		if ingredient == null:
+func consume_ingredient_instances(ingredient_instances):
+	for ingredient in ingredient_instances:
+		if ingredient == null or not is_instance_valid(ingredient):
 			continue
 
-		ingredient.visible = false
+		if ingredient.is_source:
+			continue
+
+		ingredient.dragging = false
+		ingredient.queue_free()
+
+func get_ingredient_names(ingredient_instances):
+	var ingredient_names = []
+	for ingredient in ingredient_instances:
+		if ingredient == null or not is_instance_valid(ingredient):
+			continue
+
+		ingredient_names.append(ingredient.get_ingredient_name())
+
+	return ingredient_names
+
+func spawn_ingredient_instance(ingredient_name, food_id, output_position):
+	var template = get_ingredient_node(ingredient_name)
+	if template == null:
+		return null
+
+	var instance = template.duplicate()
+	template.get_parent().add_child(instance)
+	instance.is_source = false
+	instance.food_id = food_id
+	instance.visible = true
+	instance.monitoring = true
+	instance.set_process(true)
+	instance.set_process_input(true)
+	instance.set_home_position(output_position)
+
+	return instance
 
 func get_ingredient_node(ingredient_name):
 	match ingredient_name:
@@ -344,7 +375,8 @@ func calculate_reward(food_id):
 	return reward
 
 func consume_food_item(food_item):
+	if food_item.is_source:
+		return
+
 	food_item.dragging = false
-	food_item.visible = false
-	food_item.monitoring = false
-	food_item.set_process(false)
+	food_item.queue_free()
