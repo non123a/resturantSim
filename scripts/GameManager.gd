@@ -28,6 +28,7 @@ var customer_scene = preload("res://scenes/customer/Customer.tscn")
 @onready var burrito = $IngredientShelf/Burrito
 @onready var jelly = $IngredientShelf/Jelly
 var prep_slot_ingredient_instances = {}
+var prep_slot_busy_states = {}
 
 var customers = []
 var customer_slots = {}
@@ -55,6 +56,7 @@ func _ready():
 func initialize_prep_slots():
 	for slot in prep_slots:
 		prep_slot_ingredient_instances[slot] = []
+		prep_slot_busy_states[slot] = false
 
 var spawn_positions = [
 	Vector2(200, 500),
@@ -211,24 +213,39 @@ func get_overlapping_prep_slot(ingredient):
 	return null
 
 func try_drop_on_prep_slot(slot, ingredient):
-	var ingredient_name = ingredient.get_ingredient_name()
-	var slot_ingredients = prep_slot_ingredient_instances[slot]
-	var prep_ingredient_names = get_ingredient_names(slot_ingredients)
-	if not RecipeData.can_accept_ingredient("prep", prep_ingredient_names, ingredient_name):
+	if prep_slot_busy_states[slot]:
+		log_prep_slot(slot, "drop rejected, slot busy", [ingredient.get_ingredient_name()])
 		return false
 
+	cleanup_prep_slot(slot)
+
+	var current_owner = get_prep_slot_for_ingredient(ingredient)
+	if current_owner == slot:
+		ingredient.set_home_position(get_prep_slot_item_position(slot, prep_slot_ingredient_instances[slot].find(ingredient) + 1))
+		ingredient.dragging = false
+		log_prep_slot(slot, "drop ignored, ingredient already owned", get_prep_slot_contents(slot))
+		return true
+
+	var ingredient_name = ingredient.get_ingredient_name()
+	var prep_ingredient_names = get_ingredient_names(prep_slot_ingredient_instances[slot])
+	if not RecipeData.can_accept_ingredient("prep", prep_ingredient_names, ingredient_name):
+		log_prep_slot(slot, "drop rejected, no recipe accepts", prep_ingredient_names + [ingredient_name])
+		return false
+
+	remove_ingredient_from_prep_slots(ingredient)
+
+	var slot_ingredients = prep_slot_ingredient_instances[slot]
 	slot_ingredients.append(ingredient)
 	prep_ingredient_names.append(ingredient_name)
 
-	print(slot.name, prep_ingredient_names)
 	ingredient.set_home_position(get_prep_slot_item_position(slot, slot_ingredients.size()))
 	ingredient.dragging = false
+	log_prep_slot(slot, "current ingredients", prep_ingredient_names)
 
 	var recipe = RecipeData.get_recipe("prep", prep_ingredient_names)
 	if not recipe.is_empty():
 		var input_instances = slot_ingredients.duplicate()
-		prep_slot_ingredient_instances[slot] = []
-		await process_recipe(recipe, slot.global_position, input_instances)
+		await process_prep_recipe(slot, recipe, input_instances)
 
 		return true
 
@@ -245,6 +262,71 @@ func get_prep_slot_item_position(slot, item_count):
 		_:
 			return slot.global_position
 
+func process_prep_recipe(slot, recipe, input_instances):
+	prep_slot_busy_states[slot] = true
+	log_prep_slot(slot, "recipe matched", recipe["recipe_id"])
+	log_prep_slot(slot, "ingredients consumed", get_ingredient_names(input_instances))
+
+	lock_ingredient_instances(input_instances)
+
+	await get_tree().create_timer(recipe["duration"]).timeout
+
+	consume_ingredient_instances(input_instances)
+	prep_slot_ingredient_instances[slot] = []
+
+	var output = spawn_ingredient_instance(
+		recipe["output_ingredient"],
+		recipe["output_food_id"],
+		slot.global_position
+	)
+	if output != null:
+		prep_slot_ingredient_instances[slot] = [output]
+		log_prep_slot(slot, "output spawned", [output.get_ingredient_name()])
+	else:
+		log_prep_slot(slot, "output spawn failed", [recipe["output_ingredient"]])
+
+	prep_slot_busy_states[slot] = false
+	log_prep_slot(slot, "slot contents after processing", get_prep_slot_contents(slot))
+
+func lock_ingredient_instances(ingredient_instances):
+	for ingredient in ingredient_instances:
+		if ingredient == null or not is_instance_valid(ingredient):
+			continue
+
+		ingredient.dragging = false
+		ingredient.monitoring = false
+		ingredient.input_pickable = false
+
+func get_prep_slot_for_ingredient(ingredient):
+	for slot in prep_slots:
+		cleanup_prep_slot(slot)
+		if prep_slot_ingredient_instances[slot].has(ingredient):
+			return slot
+
+	return null
+
+func remove_ingredient_from_prep_slots(ingredient):
+	for slot in prep_slots:
+		cleanup_prep_slot(slot)
+		if prep_slot_ingredient_instances[slot].has(ingredient):
+			prep_slot_ingredient_instances[slot].erase(ingredient)
+			log_prep_slot(slot, "ingredient removed from slot", [ingredient.get_ingredient_name()])
+
+func cleanup_prep_slot(slot):
+	var valid_ingredients = []
+	for ingredient in prep_slot_ingredient_instances[slot]:
+		if ingredient != null and is_instance_valid(ingredient):
+			valid_ingredients.append(ingredient)
+
+	prep_slot_ingredient_instances[slot] = valid_ingredients
+
+func get_prep_slot_contents(slot):
+	cleanup_prep_slot(slot)
+	return get_ingredient_names(prep_slot_ingredient_instances[slot])
+
+func log_prep_slot(slot, message, data):
+	print("[", slot.name, "] ", message, ": ", data)
+
 func try_process_single_input_recipe(station, ingredient):
 	var ingredient_name = ingredient.get_ingredient_name()
 	if not RecipeData.can_accept_ingredient(station, [], ingredient_name):
@@ -255,6 +337,7 @@ func try_process_single_input_recipe(station, ingredient):
 		return false
 
 	ingredient.dragging = false
+	remove_ingredient_from_prep_slots(ingredient)
 
 	await process_recipe(recipe, ingredient.global_position, [ingredient])
 
@@ -284,6 +367,7 @@ func consume_ingredient_instances(ingredient_instances):
 			continue
 
 		ingredient.dragging = false
+		remove_ingredient_from_prep_slots(ingredient)
 		ingredient.queue_free()
 
 func get_ingredient_names(ingredient_instances):
@@ -307,6 +391,7 @@ func spawn_ingredient_instance(ingredient_name, food_id, output_position):
 	instance.food_id = food_id
 	instance.visible = true
 	instance.monitoring = true
+	instance.input_pickable = true
 	instance.set_process(true)
 	instance.set_process_input(true)
 	instance.set_home_position(output_position)
@@ -385,6 +470,7 @@ func try_serve_customer_with_food(customer, food_item):
 
 	print("Served:", served_food_id)
 
+	remove_ingredient_from_prep_slots(food_item)
 	consume_food_item(food_item)
 	customer.serve()
 
