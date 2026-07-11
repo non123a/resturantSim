@@ -1,4 +1,4 @@
-[gd_scene load_steps=28 format=4 uid="uid://bqi216w3j6cmc"]
+[gd_scene load_steps=36 format=4 uid="uid://bqi216w3j6cmc"]
 
 [ext_resource type="Script" uid="uid://cg6d44c6l386l" path="res://scripts/GameManager.gd" id="1_hyk8p"]
 [ext_resource type="Texture2D" uid="uid://b2ayflvuyv8bl" path="res://professional_kitchen/professional_kitchen_withshadows.png" id="3_k2fmo"]
@@ -21,6 +21,14 @@
 [ext_resource type="Texture2D" uid="uid://tcpoun17rrjc" path="res://assets/chimengAsset/donut/donut.png" id="21_donut"]
 [ext_resource type="Texture2D" uid="uid://8mdudk3lx7ng" path="res://assets/chimengAsset/burrito/burrito.png" id="22_burrito"]
 [ext_resource type="Texture2D" uid="uid://b16den6q5s7da" path="res://assets/chimengAsset/jelly/jelly plate.png" id="23_jelly"]
+[ext_resource type="Texture2D" uid="uid://bqvv3kjs511l0" path="res://assets/chimengAsset/burrito/meets.png" id="24_burrito_meat"]
+[ext_resource type="Texture2D" uid="uid://cqn36ljekiuaa" path="res://assets/chimengAsset/burrito/rices.png" id="25_burrito_rice"]
+[ext_resource type="Texture2D" uid="uid://b677eiu2wxh3h" path="res://assets/chimengAsset/burrito/vegetable.png" id="26_burrito_vegetable"]
+[ext_resource type="Texture2D" uid="uid://dtku6crraju88" path="res://assets/chimengAsset/burrito/meat with tortilla.png" id="27_burrito_meat_tortilla"]
+[ext_resource type="Texture2D" uid="uid://3jon1umnst7f" path="res://assets/chimengAsset/burrito/rice with tortilla.png" id="28_burrito_rice_tortilla"]
+[ext_resource type="Texture2D" uid="uid://c6i003bpnxf6g" path="res://assets/chimengAsset/burrito/meat totilla vegetables.png" id="29_burrito_meat_tortilla_vegetable"]
+[ext_resource type="Texture2D" uid="uid://bqqvvy7e2top4" path="res://assets/chimengAsset/burrito/rice vegetable and tortilla.png" id="30_burrito_rice_tortilla_vegetable"]
+[ext_resource type="Texture2D" uid="uid://t8kkeiclfmal" path="res://assets/chimengAsset/burrito/beef rice tortilla.png" id="31_burrito_beef_rice_tortilla"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_l3cfh"]
 texture = ExtResource("3_k2fmo")
@@ -1039,12 +1047,14 @@ shape = SubResource("RectangleShape2D_b1x3f")
 [node name="RawSteak" parent="IngredientShelf" instance=ExtResource("4_6q06x")]
 position = Vector2(1153, 369)
 ingredient_name = "raw_steak"
+ingredient_id = "raw_steak"
 ingredient_texture = ExtResource("5_ow5a4")
 is_source = true
 
 [node name="Vegetables" parent="IngredientShelf" instance=ExtResource("4_6q06x")]
 position = Vector2(1001, 392)
 ingredient_name = "vegetables"
+ingredient_id = "vegetables"
 ingredient_texture = ExtResource("6_ow5a4")
 is_source = true
 
@@ -1052,12 +1062,14 @@ is_source = true
 visible = false
 position = Vector2(1082, 555)
 ingredient_name = "cooked_steak"
+ingredient_id = "cooked_steak"
 ingredient_texture = ExtResource("6_hujxm")
 
 [node name="BeefPlate" parent="IngredientShelf" instance=ExtResource("4_6q06x")]
 visible = false
 position = Vector2(1082, 555)
 ingredient_name = "beef_plate"
+ingredient_id = "beef_plate"
 ingredient_texture = ExtResource("8_yyfjg")
 food_id = "steak"
 
@@ -1135,18 +1147,68 @@ ingredient_texture = ExtResource("21_donut")
 food_id = "donut"
 is_source = true
 
+[node name="BurritoMeat" parent="IngredientShelf" instance=ExtResource("4_6q06x")]
+visible = false
+position = Vector2(840, 255)
+ingredient_name = "burrito_meat"
+ingredient_texture = ExtResource("24_burrito_meat")
+is_source = true
+
+[node name="BurritoRice" parent="IngredientShelf" instance=ExtResource("4_6q06x")]
+visible = false
+position = Vector2(840, 370)
+ingredient_name = "burrito_rice"
+ingredient_texture = ExtResource("25_burrito_rice")
+is_source = true
+
+[node name="BurritoVegetable" parent="IngredientShelf" instance=ExtResource("4_6q06x")]
+visible = false
+position = Vector2(840, 485)
+ingredient_name = "burrito_vegetable"
+ingredient_texture = ExtResource("26_burrito_vegetable")
+is_source = true
+
+[node name="BurritoMeatTortilla" parent="IngredientShelf" instance=ExtResource("4_6q06x")]
+visible = false
+position = Vector2(840, 255)
+ingredient_name = "burrito_meat_tortilla"
+ingredient_texture = ExtResource("27_burrito_meat_tortilla")
+
+[node name="BurritoRiceTortilla" parent="IngredientShelf" instance=ExtResource("4_6q06x")]
+visible = false
+position = Vector2(840, 370)
+ingredient_name = "burrito_rice_tortilla"
+ingredient_texture = ExtResource("28_burrito_rice_tortilla")
+
+[node name="BurritoMeatTortillaVegetable" parent="IngredientShelf" instance=ExtResource("4_6q06x")]
+visible = false
+position = Vector2(840, 255)
+ingredient_name = "burrito_meat_tortilla_vegetable"
+ingredient_texture = ExtResource("29_burrito_meat_tortilla_vegetable")
+
+[node name="BurritoRiceTortillaVegetable" parent="IngredientShelf" instance=ExtResource("4_6q06x")]
+visible = false
+position = Vector2(840, 370)
+ingredient_name = "burrito_rice_tortilla_vegetable"
+ingredient_texture = ExtResource("30_burrito_rice_tortilla_vegetable")
+
+[node name="BurritoBeefRiceTortilla" parent="IngredientShelf" instance=ExtResource("4_6q06x")]
+visible = false
+position = Vector2(840, 370)
+ingredient_name = "burrito_beef_rice_tortilla"
+ingredient_texture = ExtResource("31_burrito_beef_rice_tortilla")
+
 [node name="Burrito" parent="IngredientShelf" instance=ExtResource("4_6q06x")]
 visible = false
 position = Vector2(970, 455)
-ingredient_id = "burrito"
+ingredient_name = "burrito"
 ingredient_texture = ExtResource("22_burrito")
 food_id = "burrito"
-is_source = true
 
 [node name="Jelly" parent="IngredientShelf" instance=ExtResource("4_6q06x")]
 visible = false
 position = Vector2(970, 355)
-ingredient_id = "jelly"
+ingredient_name = "jelly"
 ingredient_texture = ExtResource("23_jelly")
 food_id = "jelly"
 is_source = true

@@ -2,8 +2,6 @@ extends Node2D
 
 var customer_scene = preload("res://scenes/customer/Customer.tscn")
 
-@onready var raw_steak = $IngredientShelf/RawSteak
-@onready var cooked_steak = $IngredientShelf/CookedSteak
 @onready var stove_area = $Stations/StoveArea
 @onready var prep_slots = [
 	$Stations/PrepSlot1,
@@ -11,22 +9,8 @@ var customer_scene = preload("res://scenes/customer/Customer.tscn")
 	$Stations/PrepSlot3,
 	$Stations/PrepSlot4
 ]
-@onready var vegetables = $IngredientShelf/Vegetables
-@onready var beef_plate = $IngredientShelf/BeefPlate
-@onready var burger_raw_beef = $IngredientShelf/BurgerRawBeef
-@onready var burger_beef = $IngredientShelf/BurgerBeef
-@onready var burger_bread = $IngredientShelf/BurgerBread
-@onready var burger_vegetable = $IngredientShelf/BurgerVegetable
-@onready var burger_sauce = $IngredientShelf/BurgerSauce
-@onready var burger_bread_vegetable = $IngredientShelf/BurgerBreadVegetable
-@onready var burger_bread_vegetable_sauce = $IngredientShelf/BurgerBreadVegetableSauce
-@onready var burger_bread_beef = $IngredientShelf/BurgerBreadBeef
-@onready var burger_bread_beef_sauce = $IngredientShelf/BurgerBreadBeefSauce
-@onready var burger_bread_vegetable_beef = $IngredientShelf/BurgerBreadVegetableBeef
-@onready var burger = $IngredientShelf/Burger
-@onready var donut = $IngredientShelf/Donut
-@onready var burrito = $IngredientShelf/Burrito
-@onready var jelly = $IngredientShelf/Jelly
+@onready var ingredient_shelf = $IngredientShelf
+var ingredient_templates = {}
 var prep_slot_ingredient_instances = {}
 var prep_slot_busy_states = {}
 
@@ -44,6 +28,7 @@ var combo_timer = 0.0
 var combo_window = 10.0  # seconds to keep combo alive
 
 func _ready():
+	initialize_ingredient_registry()
 	initialize_prep_slots()
 
 	for i in range(2):
@@ -57,6 +42,19 @@ func initialize_prep_slots():
 	for slot in prep_slots:
 		prep_slot_ingredient_instances[slot] = []
 		prep_slot_busy_states[slot] = false
+
+func initialize_ingredient_registry():
+	ingredient_templates.clear()
+
+	for ingredient in ingredient_shelf.get_children():
+		if not ingredient.has_method("get_ingredient_name"):
+			continue
+
+		var ingredient_id = ingredient.get_ingredient_name()
+		if ingredient_id == "":
+			continue
+
+		ingredient_templates[ingredient_id] = ingredient
 
 var spawn_positions = [
 	Vector2(200, 500),
@@ -101,19 +99,29 @@ func remove_customer(customer):
 
 func update_progression_food_visibility():
 	var steak_unlocked = GameData.is_food_unlocked("steak")
-	raw_steak.visible = steak_unlocked
-	vegetables.visible = steak_unlocked
+	set_ingredient_visible("raw_steak", steak_unlocked)
+	set_ingredient_visible("vegetables", steak_unlocked)
 
 	var burger_unlocked = GameData.is_food_unlocked("burger")
-	burger_raw_beef.visible = burger_unlocked
-	burger_bread.visible = burger_unlocked
-	burger_vegetable.visible = burger_unlocked
-	burger_sauce.visible = burger_unlocked
+	set_ingredient_visible("burger_raw_beef", burger_unlocked)
+	set_ingredient_visible("burger_bread", burger_unlocked)
+	set_ingredient_visible("burger_vegetable", burger_unlocked)
+	set_ingredient_visible("burger_sauce", burger_unlocked)
 
-	donut.visible = GameData.is_food_unlocked("donut")
-	burrito.visible = GameData.is_food_unlocked("burrito")
-	jelly.visible = GameData.is_food_unlocked("jelly")
+	var burrito_unlocked = GameData.is_food_unlocked("burrito")
+	set_ingredient_visible("burrito_meat", burrito_unlocked)
+	set_ingredient_visible("burrito_rice", burrito_unlocked)
+	set_ingredient_visible("burrito_vegetable", burrito_unlocked)
 
+	set_ingredient_visible("donut", GameData.is_food_unlocked("donut"))
+	set_ingredient_visible("jelly", GameData.is_food_unlocked("jelly"))
+
+func set_ingredient_visible(ingredient_id, visible):
+	var ingredient = get_ingredient_node(ingredient_id)
+	if ingredient == null:
+		return
+
+	ingredient.visible = visible
 
 func reset_combo():
 	combo = 0
@@ -223,6 +231,12 @@ func try_drop_on_prep_slot(slot, ingredient):
 	if current_owner == slot:
 		ingredient.set_home_position(get_prep_slot_item_position(slot, prep_slot_ingredient_instances[slot].find(ingredient) + 1))
 		ingredient.dragging = false
+		var current_ingredients = get_prep_slot_contents(slot)
+		var owned_recipe = RecipeData.get_recipe("prep", current_ingredients)
+		if not owned_recipe.is_empty():
+			await process_prep_recipe(slot, owned_recipe, prep_slot_ingredient_instances[slot].duplicate())
+			return true
+
 		log_prep_slot(slot, "drop ignored, ingredient already owned", get_prep_slot_contents(slot))
 		return true
 
@@ -399,45 +413,7 @@ func spawn_ingredient_instance(ingredient_name, food_id, output_position):
 	return instance
 
 func get_ingredient_node(ingredient_name):
-	match ingredient_name:
-		"raw_steak":
-			return raw_steak
-		"cooked_steak":
-			return cooked_steak
-		"vegetables":
-			return vegetables
-		"beef_plate":
-			return beef_plate
-		"burger_raw_beef":
-			return burger_raw_beef
-		"burger_beef":
-			return burger_beef
-		"burger_bread":
-			return burger_bread
-		"burger_vegetable":
-			return burger_vegetable
-		"burger_sauce":
-			return burger_sauce
-		"burger_bread_vegetable":
-			return burger_bread_vegetable
-		"burger_bread_vegetable_sauce":
-			return burger_bread_vegetable_sauce
-		"burger_bread_beef":
-			return burger_bread_beef
-		"burger_bread_beef_sauce":
-			return burger_bread_beef_sauce
-		"burger_bread_vegetable_beef":
-			return burger_bread_vegetable_beef
-		"burger":
-			return burger
-		"donut":
-			return donut
-		"burrito":
-			return burrito
-		"jelly":
-			return jelly
-		_:
-			return null
+	return ingredient_templates.get(ingredient_name)
 
 func try_drop_on_customer(ingredient):
 	if not game_active:
