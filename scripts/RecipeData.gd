@@ -122,6 +122,22 @@ var recipes = [
 		"output_food_id": ""
 	},
 	{
+		"recipe_id": "burrito_meat_tortilla_plus_rice",
+		"station": "prep",
+		"inputs": ["burrito_meat_tortilla", "burrito_rice"],
+		"duration": 1.0,
+		"output_ingredient": "burrito_meat_rice_tortilla",
+		"output_food_id": ""
+	},
+	{
+		"recipe_id": "burrito_rice_tortilla_plus_meat",
+		"station": "prep",
+		"inputs": ["burrito_rice_tortilla", "burrito_meat"],
+		"duration": 1.0,
+		"output_ingredient": "burrito_meat_rice_tortilla",
+		"output_food_id": ""
+	},
+	{
 		"recipe_id": "burrito_meat_path_add_rice",
 		"station": "prep",
 		"inputs": ["burrito_meat_tortilla_vegetable", "burrito_rice"],
@@ -138,12 +154,29 @@ var recipes = [
 		"output_food_id": ""
 	},
 	{
+		"recipe_id": "burrito_meat_rice_plus_vegetable",
+		"station": "prep",
+		"inputs": ["burrito_meat_rice_tortilla", "burrito_vegetable"],
+		"duration": 1.0,
+		"output_ingredient": "burrito_beef_rice_tortilla",
+		"output_food_id": ""
+	},
+	{
 		"recipe_id": "wrap_burrito",
 		"station": "prep",
 		"inputs": ["burrito_beef_rice_tortilla"],
-		"duration": 1.0,
+		"duration": 0.4,
 		"output_ingredient": "burrito",
-		"output_food_id": "burrito"
+		"output_food_id": "burrito",
+		"auto_process": true
+	},
+	{
+		"recipe_id": "plate_jelly",
+		"station": "prep",
+		"inputs": ["jelly"],
+		"duration": 0.4,
+		"output_ingredient": "jelly_plate",
+		"output_food_id": "jelly"
 	}
 ]
 

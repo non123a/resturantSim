@@ -13,9 +13,9 @@ var upgrades = {
 var food_progression_order = [
 	"donut",
 	"steak",
-	"burger",
+	"jelly",
 	"burrito",
-	"jelly"
+	"burger"
 ]
 
 var food_progression = {
@@ -45,7 +45,7 @@ var food_progression = {
 	},
 	"jelly": {
 		"display_name": "Jelly",
-		"unlock_cost": 650,
+		"unlock_cost": 150,
 		"implemented": true,
 		"start_unlocked": false
 	}

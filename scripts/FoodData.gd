@@ -21,10 +21,10 @@ var foods = {
 	},
 	
 	"jelly": {
-		"type": "display",
-		"steps": [],
+		"type": "prep",
+		"steps": ["prep"],
 		"cook_time": 1.0,
-		"price": 7
+		"price": 10
 	},
 	
 	"fruitcake": {

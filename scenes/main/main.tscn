@@ -1,4 +1,4 @@
-[gd_scene load_steps=36 format=4 uid="uid://bqi216w3j6cmc"]
+[gd_scene load_steps=37 format=4 uid="uid://bqi216w3j6cmc"]
 
 [ext_resource type="Script" uid="uid://cg6d44c6l386l" path="res://scripts/GameManager.gd" id="1_hyk8p"]
 [ext_resource type="Texture2D" uid="uid://b2ayflvuyv8bl" path="res://professional_kitchen/professional_kitchen_withshadows.png" id="3_k2fmo"]
@@ -22,6 +22,7 @@
 [ext_resource type="Texture2D" uid="uid://8mdudk3lx7ng" path="res://assets/chimengAsset/burrito/burrito.png" id="22_burrito"]
 [ext_resource type="Texture2D" uid="uid://b16den6q5s7da" path="res://assets/chimengAsset/jelly/jelly plate.png" id="23_jelly"]
 [ext_resource type="Texture2D" uid="uid://bqvv3kjs511l0" path="res://assets/chimengAsset/burrito/meets.png" id="24_burrito_meat"]
+[ext_resource type="Texture2D" uid="uid://brd220afw0baq" path="res://assets/chimengAsset/jelly/jelly no plate.png" id="24_jelly_no_plate"]
 [ext_resource type="Texture2D" uid="uid://cqn36ljekiuaa" path="res://assets/chimengAsset/burrito/rices.png" id="25_burrito_rice"]
 [ext_resource type="Texture2D" uid="uid://b677eiu2wxh3h" path="res://assets/chimengAsset/burrito/vegetable.png" id="26_burrito_vegetable"]
 [ext_resource type="Texture2D" uid="uid://dtku6crraju88" path="res://assets/chimengAsset/burrito/meat with tortilla.png" id="27_burrito_meat_tortilla"]
@@ -1171,47 +1172,58 @@ is_source = true
 [node name="BurritoMeatTortilla" parent="IngredientShelf" instance=ExtResource("4_6q06x")]
 visible = false
 position = Vector2(840, 255)
-ingredient_name = "burrito_meat_tortilla"
+ingredient_id = "burrito_meat_tortilla"
 ingredient_texture = ExtResource("27_burrito_meat_tortilla")
 
 [node name="BurritoRiceTortilla" parent="IngredientShelf" instance=ExtResource("4_6q06x")]
 visible = false
 position = Vector2(840, 370)
-ingredient_name = "burrito_rice_tortilla"
+ingredient_id = "burrito_rice_tortilla"
 ingredient_texture = ExtResource("28_burrito_rice_tortilla")
 
 [node name="BurritoMeatTortillaVegetable" parent="IngredientShelf" instance=ExtResource("4_6q06x")]
 visible = false
 position = Vector2(840, 255)
-ingredient_name = "burrito_meat_tortilla_vegetable"
+ingredient_id = "burrito_meat_tortilla_vegetable"
 ingredient_texture = ExtResource("29_burrito_meat_tortilla_vegetable")
 
 [node name="BurritoRiceTortillaVegetable" parent="IngredientShelf" instance=ExtResource("4_6q06x")]
 visible = false
 position = Vector2(840, 370)
-ingredient_name = "burrito_rice_tortilla_vegetable"
+ingredient_id = "burrito_rice_tortilla_vegetable"
 ingredient_texture = ExtResource("30_burrito_rice_tortilla_vegetable")
+
+[node name="BurritoMeatRiceTortilla" parent="IngredientShelf" instance=ExtResource("4_6q06x")]
+visible = false
+position = Vector2(840, 370)
+ingredient_id = "burrito_meat_rice_tortilla"
+ingredient_texture = ExtResource("31_burrito_beef_rice_tortilla")
 
 [node name="BurritoBeefRiceTortilla" parent="IngredientShelf" instance=ExtResource("4_6q06x")]
 visible = false
 position = Vector2(840, 370)
-ingredient_name = "burrito_beef_rice_tortilla"
+ingredient_id = "burrito_beef_rice_tortilla"
 ingredient_texture = ExtResource("31_burrito_beef_rice_tortilla")
 
 [node name="Burrito" parent="IngredientShelf" instance=ExtResource("4_6q06x")]
 visible = false
 position = Vector2(970, 455)
-ingredient_name = "burrito"
+ingredient_id = "burrito"
 ingredient_texture = ExtResource("22_burrito")
 food_id = "burrito"
 
 [node name="Jelly" parent="IngredientShelf" instance=ExtResource("4_6q06x")]
+position = Vector2(1162, 498)
+ingredient_name = "jelly"
+ingredient_texture = ExtResource("24_jelly_no_plate")
+is_source = true
+
+[node name="JellyPlate" parent="IngredientShelf" instance=ExtResource("4_6q06x")]
 visible = false
 position = Vector2(970, 355)
-ingredient_name = "jelly"
+ingredient_name = "jelly_plate"
 ingredient_texture = ExtResource("23_jelly")
 food_id = "jelly"
-is_source = true
 
 [connection signal="pressed" from="CanvasLayer/EndPanel/RestartButton" to="." method="_on_restart_button_pressed"]
 [connection signal="pressed" from="CanvasLayer/EndPanel/BackButton" to="." method="_on_button_pressed"]

@@ -13,6 +13,7 @@ var customer_scene = preload("res://scenes/customer/Customer.tscn")
 var ingredient_templates = {}
 var prep_slot_ingredient_instances = {}
 var prep_slot_busy_states = {}
+var prep_ingredient_slot_owners = {}
 
 var customers = []
 var customer_slots = {}
@@ -225,6 +226,7 @@ func try_drop_on_prep_slot(slot, ingredient):
 		log_prep_slot(slot, "drop rejected, slot busy", [ingredient.get_ingredient_name()])
 		return false
 
+	cleanup_all_prep_slots()
 	cleanup_prep_slot(slot)
 
 	var current_owner = get_prep_slot_for_ingredient(ingredient)
@@ -246,10 +248,8 @@ func try_drop_on_prep_slot(slot, ingredient):
 		log_prep_slot(slot, "drop rejected, no recipe accepts", prep_ingredient_names + [ingredient_name])
 		return false
 
-	remove_ingredient_from_prep_slots(ingredient)
-
+	assign_ingredient_to_prep_slot(slot, ingredient)
 	var slot_ingredients = prep_slot_ingredient_instances[slot]
-	slot_ingredients.append(ingredient)
 	prep_ingredient_names.append(ingredient_name)
 
 	ingredient.set_home_position(get_prep_slot_item_position(slot, slot_ingredients.size()))
@@ -294,13 +294,28 @@ func process_prep_recipe(slot, recipe, input_instances):
 		slot.global_position
 	)
 	if output != null:
-		prep_slot_ingredient_instances[slot] = [output]
+		assign_ingredient_to_prep_slot(slot, output)
 		log_prep_slot(slot, "output spawned", [output.get_ingredient_name()])
+
+		var auto_recipe = get_auto_prep_recipe(slot)
+		if not auto_recipe.is_empty():
+			await process_prep_recipe(slot, auto_recipe, prep_slot_ingredient_instances[slot].duplicate())
+			return
 	else:
 		log_prep_slot(slot, "output spawn failed", [recipe["output_ingredient"]])
 
 	prep_slot_busy_states[slot] = false
 	log_prep_slot(slot, "slot contents after processing", get_prep_slot_contents(slot))
+
+func get_auto_prep_recipe(slot):
+	var recipe = RecipeData.get_recipe("prep", get_prep_slot_contents(slot))
+	if recipe.is_empty():
+		return {}
+
+	if not recipe.get("auto_process", false):
+		return {}
+
+	return recipe
 
 func lock_ingredient_instances(ingredient_instances):
 	for ingredient in ingredient_instances:
@@ -312,24 +327,62 @@ func lock_ingredient_instances(ingredient_instances):
 		ingredient.input_pickable = false
 
 func get_prep_slot_for_ingredient(ingredient):
+	cleanup_all_prep_slots()
+
+	if prep_ingredient_slot_owners.has(ingredient):
+		var owner = prep_ingredient_slot_owners[ingredient]
+		if prep_slots.has(owner) and prep_slot_ingredient_instances[owner].has(ingredient):
+			return owner
+
+		prep_ingredient_slot_owners.erase(ingredient)
+
 	for slot in prep_slots:
-		cleanup_prep_slot(slot)
 		if prep_slot_ingredient_instances[slot].has(ingredient):
+			prep_ingredient_slot_owners[ingredient] = slot
 			return slot
 
 	return null
 
+func assign_ingredient_to_prep_slot(slot, ingredient):
+	remove_ingredient_from_prep_slots(ingredient)
+
+	if not prep_slot_ingredient_instances[slot].has(ingredient):
+		prep_slot_ingredient_instances[slot].append(ingredient)
+
+	prep_ingredient_slot_owners[ingredient] = slot
+	log_prep_slot(slot, "ingredient assigned", [ingredient.get_ingredient_name()])
+
 func remove_ingredient_from_prep_slots(ingredient):
+	var removed_from_slot = null
+
 	for slot in prep_slots:
 		cleanup_prep_slot(slot)
 		if prep_slot_ingredient_instances[slot].has(ingredient):
 			prep_slot_ingredient_instances[slot].erase(ingredient)
-			log_prep_slot(slot, "ingredient removed from slot", [ingredient.get_ingredient_name()])
+			if removed_from_slot == null:
+				removed_from_slot = slot
+
+	prep_ingredient_slot_owners.erase(ingredient)
+
+	if removed_from_slot != null:
+		log_prep_slot(removed_from_slot, "ingredient removed from slot", [ingredient.get_ingredient_name()])
+
+func cleanup_all_prep_slots():
+	for slot in prep_slots:
+		cleanup_prep_slot(slot)
 
 func cleanup_prep_slot(slot):
 	var valid_ingredients = []
 	for ingredient in prep_slot_ingredient_instances[slot]:
-		if ingredient != null and is_instance_valid(ingredient):
+		if ingredient == null or not is_instance_valid(ingredient):
+			prep_ingredient_slot_owners.erase(ingredient)
+			continue
+
+		var owner = prep_ingredient_slot_owners.get(ingredient)
+		if owner == null:
+			prep_ingredient_slot_owners[ingredient] = slot
+			valid_ingredients.append(ingredient)
+		elif owner == slot:
 			valid_ingredients.append(ingredient)
 
 	prep_slot_ingredient_instances[slot] = valid_ingredients
