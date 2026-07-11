@@ -16,6 +16,7 @@ var max_patience = 10.0
 
 func _ready():
 	$ProgressBar.max_value = max_patience
+	$ProgressBar.value = patience
 
 	order = GameData.get_random_order_food()
 	print("Customer wants:", order)

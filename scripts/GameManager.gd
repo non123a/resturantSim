@@ -32,8 +32,7 @@ func _ready():
 	initialize_ingredient_registry()
 	initialize_prep_slots()
 
-	for i in range(2):
-		spawn_customer()
+	spawn_customers_to_target()
 	
 	# ✅ show actual coins
 	$CanvasLayer/CoinLabel.text = "Coins: " + str(GameData.coins)
@@ -67,6 +66,9 @@ func spawn_customer():
 	if not game_active:
 		return
 	var c = customer_scene.instantiate()
+	var customer_patience = get_customer_patience()
+	c.max_patience = customer_patience
+	c.patience = customer_patience
 	add_child(c)
 	
 	var index = get_open_spawn_index()
@@ -79,6 +81,26 @@ func spawn_customer():
 	customers.append(c)
 	customer_slots[c] = index
 
+func spawn_customers_to_target():
+	var target_count = get_customer_target_count()
+	while customers.size() < target_count:
+		spawn_customer()
+
+func get_customer_target_count():
+	if GameData.is_food_unlocked("burrito"):
+		return 3
+
+	return 2
+
+func get_customer_patience():
+	if GameData.is_food_unlocked("burger"):
+		return 8.0
+
+	if GameData.is_food_unlocked("jelly"):
+		return 9.0
+
+	return 10.0
+
 func get_open_spawn_index():
 	for i in range(spawn_positions.size()):
 		if not customer_slots.values().has(i):
@@ -88,11 +110,11 @@ func get_open_spawn_index():
 
 func _on_customer_served(customer):
 	remove_customer(customer)
-	spawn_customer()
+	spawn_customers_to_target()
 
 func _on_customer_left_angry(customer):
 	remove_customer(customer)
-	spawn_customer()
+	spawn_customers_to_target()
 
 func remove_customer(customer):
 	customers.erase(customer)
@@ -283,7 +305,7 @@ func process_prep_recipe(slot, recipe, input_instances):
 
 	lock_ingredient_instances(input_instances)
 
-	await get_tree().create_timer(recipe["duration"]).timeout
+	await get_tree().create_timer(get_recipe_duration(recipe)).timeout
 
 	consume_ingredient_instances(input_instances)
 	prep_slot_ingredient_instances[slot] = []
@@ -413,7 +435,7 @@ func try_process_single_input_recipe(station, ingredient):
 func process_recipe(recipe, output_position, input_instances):
 	print("Processing recipe:", recipe["recipe_id"])
 
-	await get_tree().create_timer(recipe["duration"]).timeout
+	await get_tree().create_timer(get_recipe_duration(recipe)).timeout
 
 	consume_ingredient_instances(input_instances)
 
@@ -468,6 +490,11 @@ func spawn_ingredient_instance(ingredient_name, food_id, output_position):
 func get_ingredient_node(ingredient_name):
 	return ingredient_templates.get(ingredient_name)
 
+func get_recipe_duration(recipe):
+	var cook_speed_level = min(GameData.upgrades["cook_speed"], 5)
+	var speed_bonus = min(cook_speed_level * 0.07, 0.35)
+	return recipe["duration"] * (1.0 - speed_bonus)
+
 func try_drop_on_customer(ingredient):
 	if not game_active:
 		return false
@@ -510,13 +537,14 @@ func calculate_reward(food_id):
 		return 0
 
 	var base_reward = FoodData.foods[food_id]["price"]
-	var bonus = 1 + (GameData.upgrades["income"] * 0.1)
+	var income_level = min(GameData.upgrades["income"], 5)
+	var bonus = 1 + (income_level * 0.08)
 	var reward = int(base_reward * bonus)
 
 	print(
 		"Food:", food_id,
 		" Base:", base_reward,
-		" IncomeLv:", GameData.upgrades["income"],
+		" IncomeLv:", income_level,
 		" Final:", reward
 	)
 

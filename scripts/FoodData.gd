@@ -10,7 +10,7 @@ var foods = {
 		"type": "display",
 		"steps": [],
 		"cook_time": 1.0,
-		"price": 8
+		"price": 6
 	},
 	
 	"apple_pie": {
@@ -69,7 +69,7 @@ var foods = {
 		"type": "stove",
 		"steps": ["stove"],
 		"cook_time": 4.0,
-		"price": 15
+		"price": 18
 	},
 	
 	"bacon": {
@@ -88,13 +88,13 @@ var foods = {
 		"type": "multi",
 		"steps": ["prep", "stove"],
 		"cook_time": 5.0,
-		"price": 25
+		"price": 30
 	},
 	
 	"burrito": {
 		"type": "multi",
 		"steps": ["prep"],
 		"cook_time": 5.5,
-		"price": 20
+		"price": 22
 	}
 }

@@ -29,7 +29,7 @@ var recipes = [
 		"recipe_id": "burger_bread_plus_vegetable",
 		"station": "prep",
 		"inputs": ["burger_bread", "burger_vegetable"],
-		"duration": 1.0,
+		"duration": 0.6,
 		"output_ingredient": "burger_bread_vegetable",
 		"output_food_id": ""
 	},
@@ -37,7 +37,7 @@ var recipes = [
 		"recipe_id": "burger_bread_plus_beef",
 		"station": "prep",
 		"inputs": ["burger_bread", "burger_beef"],
-		"duration": 1.0,
+		"duration": 0.6,
 		"output_ingredient": "burger_bread_beef",
 		"output_food_id": ""
 	},
@@ -45,7 +45,7 @@ var recipes = [
 		"recipe_id": "burger_bread_vegetable_plus_sauce",
 		"station": "prep",
 		"inputs": ["burger_bread_vegetable", "burger_sauce"],
-		"duration": 1.0,
+		"duration": 0.6,
 		"output_ingredient": "burger_bread_vegetable_sauce",
 		"output_food_id": ""
 	},
@@ -53,7 +53,7 @@ var recipes = [
 		"recipe_id": "burger_bread_vegetable_plus_beef",
 		"station": "prep",
 		"inputs": ["burger_bread_vegetable", "burger_beef"],
-		"duration": 1.0,
+		"duration": 0.6,
 		"output_ingredient": "burger_bread_vegetable_beef",
 		"output_food_id": ""
 	},
@@ -61,7 +61,7 @@ var recipes = [
 		"recipe_id": "burger_bread_beef_plus_sauce",
 		"station": "prep",
 		"inputs": ["burger_bread_beef", "burger_sauce"],
-		"duration": 1.0,
+		"duration": 0.6,
 		"output_ingredient": "burger_bread_beef_sauce",
 		"output_food_id": ""
 	},
@@ -69,7 +69,7 @@ var recipes = [
 		"recipe_id": "finish_burger_from_vegetable_sauce",
 		"station": "prep",
 		"inputs": ["burger_bread_vegetable_sauce", "burger_beef"],
-		"duration": 1.0,
+		"duration": 0.6,
 		"output_ingredient": "burger",
 		"output_food_id": "burger"
 	},
@@ -77,7 +77,7 @@ var recipes = [
 		"recipe_id": "finish_burger_from_vegetable_beef",
 		"station": "prep",
 		"inputs": ["burger_bread_vegetable_beef", "burger_sauce"],
-		"duration": 1.0,
+		"duration": 0.6,
 		"output_ingredient": "burger",
 		"output_food_id": "burger"
 	},
@@ -85,7 +85,7 @@ var recipes = [
 		"recipe_id": "finish_burger_from_beef_sauce",
 		"station": "prep",
 		"inputs": ["burger_bread_beef_sauce", "burger_vegetable"],
-		"duration": 1.0,
+		"duration": 0.6,
 		"output_ingredient": "burger",
 		"output_food_id": "burger"
 	},
@@ -93,7 +93,7 @@ var recipes = [
 		"recipe_id": "burrito_meat_to_tortilla",
 		"station": "prep",
 		"inputs": ["burrito_meat"],
-		"duration": 1.0,
+		"duration": 0.4,
 		"output_ingredient": "burrito_meat_tortilla",
 		"output_food_id": ""
 	},
@@ -101,7 +101,7 @@ var recipes = [
 		"recipe_id": "burrito_rice_to_tortilla",
 		"station": "prep",
 		"inputs": ["burrito_rice"],
-		"duration": 1.0,
+		"duration": 0.4,
 		"output_ingredient": "burrito_rice_tortilla",
 		"output_food_id": ""
 	},
@@ -109,7 +109,7 @@ var recipes = [
 		"recipe_id": "burrito_meat_tortilla_plus_vegetable",
 		"station": "prep",
 		"inputs": ["burrito_meat_tortilla", "burrito_vegetable"],
-		"duration": 1.0,
+		"duration": 0.6,
 		"output_ingredient": "burrito_meat_tortilla_vegetable",
 		"output_food_id": ""
 	},
@@ -117,7 +117,7 @@ var recipes = [
 		"recipe_id": "burrito_rice_tortilla_plus_vegetable",
 		"station": "prep",
 		"inputs": ["burrito_rice_tortilla", "burrito_vegetable"],
-		"duration": 1.0,
+		"duration": 0.6,
 		"output_ingredient": "burrito_rice_tortilla_vegetable",
 		"output_food_id": ""
 	},
@@ -125,7 +125,7 @@ var recipes = [
 		"recipe_id": "burrito_meat_tortilla_plus_rice",
 		"station": "prep",
 		"inputs": ["burrito_meat_tortilla", "burrito_rice"],
-		"duration": 1.0,
+		"duration": 0.6,
 		"output_ingredient": "burrito_meat_rice_tortilla",
 		"output_food_id": ""
 	},
@@ -133,7 +133,7 @@ var recipes = [
 		"recipe_id": "burrito_rice_tortilla_plus_meat",
 		"station": "prep",
 		"inputs": ["burrito_rice_tortilla", "burrito_meat"],
-		"duration": 1.0,
+		"duration": 0.6,
 		"output_ingredient": "burrito_meat_rice_tortilla",
 		"output_food_id": ""
 	},
@@ -141,7 +141,7 @@ var recipes = [
 		"recipe_id": "burrito_meat_path_add_rice",
 		"station": "prep",
 		"inputs": ["burrito_meat_tortilla_vegetable", "burrito_rice"],
-		"duration": 1.0,
+		"duration": 0.6,
 		"output_ingredient": "burrito_beef_rice_tortilla",
 		"output_food_id": ""
 	},
@@ -149,7 +149,7 @@ var recipes = [
 		"recipe_id": "burrito_rice_path_add_meat",
 		"station": "prep",
 		"inputs": ["burrito_rice_tortilla_vegetable", "burrito_meat"],
-		"duration": 1.0,
+		"duration": 0.6,
 		"output_ingredient": "burrito_beef_rice_tortilla",
 		"output_food_id": ""
 	},
@@ -157,7 +157,7 @@ var recipes = [
 		"recipe_id": "burrito_meat_rice_plus_vegetable",
 		"station": "prep",
 		"inputs": ["burrito_meat_rice_tortilla", "burrito_vegetable"],
-		"duration": 1.0,
+		"duration": 0.6,
 		"output_ingredient": "burrito_beef_rice_tortilla",
 		"output_food_id": ""
 	},

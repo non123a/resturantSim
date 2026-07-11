@@ -2,8 +2,9 @@ extends Node
 func _ready():
 	load_game()
 	normalize_unlocked_foods()
+	normalize_upgrades()
 	
-var coins = 500
+var coins = 0
 var best_coins = 0
 var upgrades = {
 	"cook_speed": 0,
@@ -33,19 +34,19 @@ var food_progression = {
 	},
 	"burger": {
 		"display_name": "Burger",
-		"unlock_cost": 200,
+		"unlock_cost": 500,
 		"implemented": true,
 		"start_unlocked": false
 	},
 	"burrito": {
 		"display_name": "Burrito",
-		"unlock_cost": 400,
+		"unlock_cost": 300,
 		"implemented": true,
 		"start_unlocked": false
 	},
 	"jelly": {
 		"display_name": "Jelly",
-		"unlock_cost": 150,
+		"unlock_cost": 120,
 		"implemented": true,
 		"start_unlocked": false
 	}
@@ -113,6 +114,10 @@ func normalize_unlocked_foods():
 
 	unlocked_foods = normalized_foods
 
+func normalize_upgrades():
+	upgrades["cook_speed"] = clamp(upgrades.get("cook_speed", 0), 0, 5)
+	upgrades["income"] = clamp(upgrades.get("income", 0), 0, 5)
+
 
 func save_game():
 	var file = FileAccess.open("user://savegame.save", FileAccess.WRITE)
@@ -140,3 +145,4 @@ func load_game():
 	upgrades = data["upgrades"]
 	unlocked_foods = data["unlocked_foods"]
 	normalize_unlocked_foods()
+	normalize_upgrades()

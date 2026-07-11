@@ -1,17 +1,32 @@
 extends Control
 
+const MAX_UPGRADE_LEVEL = 5
+const UPGRADE_COSTS = [75, 150, 275, 450, 650]
+
 func _ready():
 	update_ui()
 
 func update_ui():
 	$CoinLabel.text = "Coins: " + str(GameData.coins)
 	
-	$CookLevelLabel.text = "Cook Lv: " + str(GameData.upgrades["cook_speed"])
-	$IncomeLevelLabel.text = "Income Lv: " + str(GameData.upgrades["income"])
+	$CookLevelLabel.text = "Cook Lv: " + str(GameData.upgrades["cook_speed"]) + "/" + str(MAX_UPGRADE_LEVEL)
+	$IncomeLevelLabel.text = "Income Lv: " + str(GameData.upgrades["income"]) + "/" + str(MAX_UPGRADE_LEVEL)
+	$CookUpgradeButton.disabled = GameData.upgrades["cook_speed"] >= MAX_UPGRADE_LEVEL
+	$IncomeUpgradeButton.disabled = GameData.upgrades["income"] >= MAX_UPGRADE_LEVEL
+
+func get_upgrade_cost(upgrade_id):
+	var level = GameData.upgrades[upgrade_id]
+	if level >= MAX_UPGRADE_LEVEL:
+		return 0
+
+	return UPGRADE_COSTS[level]
 
 
 func _on_cook_upgrade_button_pressed():
-	var cost = 50 + (GameData.upgrades["cook_speed"] * 25)
+	if GameData.upgrades["cook_speed"] >= MAX_UPGRADE_LEVEL:
+		return
+
+	var cost = get_upgrade_cost("cook_speed")
 	
 	if GameData.coins >= cost:
 		GameData.coins -= cost
@@ -22,8 +37,10 @@ func _on_cook_upgrade_button_pressed():
 
 
 func _on_income_upgrade_button_pressed():
-	#var cost = 50
-	var cost = 50 + (GameData.upgrades["income"] * 25)
+	if GameData.upgrades["income"] >= MAX_UPGRADE_LEVEL:
+		return
+
+	var cost = get_upgrade_cost("income")
 	
 	if GameData.coins >= cost:
 		GameData.coins -= cost
