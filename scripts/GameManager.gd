@@ -5,7 +5,12 @@ var customer_scene = preload("res://scenes/customer/Customer.tscn")
 @onready var raw_steak = $IngredientShelf/RawSteak
 @onready var cooked_steak = $IngredientShelf/CookedSteak
 @onready var stove_area = $Stations/StoveArea
-@onready var prep_area = $Stations/PrepArea
+@onready var prep_slots = [
+	$Stations/PrepSlot1,
+	$Stations/PrepSlot2,
+	$Stations/PrepSlot3,
+	$Stations/PrepSlot4
+]
 @onready var vegetables = $IngredientShelf/Vegetables
 @onready var beef_plate = $IngredientShelf/BeefPlate
 @onready var burger_raw_beef = $IngredientShelf/BurgerRawBeef
@@ -22,7 +27,7 @@ var customer_scene = preload("res://scenes/customer/Customer.tscn")
 @onready var donut = $IngredientShelf/Donut
 @onready var burrito = $IngredientShelf/Burrito
 @onready var jelly = $IngredientShelf/Jelly
-var prep_ingredient_instances = []
+var prep_slot_ingredient_instances = {}
 
 var customers = []
 var customer_slots = {}
@@ -38,12 +43,18 @@ var combo_timer = 0.0
 var combo_window = 10.0  # seconds to keep combo alive
 
 func _ready():
+	initialize_prep_slots()
+
 	for i in range(2):
 		spawn_customer()
 	
 	# ✅ show actual coins
 	$CanvasLayer/CoinLabel.text = "Coins: " + str(GameData.coins)
 	update_progression_food_visibility()
+
+func initialize_prep_slots():
+	for slot in prep_slots:
+		prep_slot_ingredient_instances[slot] = []
 
 var spawn_positions = [
 	Vector2(200, 500),
@@ -185,32 +196,54 @@ func try_drop_on_station(ingredient):
 	if stove_area.overlaps_area(ingredient):
 		return await try_process_single_input_recipe("stove", ingredient)
 
-	if prep_area.overlaps_area(ingredient):
-		var ingredient_name = ingredient.get_ingredient_name()
-		var prep_ingredient_names = get_ingredient_names(prep_ingredient_instances)
-		if not RecipeData.can_accept_ingredient("prep", prep_ingredient_names, ingredient_name):
-			return false
-
-		prep_ingredient_instances.append(ingredient)
-		prep_ingredient_names.append(ingredient_name)
-
-		print(prep_ingredient_names)
-		var offset = Vector2(prep_ingredient_instances.size() * 35, 0)
-		ingredient.set_home_position(prep_area.global_position + offset)
-		ingredient.dragging = false
-
-		var recipe = RecipeData.get_recipe("prep", prep_ingredient_names)
-		if not recipe.is_empty():
-			var input_instances = prep_ingredient_instances.duplicate()
-			prep_ingredient_instances.clear()
-			await process_recipe(recipe, prep_area.global_position, input_instances)
-
-			return true
-
-		return true
+	var prep_slot = get_overlapping_prep_slot(ingredient)
+	if prep_slot != null:
+		return await try_drop_on_prep_slot(prep_slot, ingredient)
 
 
 	return false
+
+func get_overlapping_prep_slot(ingredient):
+	for slot in prep_slots:
+		if slot.overlaps_area(ingredient):
+			return slot
+
+	return null
+
+func try_drop_on_prep_slot(slot, ingredient):
+	var ingredient_name = ingredient.get_ingredient_name()
+	var slot_ingredients = prep_slot_ingredient_instances[slot]
+	var prep_ingredient_names = get_ingredient_names(slot_ingredients)
+	if not RecipeData.can_accept_ingredient("prep", prep_ingredient_names, ingredient_name):
+		return false
+
+	slot_ingredients.append(ingredient)
+	prep_ingredient_names.append(ingredient_name)
+
+	print(slot.name, prep_ingredient_names)
+	ingredient.set_home_position(get_prep_slot_item_position(slot, slot_ingredients.size()))
+	ingredient.dragging = false
+
+	var recipe = RecipeData.get_recipe("prep", prep_ingredient_names)
+	if not recipe.is_empty():
+		var input_instances = slot_ingredients.duplicate()
+		prep_slot_ingredient_instances[slot] = []
+		await process_recipe(recipe, slot.global_position, input_instances)
+
+		return true
+
+	return true
+
+func get_prep_slot_item_position(slot, item_count):
+	match item_count:
+		1:
+			return slot.global_position + Vector2(-24, 0)
+		2:
+			return slot.global_position + Vector2(24, 0)
+		3:
+			return slot.global_position + Vector2(0, 24)
+		_:
+			return slot.global_position
 
 func try_process_single_input_recipe(station, ingredient):
 	var ingredient_name = ingredient.get_ingredient_name()
