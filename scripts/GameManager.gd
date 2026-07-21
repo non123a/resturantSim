@@ -57,9 +57,9 @@ func initialize_ingredient_registry():
 		ingredient_templates[ingredient_id] = ingredient
 
 var spawn_positions = [
-	Vector2(200, 500),
-	Vector2(360, 500),
-	Vector2(520, 500)
+	Vector2(0, 250),
+	Vector2(200, 250),
+	Vector2(400, 250)
 ]
 
 func spawn_customer():
@@ -72,7 +72,7 @@ func spawn_customer():
 	add_child(c)
 	
 	var index = get_open_spawn_index()
-	c.position = Vector2(spawn_positions[index].x, 1400)
+	c.position = Vector2(spawn_positions[index].x, 0)
 	c.target_position = spawn_positions[index]
 	
 	c.served.connect(_on_customer_served)

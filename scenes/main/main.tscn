@@ -1,6 +1,7 @@
-[gd_scene load_steps=37 format=4 uid="uid://bqi216w3j6cmc"]
+[gd_scene load_steps=38 format=4 uid="uid://bqi216w3j6cmc"]
 
 [ext_resource type="Script" uid="uid://cg6d44c6l386l" path="res://scripts/GameManager.gd" id="1_hyk8p"]
+[ext_resource type="Texture2D" uid="uid://eeb62sb2k455" path="res://assets/chimengAsset/bg-img.jpg" id="2_7nlll"]
 [ext_resource type="Texture2D" uid="uid://b2ayflvuyv8bl" path="res://professional_kitchen/professional_kitchen_withshadows.png" id="3_k2fmo"]
 [ext_resource type="PackedScene" uid="uid://cv3n6a334xap5" path="res://scenes/food/Ingredient.tscn" id="4_6q06x"]
 [ext_resource type="Texture2D" uid="uid://c87iv7v831pyv" path="res://assets/chimengAsset/steak/raw.png" id="5_ow5a4"]
@@ -921,13 +922,13 @@ texture = ExtResource("3_k2fmo")
 sources/0 = SubResource("TileSetAtlasSource_l3cfh")
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ow5a4"]
-size = Vector2(52, 75)
+size = Vector2(126, 75)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_hujxm"]
 size = Vector2(50, 57)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_yyfjg"]
-size = Vector2(92, 74)
+size = Vector2(64, 50)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_b1x3f"]
 size = Vector2(94, 83)
@@ -935,7 +936,14 @@ size = Vector2(94, 83)
 [node name="Main" type="Node2D"]
 script = ExtResource("1_hyk8p")
 
+[node name="TextureRect" type="TextureRect" parent="."]
+z_index = -2
+offset_right = 1281.0
+offset_bottom = 720.0
+texture = ExtResource("2_7nlll")
+
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
+layer = 0
 
 [node name="CoinLabel" type="Label" parent="CanvasLayer"]
 offset_left = 348.0
@@ -992,6 +1000,7 @@ offset_bottom = 231.0
 text = "BACK"
 
 [node name="KitchenMap" type="TileMapLayer" parent="."]
+visible = false
 scale = Vector2(2, 2)
 tile_map_data = PackedByteArray("AAANABAAAAAVABgAAAANABEAAAAVABkAAAANABIAAAAVABoAAAAOABAAAAAWABgAAAAOABEAAAAWABkAAAAOABIAAAAWABoAAAAPABAAAAAXABgAAAAPABEAAAAXABkAAAAPABIAAAAXABoAAAAGABAAAAAGAAoAAAAGABEAAAAGAAsAAAAGABIAAAAGAAwAAAAHABAAAAAHAAoAAAAHABEAAAAHAAsAAAAHABIAAAAHAAwAAAACABEAAAAUAAAAAAACABIAAAAUAAEAAAADABEAAAAVAAAAAAADABIAAAAVAAEAAAATABAAAAAVAA4AAAATABEAAAAVAA8AAAATABIAAAAVABAAAAAUABAAAAAWAA4AAAAUABEAAAAWAA8AAAAUABIAAAAWABAAAAAVABAAAAAXAA4AAAAVABIAAAAXABAAAAAJABAAAAAVABgAAAAJABEAAAAVABkAAAAJABIAAAAVABoAAAAKABAAAAAWABgAAAAKABEAAAAWABkAAAAKABIAAAAWABoAAAALABAAAAAXABgAAAALABEAAAAXABkAAAALABIAAAAXABoAAAAJAA0AAAAVABgAAAAJAA4AAAAVABkAAAAJAA8AAAAVABoAAAAKAA0AAAAWABgAAAAKAA4AAAAWABkAAAAKAA8AAAAWABoAAAALAA0AAAAXABgAAAALAA4AAAAXABkAAAALAA8AAAAXABoAAAANAA0AAAAVABgAAAANAA4AAAAVABkAAAANAA8AAAAVABoAAAAOAA0AAAAWABgAAAAOAA4AAAAWABkAAAAOAA8AAAAWABoAAAAPAA0AAAAXABgAAAAPAA4AAAAXABkAAAAPAA8AAAAXABoAAAAVABEAAAAXAA8AAAA=")
 tile_set = SubResource("TileSet_6q06x")
@@ -1001,59 +1010,65 @@ tile_set = SubResource("TileSet_6q06x")
 [node name="StoveArea" type="Area2D" parent="Stations"]
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Stations/StoveArea"]
-position = Vector2(227, 565.5)
+position = Vector2(1006, 466)
 shape = SubResource("RectangleShape2D_ow5a4")
 
 [node name="MicrowaveArea" type="Area2D" parent="Stations"]
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Stations/MicrowaveArea"]
-position = Vector2(99, 573.5)
+position = Vector2(560, 569)
 shape = SubResource("RectangleShape2D_hujxm")
 
 [node name="PrepSlot1" type="Area2D" parent="Stations"]
-position = Vector2(335, 568)
+position = Vector2(433, 467)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Stations/PrepSlot1"]
+visible = false
+position = Vector2(0, -1)
 shape = SubResource("RectangleShape2D_yyfjg")
 
 [node name="PrepSlot2" type="Area2D" parent="Stations"]
-position = Vector2(336, 471)
+position = Vector2(353, 465)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Stations/PrepSlot2"]
+visible = false
 shape = SubResource("RectangleShape2D_yyfjg")
 
 [node name="PrepSlot3" type="Area2D" parent="Stations"]
-position = Vector2(463, 569)
+position = Vector2(605, 468)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Stations/PrepSlot3"]
-position = Vector2(-1, 0)
+visible = false
+position = Vector2(1, 0)
 shape = SubResource("RectangleShape2D_yyfjg")
 
 [node name="PrepSlot4" type="Area2D" parent="Stations"]
-position = Vector2(467, 468)
+position = Vector2(521, 466)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Stations/PrepSlot4"]
-position = Vector2(-1, 2)
+visible = false
 shape = SubResource("RectangleShape2D_yyfjg")
 
 [node name="DisplayArea" type="Area2D" parent="Stations"]
 position = Vector2(107, 360)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Stations/DisplayArea"]
-position = Vector2(548, 208)
+position = Vector2(636, 107)
 shape = SubResource("RectangleShape2D_b1x3f")
 
 [node name="IngredientShelf" type="Node" parent="."]
 
 [node name="RawSteak" parent="IngredientShelf" instance=ExtResource("4_6q06x")]
-position = Vector2(1153, 369)
+position = Vector2(1038, 589)
+scale = Vector2(0.6, 0.6)
 ingredient_name = "raw_steak"
 ingredient_id = "raw_steak"
 ingredient_texture = ExtResource("5_ow5a4")
 is_source = true
 
 [node name="Vegetables" parent="IngredientShelf" instance=ExtResource("4_6q06x")]
-position = Vector2(1001, 392)
+position = Vector2(1183, 447)
+scale = Vector2(0.6, 0.6)
 ingredient_name = "vegetables"
 ingredient_id = "vegetables"
 ingredient_texture = ExtResource("6_ow5a4")
@@ -1062,6 +1077,7 @@ is_source = true
 [node name="CookedSteak" parent="IngredientShelf" instance=ExtResource("4_6q06x")]
 visible = false
 position = Vector2(1082, 555)
+scale = Vector2(0.6, 0.6)
 ingredient_name = "cooked_steak"
 ingredient_id = "cooked_steak"
 ingredient_texture = ExtResource("6_hujxm")
@@ -1069,31 +1085,36 @@ ingredient_texture = ExtResource("6_hujxm")
 [node name="BeefPlate" parent="IngredientShelf" instance=ExtResource("4_6q06x")]
 visible = false
 position = Vector2(1082, 555)
+scale = Vector2(0.6, 0.6)
 ingredient_name = "beef_plate"
 ingredient_id = "beef_plate"
 ingredient_texture = ExtResource("8_yyfjg")
 food_id = "steak"
 
 [node name="BurgerRawBeef" parent="IngredientShelf" instance=ExtResource("4_6q06x")]
-position = Vector2(1159, 235)
+position = Vector2(1217, 528)
+scale = Vector2(0.6, 0.6)
 ingredient_id = "burger_raw_beef"
 ingredient_texture = ExtResource("10_rawbeef")
 is_source = true
 
 [node name="BurgerBread" parent="IngredientShelf" instance=ExtResource("4_6q06x")]
-position = Vector2(1000, 251)
+position = Vector2(802, 578)
+scale = Vector2(0.6, 0.6)
 ingredient_id = "burger_bread"
 ingredient_texture = ExtResource("12_bread")
 is_source = true
 
 [node name="BurgerVegetable" parent="IngredientShelf" instance=ExtResource("4_6q06x")]
-position = Vector2(1156, 135)
+position = Vector2(1240, 617)
+scale = Vector2(0.6, 0.6)
 ingredient_id = "burger_vegetable"
 ingredient_texture = ExtResource("13_veg")
 is_source = true
 
 [node name="BurgerSauce" parent="IngredientShelf" instance=ExtResource("4_6q06x")]
-position = Vector2(1000, 130)
+position = Vector2(806, 654)
+scale = Vector2(0.6, 0.6)
 ingredient_id = "burger_sauce"
 ingredient_texture = ExtResource("14_sauce")
 is_source = true
@@ -1101,48 +1122,56 @@ is_source = true
 [node name="BurgerBeef" parent="IngredientShelf" instance=ExtResource("4_6q06x")]
 visible = false
 position = Vector2(1180, 555)
+scale = Vector2(0.6, 0.6)
 ingredient_id = "burger_beef"
 ingredient_texture = ExtResource("11_beef")
 
 [node name="BurgerBreadVegetable" parent="IngredientShelf" instance=ExtResource("4_6q06x")]
 visible = false
 position = Vector2(1180, 455)
+scale = Vector2(0.6, 0.6)
 ingredient_id = "burger_bread_vegetable"
 ingredient_texture = ExtResource("15_breadveg")
 
 [node name="BurgerBreadVegetableSauce" parent="IngredientShelf" instance=ExtResource("4_6q06x")]
 visible = false
 position = Vector2(1180, 455)
+scale = Vector2(0.6, 0.6)
 ingredient_id = "burger_bread_vegetable_sauce"
 ingredient_texture = ExtResource("16_breadvegsauce")
 
 [node name="BurgerBreadBeef" parent="IngredientShelf" instance=ExtResource("4_6q06x")]
 visible = false
 position = Vector2(1180, 455)
+scale = Vector2(0.6, 0.6)
 ingredient_id = "burger_bread_beef"
 ingredient_texture = ExtResource("17_breadbeef")
 
 [node name="BurgerBreadBeefSauce" parent="IngredientShelf" instance=ExtResource("4_6q06x")]
 visible = false
 position = Vector2(1180, 455)
+scale = Vector2(0.6, 0.6)
 ingredient_id = "burger_bread_beef_sauce"
 ingredient_texture = ExtResource("18_breadbeefsauce")
 
 [node name="BurgerBreadVegetableBeef" parent="IngredientShelf" instance=ExtResource("4_6q06x")]
 visible = false
 position = Vector2(1180, 455)
+scale = Vector2(0.6, 0.6)
 ingredient_id = "burger_bread_vegetable_beef"
 ingredient_texture = ExtResource("19_breadvegbeef")
 
 [node name="Burger" parent="IngredientShelf" instance=ExtResource("4_6q06x")]
 visible = false
 position = Vector2(1180, 455)
+scale = Vector2(0.6, 0.6)
 ingredient_id = "burger"
 ingredient_texture = ExtResource("20_burger")
 food_id = "burger"
 
 [node name="Donut" parent="IngredientShelf" instance=ExtResource("4_6q06x")]
-position = Vector2(1010, 525)
+position = Vector2(867, 463)
+scale = Vector2(0.6, 0.6)
 ingredient_id = "donut"
 ingredient_texture = ExtResource("21_donut")
 food_id = "donut"
@@ -1150,70 +1179,81 @@ is_source = true
 
 [node name="BurritoMeat" parent="IngredientShelf" instance=ExtResource("4_6q06x")]
 visible = false
-position = Vector2(840, 255)
+position = Vector2(226, 466)
+scale = Vector2(0.6, 0.6)
 ingredient_name = "burrito_meat"
 ingredient_texture = ExtResource("24_burrito_meat")
 is_source = true
 
 [node name="BurritoRice" parent="IngredientShelf" instance=ExtResource("4_6q06x")]
 visible = false
-position = Vector2(840, 370)
+position = Vector2(280, 558)
+scale = Vector2(0.6, 0.6)
 ingredient_name = "burrito_rice"
 ingredient_texture = ExtResource("25_burrito_rice")
 is_source = true
 
 [node name="BurritoVegetable" parent="IngredientShelf" instance=ExtResource("4_6q06x")]
 visible = false
-position = Vector2(840, 485)
+position = Vector2(359, 557)
+scale = Vector2(0.6, 0.6)
 ingredient_name = "burrito_vegetable"
 ingredient_texture = ExtResource("26_burrito_vegetable")
 is_source = true
 
 [node name="BurritoMeatTortilla" parent="IngredientShelf" instance=ExtResource("4_6q06x")]
 visible = false
-position = Vector2(840, 255)
+position = Vector2(188, 451)
+scale = Vector2(0.6, 0.6)
 ingredient_id = "burrito_meat_tortilla"
 ingredient_texture = ExtResource("27_burrito_meat_tortilla")
 
 [node name="BurritoRiceTortilla" parent="IngredientShelf" instance=ExtResource("4_6q06x")]
 visible = false
-position = Vector2(840, 370)
+position = Vector2(258, 467)
+scale = Vector2(0.6, 0.6)
 ingredient_id = "burrito_rice_tortilla"
 ingredient_texture = ExtResource("28_burrito_rice_tortilla")
 
 [node name="BurritoMeatTortillaVegetable" parent="IngredientShelf" instance=ExtResource("4_6q06x")]
 visible = false
-position = Vector2(840, 255)
+position = Vector2(205, 567)
+scale = Vector2(0.6, 0.6)
 ingredient_id = "burrito_meat_tortilla_vegetable"
 ingredient_texture = ExtResource("29_burrito_meat_tortilla_vegetable")
 
 [node name="BurritoRiceTortillaVegetable" parent="IngredientShelf" instance=ExtResource("4_6q06x")]
 visible = false
-position = Vector2(840, 370)
+position = Vector2(366, 624)
+scale = Vector2(0.6, 0.6)
 ingredient_id = "burrito_rice_tortilla_vegetable"
 ingredient_texture = ExtResource("30_burrito_rice_tortilla_vegetable")
 
 [node name="BurritoMeatRiceTortilla" parent="IngredientShelf" instance=ExtResource("4_6q06x")]
 visible = false
-position = Vector2(840, 370)
+position = Vector2(273, 619)
+scale = Vector2(0.6, 0.6)
 ingredient_id = "burrito_meat_rice_tortilla"
 ingredient_texture = ExtResource("31_burrito_beef_rice_tortilla")
 
 [node name="BurritoBeefRiceTortilla" parent="IngredientShelf" instance=ExtResource("4_6q06x")]
 visible = false
-position = Vector2(840, 370)
+position = Vector2(497, 677)
+scale = Vector2(0.6, 0.6)
 ingredient_id = "burrito_beef_rice_tortilla"
 ingredient_texture = ExtResource("31_burrito_beef_rice_tortilla")
 
 [node name="Burrito" parent="IngredientShelf" instance=ExtResource("4_6q06x")]
 visible = false
 position = Vector2(970, 455)
+scale = Vector2(0.6, 0.6)
 ingredient_id = "burrito"
 ingredient_texture = ExtResource("22_burrito")
 food_id = "burrito"
 
 [node name="Jelly" parent="IngredientShelf" instance=ExtResource("4_6q06x")]
-position = Vector2(1162, 498)
+position = Vector2(746, 469)
+scale = Vector2(0.6, 0.6)
 ingredient_name = "jelly"
 ingredient_texture = ExtResource("24_jelly_no_plate")
 is_source = true
@@ -1221,6 +1261,7 @@ is_source = true
 [node name="JellyPlate" parent="IngredientShelf" instance=ExtResource("4_6q06x")]
 visible = false
 position = Vector2(970, 355)
+scale = Vector2(0.6, 0.6)
 ingredient_name = "jelly_plate"
 ingredient_texture = ExtResource("23_jelly")
 food_id = "jelly"
