@@ -181,8 +181,10 @@ var recipes = [
 ]
 
 func get_recipe(station, inputs):
+	var normalized_inputs = _normalized_inputs(inputs)
+
 	for recipe in recipes:
-		if recipe["station"] == station and _same_inputs(recipe["inputs"], inputs):
+		if recipe["station"] == station and _same_inputs(recipe["inputs"], normalized_inputs):
 			return recipe
 
 	return {}
@@ -190,6 +192,7 @@ func get_recipe(station, inputs):
 func can_accept_ingredient(station, current_inputs, ingredient_name):
 	var candidate_inputs = current_inputs.duplicate()
 	candidate_inputs.append(ingredient_name)
+	candidate_inputs = _normalized_inputs(candidate_inputs)
 
 	for recipe in recipes:
 		if recipe["station"] != station:
@@ -201,12 +204,12 @@ func can_accept_ingredient(station, current_inputs, ingredient_name):
 	return false
 
 func _same_inputs(recipe_inputs, candidate_inputs):
-	return recipe_inputs.size() == candidate_inputs.size() and _inputs_fit_recipe(candidate_inputs, recipe_inputs)
+	return _normalized_inputs(recipe_inputs) == _normalized_inputs(candidate_inputs)
 
 func _inputs_fit_recipe(candidate_inputs, recipe_inputs):
-	var remaining_inputs = recipe_inputs.duplicate()
+	var remaining_inputs = _normalized_inputs(recipe_inputs)
 
-	for input in candidate_inputs:
+	for input in _normalized_inputs(candidate_inputs):
 		var index = remaining_inputs.find(input)
 		if index == -1:
 			return false
@@ -214,3 +217,8 @@ func _inputs_fit_recipe(candidate_inputs, recipe_inputs):
 		remaining_inputs.remove_at(index)
 
 	return true
+
+func _normalized_inputs(inputs):
+	var normalized_inputs = inputs.duplicate()
+	normalized_inputs.sort()
+	return normalized_inputs

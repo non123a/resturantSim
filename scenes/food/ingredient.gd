@@ -67,8 +67,11 @@ func spawn_drag_instance():
 	instance.ingredient_id = ingredient_id
 	instance.ingredient_texture = ingredient_texture
 	instance.food_id = food_id
+	instance.dragging = false
+	instance.drop_in_progress = false
 	instance.visible = true
 	instance.monitoring = true
+	instance.input_pickable = true
 	instance.set_process(true)
 	instance.set_process_input(true)
 	instance.get_node("Sprite2D").texture = ingredient_texture

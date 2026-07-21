@@ -256,6 +256,17 @@ func try_drop_on_prep_slot(slot, ingredient):
 	cleanup_prep_slot(slot)
 
 	var current_owner = get_prep_slot_for_ingredient(ingredient)
+	var ingredient_name = ingredient.get_ingredient_name()
+	log_prep_slot(
+		slot,
+		"drop attempt",
+		[
+			"ingredient", ingredient_name,
+			"current_owner", get_prep_slot_name(current_owner),
+			"slot_contents", get_prep_slot_contents(slot)
+		]
+	)
+
 	if current_owner == slot:
 		ingredient.set_home_position(get_prep_slot_item_position(slot, prep_slot_ingredient_instances[slot].find(ingredient) + 1))
 		ingredient.dragging = false
@@ -268,10 +279,18 @@ func try_drop_on_prep_slot(slot, ingredient):
 		log_prep_slot(slot, "drop ignored, ingredient already owned", get_prep_slot_contents(slot))
 		return true
 
-	var ingredient_name = ingredient.get_ingredient_name()
 	var prep_ingredient_names = get_ingredient_names(prep_slot_ingredient_instances[slot])
 	if not RecipeData.can_accept_ingredient("prep", prep_ingredient_names, ingredient_name):
-		log_prep_slot(slot, "drop rejected, no recipe accepts", prep_ingredient_names + [ingredient_name])
+		log_prep_slot(
+			slot,
+			"drop rejected, no recipe accepts",
+			[
+				"current_inputs", prep_ingredient_names,
+				"candidate", ingredient_name,
+				"candidate_inputs", prep_ingredient_names + [ingredient_name],
+				"owner", get_prep_slot_name(current_owner)
+			]
+		)
 		return false
 
 	assign_ingredient_to_prep_slot(slot, ingredient)
@@ -312,7 +331,7 @@ func process_prep_recipe(slot, recipe, input_instances):
 	await get_tree().create_timer(get_recipe_duration(recipe)).timeout
 
 	consume_ingredient_instances(input_instances)
-	prep_slot_ingredient_instances[slot] = []
+	clear_prep_slot(slot)
 
 	var output = spawn_ingredient_instance(
 		recipe["output_ingredient"],
@@ -393,6 +412,13 @@ func remove_ingredient_from_prep_slots(ingredient):
 	if removed_from_slot != null:
 		log_prep_slot(removed_from_slot, "ingredient removed from slot", [ingredient.get_ingredient_name()])
 
+func clear_prep_slot(slot):
+	for ingredient in prep_slot_ingredient_instances[slot]:
+		if ingredient != null:
+			prep_ingredient_slot_owners.erase(ingredient)
+
+	prep_slot_ingredient_instances[slot] = []
+
 func cleanup_all_prep_slots():
 	for slot in prep_slots:
 		cleanup_prep_slot(slot)
@@ -407,8 +433,9 @@ func cleanup_prep_slot(slot):
 		var owner = prep_ingredient_slot_owners.get(ingredient)
 		if owner == null:
 			prep_ingredient_slot_owners[ingredient] = slot
-			valid_ingredients.append(ingredient)
-		elif owner == slot:
+			owner = slot
+
+		if owner == slot and not valid_ingredients.has(ingredient):
 			valid_ingredients.append(ingredient)
 
 	prep_slot_ingredient_instances[slot] = valid_ingredients
@@ -419,6 +446,12 @@ func get_prep_slot_contents(slot):
 
 func log_prep_slot(slot, message, data):
 	print("[", slot.name, "] ", message, ": ", data)
+
+func get_prep_slot_name(slot):
+	if slot == null:
+		return "none"
+
+	return slot.name
 
 func try_process_single_input_recipe(station, ingredient):
 	var ingredient_name = ingredient.get_ingredient_name()
@@ -482,6 +515,8 @@ func spawn_ingredient_instance(ingredient_name, food_id, output_position):
 	template.get_parent().add_child(instance)
 	instance.is_source = false
 	instance.food_id = food_id
+	instance.dragging = false
+	instance.drop_in_progress = false
 	instance.visible = true
 	instance.monitoring = true
 	instance.input_pickable = true
