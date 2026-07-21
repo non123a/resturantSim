@@ -994,18 +994,18 @@ vertical_alignment = 1
 
 [node name="RestartButton" type="Button" parent="CanvasLayer/EndPanel"]
 layout_mode = 0
-offset_left = 682.0
-offset_top = 415.0
-offset_right = 747.0
-offset_bottom = 446.0
+offset_left = 692.0
+offset_top = 390.0
+offset_right = 757.0
+offset_bottom = 421.0
 text = "Restart"
 
 [node name="BackButton" type="Button" parent="CanvasLayer/EndPanel"]
 layout_mode = 0
-offset_left = 780.0
-offset_top = 414.0
-offset_right = 830.0
-offset_bottom = 445.0
+offset_left = 794.0
+offset_top = 392.0
+offset_right = 844.0
+offset_bottom = 423.0
 text = "BACK"
 
 [node name="KitchenMap" type="TileMapLayer" parent="."]

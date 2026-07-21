@@ -1,51 +1,77 @@
-[gd_scene load_steps=2 format=3 uid="uid://bqers1v50jyal"]
+[gd_scene load_steps=8 format=3 uid="uid://bqers1v50jyal"]
 
 [ext_resource type="Script" uid="uid://bs4qevioffwv2" path="res://scripts/dashboard.gd" id="1_iwa43"]
+[ext_resource type="Texture2D" uid="uid://ctipqjgvtpsma" path="res://assets/chimengAsset/icon/photo_2026-07-21_18-28-18-removebg-preview.png" id="2_pq66u"]
+[ext_resource type="Texture2D" uid="uid://1v7piv1b6pj6" path="res://assets/chimengAsset/icon/photo_1_2026-07-21_18-32-18-removebg-preview.png" id="3_4jrbh"]
+[ext_resource type="Script" uid="uid://b0s5lcljh8g0m" path="res://scenes/dashboard/play_button.gd" id="3_yxfa0"]
+[ext_resource type="Texture2D" uid="uid://dk4gid1ixre2f" path="res://assets/chimengAsset/icon/photo_2_2026-07-21_18-32-18-removebg-preview.png" id="4_yxfa0"]
+[ext_resource type="Texture2D" uid="uid://q38wwu208xu2" path="res://assets/chimengAsset/photo_2026-07-21_16-54-24.jpg" id="5_ha5bl"]
+
+[sub_resource type="Theme" id="Theme_7agwo"]
 
 [node name="Dashboard" type="Control"]
 layout_mode = 3
 anchors_preset = 0
-offset_left = 4.0
-offset_top = 7.0
-offset_right = 44.0
-offset_bottom = 47.0
+offset_left = -17.0
+offset_top = -44.0
+offset_right = 1254.0
+offset_bottom = 666.0
 script = ExtResource("1_iwa43")
 
-[node name="PlayButton" type="Button" parent="."]
+[node name="TextureRect" type="TextureRect" parent="."]
+z_index = -1
+layout_mode = 0
+offset_left = 12.0
+offset_top = 44.0
+offset_right = 1292.0
+offset_bottom = 897.0
+mouse_filter = 2
+texture = ExtResource("5_ha5bl")
+
+[node name="PlayButton" type="TextureButton" parent="."]
 layout_mode = 1
 anchors_preset = -1
 anchor_right = 2.9490001
 anchor_bottom = 5.255
-offset_top = 239.0
-offset_right = 159.04
-offset_bottom = 272.8
-text = "PLAY"
+offset_left = 502.0
+offset_top = 373.0
+offset_right = -2936.1792
+offset_bottom = -3257.05
+focus_mode = 1
+theme = SubResource("Theme_7agwo")
+texture_normal = ExtResource("2_pq66u")
+ignore_texture_size = true
+stretch_mode = 0
+script = ExtResource("3_yxfa0")
 
-[node name="Upgrade" type="Button" parent="."]
+[node name="Upgrade" type="TextureButton" parent="."]
 layout_mode = 0
-offset_left = 415.0
-offset_top = 245.0
-offset_right = 684.0
-offset_bottom = 327.0
+offset_left = 503.0
+offset_top = 464.0
+offset_right = 809.0
+offset_bottom = 559.0
 tooltip_text = "UPGRADE
 "
-text = "UPGRADE"
+texture_normal = ExtResource("3_4jrbh")
+ignore_texture_size = true
+stretch_mode = 0
 
 [node name="RecordLabel" type="Label" parent="."]
 layout_mode = 0
-offset_left = 861.0
-offset_top = 226.0
-offset_right = 1173.0
-offset_bottom = 542.0
-text = "RECORD:"
+offset_left = 875.0
+offset_top = 322.0
+offset_right = 1187.0
+offset_bottom = 638.0
 
-[node name="Unlock New Food" type="Button" parent="."]
+[node name="Unlock New Food" type="TextureButton" parent="."]
 layout_mode = 0
-offset_left = 411.0
-offset_top = 356.0
-offset_right = 684.0
-offset_bottom = 454.0
-text = "Unlock New Food"
+offset_left = 502.0
+offset_top = 546.0
+offset_right = 809.0
+offset_bottom = 653.0
+texture_normal = ExtResource("4_yxfa0")
+ignore_texture_size = true
+stretch_mode = 0
 
 [connection signal="pressed" from="PlayButton" to="." method="_on_play_button_pressed"]
 [connection signal="pressed" from="Upgrade" to="." method="_on_upgrade_pressed"]

@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dawe87wg6oiua"
-path="res://.godot/imported/upgrade.jpg-e53b9ea9bbb00a73d4c074cdc7989e79.ctex"
+uid="uid://1v7piv1b6pj6"
+path="res://.godot/imported/photo_1_2026-07-21_18-32-18-removebg-preview.png-d33da6b0cf59bfdacc4deb68677003df.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/chimengAsset/upgrade.jpg"
-dest_files=["res://.godot/imported/upgrade.jpg-e53b9ea9bbb00a73d4c074cdc7989e79.ctex"]
+source_file="res://assets/chimengAsset/icon/photo_1_2026-07-21_18-32-18-removebg-preview.png"
+dest_files=["res://.godot/imported/photo_1_2026-07-21_18-32-18-removebg-preview.png-d33da6b0cf59bfdacc4deb68677003df.ctex"]
 
 [params]
 

@@ -73,7 +73,7 @@ var foods = {
 		"cook_time": 1.5,
 		"price": 9,
 		"display_name": "Bun",
-		"wait_time": 10.0,
+		"wait_time": 12.0,
 		"icon": preload("res://assets/chimengAsset/hotdog bread/breads.png")
 	},
 	"steak": {
@@ -89,27 +89,27 @@ var foods = {
 		"type": "stove",
 		"steps": ["stove"],
 		"cook_time": 2.5,
-		"price": 12,
+		"price": 14,
 		"display_name": "Bacon",
-		"wait_time": 12.0,
+		"wait_time": 18.0,
 		"icon": preload("res://assets/chimengAsset/steak/beefs.png")
 	},
 	"burger": {
 		"type": "multi",
 		"steps": ["prep", "stove"],
-		"cook_time": 5.0,
+		"cook_time": 6.0,
 		"price": 30,
 		"display_name": "Burger",
-		"wait_time": 25.0,
+		"wait_time": 28.0,
 		"icon": preload("res://assets/chimengAsset/hamburger/hamburgers.png")
 	},
 	"burrito": {
 		"type": "multi",
 		"steps": ["prep"],
 		"cook_time": 5.5,
-		"price": 22,
+		"price": 24,
 		"display_name": "Burrito",
-		"wait_time": 22.0,
+		"wait_time": 26.0,
 		"icon": preload("res://assets/chimengAsset/burrito/burrito.png")
 	}
 }

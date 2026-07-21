@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dxlern1bbe0nh"
-path="res://.godot/imported/photo_4_2026-07-21_18-38-51.jpg-6fb7f5a2c863374d0e1ca542bc05359e.ctex"
+uid="uid://dk4gid1ixre2f"
+path="res://.godot/imported/photo_2_2026-07-21_18-32-18-removebg-preview.png-21703edb0880667a799b440325053e36.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/chimengAsset/photo_4_2026-07-21_18-38-51.jpg"
-dest_files=["res://.godot/imported/photo_4_2026-07-21_18-38-51.jpg-6fb7f5a2c863374d0e1ca542bc05359e.ctex"]
+source_file="res://assets/chimengAsset/icon/photo_2_2026-07-21_18-32-18-removebg-preview.png"
+dest_files=["res://.godot/imported/photo_2_2026-07-21_18-32-18-removebg-preview.png-21703edb0880667a799b440325053e36.ctex"]
 
 [params]
 

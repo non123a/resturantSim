@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://be54okd63xjp0"
-path="res://.godot/imported/champion.jpg-3f5da623393b252c8d4dedc9b3b87adf.ctex"
+uid="uid://mi178gipoue6"
+path="res://.godot/imported/photo_3_2026-07-21_18-32-18-removebg-preview.png-fe0deb13b13bd9db23cecb2887db37e7.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/chimengAsset/champion.jpg"
-dest_files=["res://.godot/imported/champion.jpg-3f5da623393b252c8d4dedc9b3b87adf.ctex"]
+source_file="res://assets/chimengAsset/icon/photo_3_2026-07-21_18-32-18-removebg-preview.png"
+dest_files=["res://.godot/imported/photo_3_2026-07-21_18-32-18-removebg-preview.png-fe0deb13b13bd9db23cecb2887db37e7.ctex"]
 
 [params]
 
