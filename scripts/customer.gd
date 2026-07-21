@@ -15,16 +15,18 @@ var patience = 10.0
 var max_patience = 10.0
 
 func _ready():
-	$ProgressBar.max_value = max_patience
-	$ProgressBar.value = patience
-
 	order = GameData.get_random_order_food()
 	print("Customer wants:", order)
 
-	$OrderLabel.text = order   # ✅ AFTER setting order
+	if GameData.foods.has(order):
+		max_patience = GameData.foods[order]["wait_time"]
+
+	patience = max_patience
+	$ProgressBar.max_value = max_patience
+	$ProgressBar.value = patience
+	$ThoughtBubble.show_food(order)
 	
 	$AnimatedSprite2D.play("walkingInAnimation")
-	print("Label text:", $OrderLabel.text)
 	
 
 func _physics_process(delta):

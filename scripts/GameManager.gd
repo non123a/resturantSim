@@ -2,6 +2,9 @@ extends Node2D
 
 var customer_scene = preload("res://scenes/customer/Customer.tscn")
 
+@export var customer_spawn_delay_min = 0.8
+@export var customer_spawn_delay_max = 1.6
+
 @onready var stove_area = $Stations/StoveArea
 @onready var prep_slots = [
 	$Stations/PrepSlot1,
@@ -17,6 +20,7 @@ var prep_ingredient_slot_owners = {}
 
 var customers = []
 var customer_slots = {}
+var pending_customer_spawns = 0
 
 var run_coins = 0 
 
@@ -66,9 +70,6 @@ func spawn_customer():
 	if not game_active:
 		return
 	var c = customer_scene.instantiate()
-	var customer_patience = get_customer_patience()
-	c.max_patience = customer_patience
-	c.patience = customer_patience
 	add_child(c)
 	
 	var index = get_open_spawn_index()
@@ -86,20 +87,23 @@ func spawn_customers_to_target():
 	while customers.size() < target_count:
 		spawn_customer()
 
+func queue_replacement_customer():
+	if customers.size() + pending_customer_spawns >= get_customer_target_count():
+		return
+
+	pending_customer_spawns += 1
+	var spawn_delay = randf_range(customer_spawn_delay_min, customer_spawn_delay_max)
+	await get_tree().create_timer(spawn_delay).timeout
+	pending_customer_spawns -= 1
+
+	if game_active and customers.size() + pending_customer_spawns < get_customer_target_count():
+		spawn_customer()
+
 func get_customer_target_count():
 	if GameData.is_food_unlocked("burrito"):
 		return 3
 
 	return 2
-
-func get_customer_patience():
-	if GameData.is_food_unlocked("burger"):
-		return 8.0
-
-	if GameData.is_food_unlocked("jelly"):
-		return 9.0
-
-	return 10.0
 
 func get_open_spawn_index():
 	for i in range(spawn_positions.size()):
@@ -110,11 +114,11 @@ func get_open_spawn_index():
 
 func _on_customer_served(customer):
 	remove_customer(customer)
-	spawn_customers_to_target()
+	queue_replacement_customer()
 
 func _on_customer_left_angry(customer):
 	remove_customer(customer)
-	spawn_customers_to_target()
+	queue_replacement_customer()
 
 func remove_customer(customer):
 	customers.erase(customer)
@@ -533,10 +537,10 @@ func try_serve_customer_with_food(customer, food_item):
 	return true
 
 func calculate_reward(food_id):
-	if not FoodData.foods.has(food_id):
+	if not GameData.foods.has(food_id):
 		return 0
 
-	var base_reward = FoodData.foods[food_id]["price"]
+	var base_reward = GameData.foods[food_id]["price"]
 	var income_level = min(GameData.upgrades["income"], 5)
 	var bonus = 1 + (income_level * 0.08)
 	var reward = int(base_reward * bonus)

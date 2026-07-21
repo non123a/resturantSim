@@ -1,0 +1,27 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scenes/customer/thought_bubble.gd" id="1_bubble_script"]
+
+[node name="ThoughtBubble" type="Control"]
+offset_left = 520.0
+offset_top = -56.0
+offset_right = 640.0
+offset_bottom = 40.0
+script = ExtResource("1_bubble_script")
+
+[node name="BubbleBackground" type="TextureRect" parent="."]
+layout_mode = 0
+offset_left = 0.0
+offset_top = 0.0
+offset_right = 120.0
+offset_bottom = 96.0
+modulate = Color(1, 1, 1, 0.85)
+
+[node name="FoodIcon" type="TextureRect" parent="."]
+layout_mode = 0
+offset_left = 24.0
+offset_top = 18.0
+offset_right = 96.0
+offset_bottom = 78.0
+expand_mode = 1
+stretch_mode = 5

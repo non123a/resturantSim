@@ -1,7 +1,8 @@
-[gd_scene load_steps=4 format=3 uid="uid://cfdfnvo3bltnn"]
+[gd_scene load_steps=5 format=3 uid="uid://cfdfnvo3bltnn"]
 
 [ext_resource type="Script" uid="uid://vbq1u8dvq52l" path="res://scripts/customer.gd" id="1_weugq"]
 [ext_resource type="SpriteFrames" uid="uid://cpntpsoqnu8j4" path="res://assets/sprites/customer_frames.tres" id="2_2hfkh"]
+[ext_resource type="PackedScene" path="res://scenes/customer/ThoughtBubble.tscn" id="3_thought_bubble"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_2hfkh"]
 radius = 41.01219
@@ -27,8 +28,10 @@ offset_bottom = 47.0
 position = Vector2(601, 113)
 shape = SubResource("CircleShape2D_2hfkh")
 
-[node name="OrderLabel" type="Label" parent="."]
-offset_left = 456.0
-offset_top = 14.0
-offset_right = 533.0
-offset_bottom = 61.0
+[node name="ThoughtBubble" parent="." instance=ExtResource("3_thought_bubble")]
+layout_mode = 3
+anchors_preset = 0
+offset_left = 545.0
+offset_top = -96.0
+offset_right = 665.0
+offset_bottom = 0.0
