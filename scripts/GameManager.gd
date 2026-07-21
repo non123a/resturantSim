@@ -21,6 +21,7 @@ var prep_ingredient_slot_owners = {}
 var customers = []
 var customer_slots = {}
 var pending_customer_spawns = 0
+var customer_spawn_loop_active = false
 
 var run_coins = 0 
 
@@ -88,16 +89,25 @@ func spawn_customers_to_target():
 		spawn_customer()
 
 func queue_replacement_customer():
-	if customers.size() + pending_customer_spawns >= get_customer_target_count():
+	if customer_spawn_loop_active:
 		return
 
-	pending_customer_spawns += 1
-	var spawn_delay = randf_range(customer_spawn_delay_min, customer_spawn_delay_max)
-	await get_tree().create_timer(spawn_delay).timeout
-	pending_customer_spawns -= 1
+	customer_spawn_loop_active = true
 
-	if game_active and customers.size() + pending_customer_spawns < get_customer_target_count():
-		spawn_customer()
+	while game_active and customers.size() + pending_customer_spawns < get_customer_target_count():
+		pending_customer_spawns += 1
+		await get_tree().create_timer(get_customer_spawn_delay()).timeout
+		pending_customer_spawns -= 1
+
+		if game_active and customers.size() < get_customer_target_count():
+			spawn_customer()
+
+	customer_spawn_loop_active = false
+
+func get_customer_spawn_delay():
+	var min_delay = min(customer_spawn_delay_min, customer_spawn_delay_max)
+	var max_delay = max(customer_spawn_delay_min, customer_spawn_delay_max)
+	return randf_range(min_delay, max_delay)
 
 func get_customer_target_count():
 	if GameData.is_food_unlocked("burrito"):
