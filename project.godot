@@ -20,6 +20,7 @@ config/icon="res://icon.svg"
 GameData="*res://scripts/GameData.gd"
 FoodData="*res://scripts/FoodData.gd"
 RecipeData="*res://scripts/RecipeData.gd"
+DebtManager="*res://scripts/DebtManager.gd"
 
 [display]
 

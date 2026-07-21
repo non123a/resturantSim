@@ -193,6 +193,7 @@ func end_game():
 	
 	print("Game Over!")
 	print("Run Coins:", run_coins)
+	var debt_result = DebtManager.complete_run(run_coins)
 	
 	# ✅ SAVE BEST RECORD (ONLY THIS)
 	if run_coins > GameData.best_coins:
@@ -201,9 +202,15 @@ func end_game():
 	
 	# ✅ SHOW CORRECT DATA
 	$CanvasLayer/EndPanel.visible = true
-	$CanvasLayer/EndPanel/ResultLabel.text = \
+	var result_text = \
 		"Run: " + str(run_coins) + \
-		"\nBest: " + str(GameData.best_coins)
+		"\nBest: " + str(GameData.best_coins) + \
+		"\n\n" + DebtManager.get_debt_summary_text()
+	if debt_result["week_advanced"]:
+		result_text += "\nDebt Paid! New week started."
+	if debt_result["debt_failed"]:
+		result_text += "\nDebt Failed!"
+	$CanvasLayer/EndPanel/ResultLabel.text = result_text
 	#for c in customers:
 		#c.stop_all()
 	for c in customers:

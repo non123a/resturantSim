@@ -10,12 +10,12 @@ offset_bottom = 40.0
 script = ExtResource("1_bubble_script")
 
 [node name="BubbleBackground" type="TextureRect" parent="."]
+visible = false
 layout_mode = 0
 offset_left = 0.0
 offset_top = 0.0
 offset_right = 120.0
 offset_bottom = 96.0
-modulate = Color(1, 1, 1, 0.85)
 
 [node name="FoodIcon" type="TextureRect" parent="."]
 layout_mode = 0

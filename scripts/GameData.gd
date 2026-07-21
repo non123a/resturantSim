@@ -10,6 +10,7 @@ var upgrades = {
 	"cook_speed": 0,
 	"income": 0
 }
+var last_loaded_save_data = {}
 
 var foods = {
 	"donut": {
@@ -226,20 +227,28 @@ func save_game():
 		"unlocked_foods": unlocked_foods
 	}
 
+	var debt_manager = get_node_or_null("/root/DebtManager")
+	if debt_manager != null:
+		data.merge(debt_manager.get_save_data(), true)
+
 	file.store_var(data)
 
 
 func load_game():
 	if not FileAccess.file_exists("user://savegame.save"):
+		last_loaded_save_data = {}
 		return
 
 	var file = FileAccess.open("user://savegame.save", FileAccess.READ)
 
 	var data = file.get_var()
+	if typeof(data) != TYPE_DICTIONARY:
+		data = {}
+	last_loaded_save_data = data
 
-	coins = data["coins"]
-	best_coins = data["best_coins"]
-	upgrades = data["upgrades"]
-	unlocked_foods = data["unlocked_foods"]
+	coins = data.get("coins", coins)
+	best_coins = data.get("best_coins", best_coins)
+	upgrades = data.get("upgrades", upgrades)
+	unlocked_foods = data.get("unlocked_foods", unlocked_foods)
 	normalize_unlocked_foods()
 	normalize_upgrades()

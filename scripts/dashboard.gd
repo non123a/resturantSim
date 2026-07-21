@@ -7,7 +7,8 @@ func _on_play_button_pressed():
 func _ready():
 	$RecordLabel.text = \
 		"Best Run: " + str(GameData.best_coins) + \
-		"\nTotal Coins: " + str(GameData.coins)
+		"\nTotal Coins: " + str(GameData.coins) + \
+		"\n\n" + DebtManager.get_debt_summary_text()
 
 #func _on_upgrade_button_pressed():
 	#get_tree().change_scene_to_file("res://scenes/dashboard/upgrade.tscn")
