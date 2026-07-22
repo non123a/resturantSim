@@ -8,23 +8,54 @@ extends Control
 	"jelly": $JellyButton
 }
 
+@onready var food_button_visuals = {
+	"donut": {
+		"button": $DonutButton,
+		"locked_texture": preload("res://assets/chimengAsset/icon2/unlocking food/unlock donut.png"),
+		"unlocked_texture": preload("res://assets/chimengAsset/icon2/unlocking food/donut.png")
+	},
+	"steak": {
+		"button": $SteakButton,
+		"locked_texture": preload("res://assets/chimengAsset/icon2/unlocking food/unlock steak.png"),
+		"unlocked_texture": preload("res://assets/chimengAsset/icon2/unlocking food/steak.png")
+	},
+	"burger": {
+		"button": $BurgerButton,
+		"locked_texture": preload("res://assets/chimengAsset/icon2/unlocking food/unlock hamburger.png"),
+		"unlocked_texture": preload("res://assets/chimengAsset/icon2/unlocking food/hamburger.png")
+	},
+	"burrito": {
+		"button": $BurritoButton,
+		"locked_texture": preload("res://assets/chimengAsset/icon2/unlocking food/unlock burrito.png"),
+		"unlocked_texture": preload("res://assets/chimengAsset/icon2/unlocking food/burrito.png")
+	},
+	"jelly": {
+		"button": $JellyButton,
+		"locked_texture": preload("res://assets/chimengAsset/icon2/unlocking food/unlock jelly.png"),
+		"unlocked_texture": preload("res://assets/chimengAsset/icon2/unlocking food/jelly.png")
+	}
+}
+
 func _ready():
 	AudioManager.play_bgm_dashboard()
 	update_ui()
 
 func update_ui():
-	$CoinLabel.text = "Coins: " + str(GameData.coins)
+	update_coin_label()
 
 	for food_id in GameData.get_progression_food_ids():
-		var button = food_buttons[food_id]
-		var display_name = GameData.get_food_display_name(food_id)
+		update_food_button(food_id)
 
-		if GameData.is_food_unlocked(food_id):
-			button.text = display_name + "\nUnlocked"
-			button.disabled = true
-		else:
-			button.text = display_name + "\nUnlock (" + str(GameData.get_food_unlock_cost(food_id)) + ")"
-			button.disabled = false
+func update_coin_label():
+	$CoinLabel.text = "Coins: " + str(GameData.coins)
+
+func update_food_button(food_id):
+	var button = food_buttons[food_id]
+	var visuals = food_button_visuals[food_id]
+	var is_unlocked = GameData.is_food_unlocked(food_id)
+
+	button.texture_normal = visuals["unlocked_texture"] if is_unlocked else visuals["locked_texture"]
+	button.disabled = is_unlocked
 
 func try_unlock_food(food_id):
 	if GameData.is_food_unlocked(food_id):
@@ -32,8 +63,10 @@ func try_unlock_food(food_id):
 
 	if not GameData.unlock_food(food_id):
 		print("Not enough coins")
+		return
 
-	update_ui()
+	update_coin_label()
+	update_food_button(food_id)
 
 func _on_donut_button_pressed() -> void:
 	AudioManager.play_ui_click()
