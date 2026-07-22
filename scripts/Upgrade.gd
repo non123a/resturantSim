@@ -4,6 +4,7 @@ const MAX_UPGRADE_LEVEL = 5
 const UPGRADE_COSTS = [75, 150, 275, 450, 650]
 
 func _ready():
+	AudioManager.play_bgm_dashboard()
 	update_ui()
 
 func update_ui():
@@ -23,6 +24,8 @@ func get_upgrade_cost(upgrade_id):
 
 
 func _on_cook_upgrade_button_pressed():
+	AudioManager.play_ui_click()
+
 	if GameData.upgrades["cook_speed"] >= MAX_UPGRADE_LEVEL:
 		return
 
@@ -37,6 +40,8 @@ func _on_cook_upgrade_button_pressed():
 
 
 func _on_income_upgrade_button_pressed():
+	AudioManager.play_ui_click()
+
 	if GameData.upgrades["income"] >= MAX_UPGRADE_LEVEL:
 		return
 
@@ -51,4 +56,5 @@ func _on_income_upgrade_button_pressed():
 
 
 func _on_back_button_pressed():
+	AudioManager.play_ui_click()
 	get_tree().change_scene_to_file("res://scenes/dashboard/dashboard.tscn")

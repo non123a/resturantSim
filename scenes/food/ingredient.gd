@@ -49,6 +49,7 @@ func _input(event):
 
 			dragging = false
 			drop_in_progress = true
+			AudioManager.play_drop()
 
 			var accepted = await get_tree().current_scene.try_drop_ingredient(self)
 			if not accepted:
@@ -84,6 +85,7 @@ func begin_drag_at(position):
 
 	set_home_position(position)
 	dragging = true
+	AudioManager.play_drag()
 
 
 func get_ingredient_name():

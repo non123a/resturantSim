@@ -34,6 +34,7 @@ var combo_timer = 0.0
 var combo_window = 10.0  # seconds to keep combo alive
 
 func _ready():
+	AudioManager.play_bgm_gameplay()
 	initialize_ingredient_registry()
 	initialize_prep_slots()
 
@@ -229,10 +230,12 @@ func end_game():
 	GameData.save_game()
 
 func _on_restart_button_pressed() -> void:
+	AudioManager.play_ui_click()
 	get_tree().reload_current_scene()
 
 
 func _on_button_pressed() -> void:
+	AudioManager.play_ui_click()
 	get_tree().change_scene_to_file("res://scenes/dashboard/dashboard.tscn")
 
 
@@ -581,6 +584,7 @@ func try_serve_customer_with_food(customer, food_item):
 	add_coins(reward)
 
 	print("Served:", served_food_id)
+	AudioManager.play_drop()
 
 	remove_ingredient_from_prep_slots(food_item)
 	consume_food_item(food_item)
