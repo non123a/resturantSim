@@ -14,6 +14,11 @@ var upgrades = {
 var last_loaded_save_data = {}
 var save_existed_on_start = false
 var start_menu_seen = false
+var force_intro_after_reset = false
+var campaign_failed = false
+var lifetime_coins_earned = 0
+var customers_served = 0
+var highest_combo = 0
 
 var foods = {
 	"donut": {
@@ -221,11 +226,49 @@ func normalize_upgrades():
 
 
 func should_show_start_menu():
-	return save_existed_on_start and not start_menu_seen
+	return campaign_failed or (save_existed_on_start and not start_menu_seen)
+
+
+func has_save_file():
+	return FileAccess.file_exists("user://savegame.save")
+
+
+func should_play_intro():
+	return force_intro_after_reset or not has_save_file()
+
+
+func mark_intro_played():
+	force_intro_after_reset = false
 
 
 func mark_start_menu_seen():
 	start_menu_seen = true
+
+
+func add_lifetime_coins(amount):
+	lifetime_coins_earned += max(amount, 0)
+
+
+func record_customer_served(combo_count):
+	customers_served += 1
+	highest_combo = max(highest_combo, combo_count)
+
+
+func mark_campaign_failed():
+	campaign_failed = true
+	save_game()
+
+
+func get_campaign_stats_text():
+	var weeks_survived = max(DebtManager.current_week - 1, 0)
+	var days_played = max(DebtManager.current_day - 1, 0)
+	return \
+		"Weeks Survived: " + str(weeks_survived) + \
+		"\nDays Played: " + str(days_played) + \
+		"\nLifetime Coins Earned: " + str(lifetime_coins_earned) + \
+		"\nBest Run Coins: " + str(best_coins) + \
+		"\nCustomers Served: " + str(customers_served) + \
+		"\nHighest Combo: " + str(highest_combo)
 
 
 func reset_progress():
@@ -235,6 +278,10 @@ func reset_progress():
 		"cook_speed": 0,
 		"income": 0
 	}
+	campaign_failed = false
+	lifetime_coins_earned = 0
+	customers_served = 0
+	highest_combo = 0
 	unlocked_foods = []
 	normalize_unlocked_foods()
 	normalize_upgrades()
@@ -244,6 +291,7 @@ func reset_progress():
 		debt_manager.reset_progress()
 
 	start_menu_seen = true
+	force_intro_after_reset = true
 	save_existed_on_start = true
 	save_game()
 
@@ -255,7 +303,11 @@ func save_game():
 		"coins": coins,
 		"best_coins": best_coins,
 		"upgrades": upgrades,
-		"unlocked_foods": unlocked_foods
+		"unlocked_foods": unlocked_foods,
+		"campaign_failed": campaign_failed,
+		"lifetime_coins_earned": lifetime_coins_earned,
+		"customers_served": customers_served,
+		"highest_combo": highest_combo
 	}
 
 	var debt_manager = get_node_or_null("/root/DebtManager")
@@ -282,5 +334,9 @@ func load_game():
 	best_coins = data.get("best_coins", best_coins)
 	upgrades = data.get("upgrades", upgrades)
 	unlocked_foods = data.get("unlocked_foods", unlocked_foods)
+	campaign_failed = data.get("campaign_failed", campaign_failed)
+	lifetime_coins_earned = data.get("lifetime_coins_earned", lifetime_coins_earned)
+	customers_served = data.get("customers_served", customers_served)
+	highest_combo = data.get("highest_combo", highest_combo)
 	normalize_unlocked_foods()
 	normalize_upgrades()

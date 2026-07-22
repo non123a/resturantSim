@@ -185,6 +185,7 @@ func _process(delta):
 func add_coins(amount):
 	run_coins += amount
 	GameData.coins += amount
+	GameData.add_lifetime_coins(amount)
 	
 	print("Run Coins:", run_coins)
 	print("Total Coins:", GameData.coins)
@@ -205,6 +206,7 @@ func end_game():
 	print("Game Over!")
 	print("Run Coins:", run_coins)
 	var debt_result = DebtManager.complete_run(run_coins)
+	var debt_failed = debt_result["debt_failed"]
 	
 	# ✅ SAVE BEST RECORD (ONLY THIS)
 	if run_coins > GameData.best_coins:
@@ -213,21 +215,33 @@ func end_game():
 	
 	# ✅ SHOW CORRECT DATA
 	$CanvasLayer/EndPanel.visible = true
-	var result_text = \
-		"Run: " + str(run_coins) + \
-		"\nBest: " + str(GameData.best_coins) + \
-		"\n\n" + DebtManager.get_debt_summary_text()
-	if debt_result["week_advanced"]:
-		result_text += "\nDebt Paid! New week started."
-	if debt_result["debt_failed"]:
-		result_text += "\nDebt Failed!"
+	var result_text = ""
+	if debt_failed:
+		GameData.mark_campaign_failed()
+		result_text = \
+			"Restaurant Closed" + \
+			"\nYou failed to pay this week's rent." + \
+			"\n\n" + GameData.get_campaign_stats_text()
+		$CanvasLayer/EndPanel/RestartButton.visible = false
+		$CanvasLayer/EndPanel/BackButton.text = "Dashboard"
+		$CanvasLayer/EndPanel/NewGameButton.visible = false
+	else:
+		$CanvasLayer/EndPanel/RestartButton.visible = true
+		$CanvasLayer/EndPanel/NewGameButton.visible = false
+		result_text = \
+			"Run: " + str(run_coins) + \
+			"\nBest: " + str(GameData.best_coins) + \
+			"\n\n" + DebtManager.get_debt_summary_text()
+		if debt_result["week_advanced"]:
+			result_text += "\nDebt Paid! New week started."
 	$CanvasLayer/EndPanel/ResultLabel.text = result_text
 	#for c in customers:
 		#c.stop_all()
 	for c in customers:
 		if is_instance_valid(c):
 			c.stop_all()
-	GameData.save_game()
+	if not debt_failed:
+		GameData.save_game()
 
 func _on_restart_button_pressed() -> void:
 	AudioManager.play_ui_click()
@@ -237,6 +251,19 @@ func _on_restart_button_pressed() -> void:
 func _on_button_pressed() -> void:
 	AudioManager.play_ui_click()
 	get_tree().change_scene_to_file("res://scenes/dashboard/dashboard.tscn")
+
+
+func _on_new_game_button_pressed() -> void:
+	AudioManager.play_ui_click()
+	$CanvasLayer/EndPanel/NewGameConfirm.get_ok_button().text = "Confirm"
+	$CanvasLayer/EndPanel/NewGameConfirm.get_cancel_button().text = "Cancel"
+	$CanvasLayer/EndPanel/NewGameConfirm.popup_centered()
+
+
+func _on_new_game_confirm_confirmed() -> void:
+	AudioManager.play_ui_click()
+	GameData.reset_progress()
+	get_tree().change_scene_to_file("res://scenes/intro/Intro.tscn")
 
 
 func try_drop_ingredient(ingredient):
@@ -579,6 +606,7 @@ func try_serve_customer_with_food(customer, food_item):
 	combo += 1
 	combo_timer = combo_window
 	update_combo_ui()
+	GameData.record_customer_served(combo)
 
 	var reward = calculate_reward(served_food_id)
 	add_coins(reward)

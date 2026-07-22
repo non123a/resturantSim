@@ -954,7 +954,6 @@ offset_bottom = 163.0
 text = "Coin: 0"
 
 [node name="ComboLabel" type="Label" parent="CanvasLayer"]
-visible = false
 offset_left = 1211.0
 offset_top = 143.0
 offset_right = 1251.0
@@ -1007,6 +1006,26 @@ offset_top = 389.0
 offset_right = 835.0
 offset_bottom = 420.0
 text = "BACK"
+
+[node name="NewGameButton" type="Button" parent="CanvasLayer/EndPanel"]
+visible = false
+layout_mode = 0
+offset_left = 652.0
+offset_top = 435.0
+offset_right = 776.0
+offset_bottom = 468.0
+text = "New Game"
+
+[node name="NewGameConfirm" type="ConfirmationDialog" parent="CanvasLayer/EndPanel"]
+title = "Start a New Game?"
+dialog_text = "This will permanently erase all progress.
+
+• Coins
+• Upgrades
+• Food Unlocks
+• Current Week
+• Debt Progress
+• Best Run"
 
 [node name="KitchenMap" type="TileMapLayer" parent="."]
 visible = false
@@ -1277,3 +1296,5 @@ food_id = "jelly"
 
 [connection signal="pressed" from="CanvasLayer/EndPanel/RestartButton" to="." method="_on_restart_button_pressed"]
 [connection signal="pressed" from="CanvasLayer/EndPanel/BackButton" to="." method="_on_button_pressed"]
+[connection signal="pressed" from="CanvasLayer/EndPanel/NewGameButton" to="." method="_on_new_game_button_pressed"]
+[connection signal="confirmed" from="CanvasLayer/EndPanel/NewGameConfirm" to="." method="_on_new_game_confirm_confirmed"]

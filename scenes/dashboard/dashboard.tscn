@@ -84,7 +84,7 @@ offset_left = 18.0
 offset_top = 52.0
 offset_right = 334.0
 offset_bottom = 84.0
-max_value = 300.0
+max_value = 1.0
 show_percentage = false
 
 [node name="DebtProgressLabel" type="Label" parent="DebtPanel"]
