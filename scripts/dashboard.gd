@@ -3,6 +3,7 @@ extends Control
 func _on_play_button_pressed():
 	AudioManager.play_ui_click()
 	if GameData.campaign_failed:
+		AudioManager.play_error()
 		show_start_menu()
 		return
 

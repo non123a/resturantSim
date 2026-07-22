@@ -6,6 +6,7 @@ var gameplay_bgm = preload("res://assets/chimengAsset/sound/gameplay_sound.mp3")
 var ui_click_sound = preload("res://assets/chimengAsset/sound/sound1.ogg")
 var drag_sound = preload("res://assets/chimengAsset/sound/sound2.ogg")
 var drop_sound = preload("res://assets/chimengAsset/sound/sound3.ogg")
+var error_sound = preload("res://assets/chimengAsset/sound/false.ogg")
 
 var bgm_volume_db = -10.0
 var sfx_volume_db = -4.0
@@ -30,6 +31,10 @@ func play_drag():
 
 func play_drop():
 	play_sfx(drop_sound)
+
+
+func play_error():
+	play_sfx(error_sound)
 
 
 func play_bgm_dashboard():

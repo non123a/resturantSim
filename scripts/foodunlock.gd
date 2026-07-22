@@ -59,10 +59,12 @@ func update_food_button(food_id):
 
 func try_unlock_food(food_id):
 	if GameData.is_food_unlocked(food_id):
+		AudioManager.play_error()
 		return
 
 	if not GameData.unlock_food(food_id):
 		print("Not enough coins")
+		AudioManager.play_error()
 		return
 
 	update_coin_label()

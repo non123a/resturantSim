@@ -37,66 +37,66 @@ text = "TITLE LABEL:
 
 [node name="CoinLabel" type="Label" parent="."]
 layout_mode = 0
-offset_left = 410.0
-offset_top = 192.0
-offset_right = 491.0
-offset_bottom = 232.0
+offset_left = 400.0
+offset_top = 242.0
+offset_right = 481.0
+offset_bottom = 282.0
 theme_override_colors/font_color = Color(1, 1, 0.14509805, 1)
 theme_override_font_sizes/font_size = 20
 text = "COIN"
 
 [node name="CookLevelLabel" type="Label" parent="."]
 layout_mode = 0
-offset_left = 411.0
-offset_top = 222.0
-offset_right = 510.0
-offset_bottom = 245.0
+offset_left = 401.0
+offset_top = 272.0
+offset_right = 524.0
+offset_bottom = 300.0
 theme_override_colors/font_color = Color(1, 1, 0.14509805, 1)
 theme_override_font_sizes/font_size = 20
 text = "COIN LEVEL: "
 
 [node name="IncomeLevelLabel" type="Label" parent="."]
 layout_mode = 0
-offset_left = 412.0
-offset_top = 254.0
-offset_right = 483.0
-offset_bottom = 277.0
+offset_left = 402.0
+offset_top = 304.0
+offset_right = 491.0
+offset_bottom = 332.0
 theme_override_colors/font_color = Color(1, 1, 0.14509805, 1)
 theme_override_font_sizes/font_size = 20
 text = "IMCOME:"
 
 [node name="CookUpgradeButton" type="TextureButton" parent="."]
 layout_mode = 0
-offset_left = 630.0
-offset_top = 164.0
-offset_right = 824.0
-offset_bottom = 224.0
+offset_left = 620.0
+offset_top = 214.0
+offset_right = 814.0
+offset_bottom = 274.0
 texture_normal = ExtResource("3_16dcg")
 ignore_texture_size = true
 stretch_mode = 0
 
 [node name="IncomeUpgradeButton" type="TextureButton" parent="."]
 layout_mode = 0
-offset_left = 634.0
-offset_top = 226.0
-offset_right = 819.0
-offset_bottom = 285.0
+offset_left = 624.0
+offset_top = 276.0
+offset_right = 809.0
+offset_bottom = 335.0
 texture_normal = ExtResource("4_6jq58")
 ignore_texture_size = true
 stretch_mode = 0
 
 [node name="BackButton" type="TextureButton" parent="."]
 layout_mode = 0
-offset_left = 639.0
-offset_top = 295.0
-offset_right = 821.0
-offset_bottom = 366.0
+offset_left = 485.0
+offset_top = 503.0
+offset_right = 667.0
+offset_bottom = 566.0
 texture_normal = ExtResource("5_mijoj")
 ignore_texture_size = true
 stretch_mode = 0
 
 [node name="Coins" type="Sprite2D" parent="."]
-position = Vector2(550, 209)
+position = Vector2(540, 259)
 scale = Vector2(0.08543687, 0.09206706)
 texture = ExtResource("6_16dcg")
 

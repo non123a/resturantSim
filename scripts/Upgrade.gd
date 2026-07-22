@@ -27,6 +27,7 @@ func _on_cook_upgrade_button_pressed():
 	AudioManager.play_ui_click()
 
 	if GameData.upgrades["cook_speed"] >= MAX_UPGRADE_LEVEL:
+		AudioManager.play_error()
 		return
 
 	var cost = get_upgrade_cost("cook_speed")
@@ -35,6 +36,8 @@ func _on_cook_upgrade_button_pressed():
 		GameData.coins -= cost
 		GameData.upgrades["cook_speed"] += 1
 		GameData.save_game()
+	else:
+		AudioManager.play_error()
 	
 	update_ui()
 
@@ -43,6 +46,7 @@ func _on_income_upgrade_button_pressed():
 	AudioManager.play_ui_click()
 
 	if GameData.upgrades["income"] >= MAX_UPGRADE_LEVEL:
+		AudioManager.play_error()
 		return
 
 	var cost = get_upgrade_cost("income")
@@ -51,6 +55,8 @@ func _on_income_upgrade_button_pressed():
 		GameData.coins -= cost
 		GameData.upgrades["income"] += 1
 		GameData.save_game()
+	else:
+		AudioManager.play_error()
 	
 	update_ui()
 

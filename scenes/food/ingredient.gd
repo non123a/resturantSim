@@ -53,6 +53,7 @@ func _input(event):
 
 			var accepted = await get_tree().current_scene.try_drop_ingredient(self)
 			if not accepted:
+				AudioManager.play_error()
 				global_position = start_position
 
 			if not is_queued_for_deletion():
