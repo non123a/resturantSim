@@ -983,10 +983,10 @@ texture = ExtResource("3_ii537")
 [node name="ResultLabel" type="Label" parent="CanvasLayer/EndPanel"]
 modulate = Color(0.56483185, 0.03564218, 0.11091166, 1)
 layout_mode = 0
-offset_left = 609.0
-offset_top = 292.0
-offset_right = 924.0
-offset_bottom = 429.0
+offset_left = 600.0
+offset_top = 289.0
+offset_right = 915.0
+offset_bottom = 426.0
 theme_override_font_sizes/font_size = 32
 text = "Game Over"
 horizontal_alignment = 1

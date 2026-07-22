@@ -1,5 +1,7 @@
 extends Node
 
+signal debt_changed
+
 var week_length = 3
 var starting_debt = 300
 var debt_increase_per_week = 75
@@ -40,6 +42,7 @@ func complete_run(run_income):
 			debt_failed = true
 			result["debt_failed"] = true
 
+	debt_changed.emit()
 	return result
 
 
@@ -68,6 +71,17 @@ func load_save_data(data):
 	debt_progress = int(data.get("debt_progress", 0))
 	debt_failed = false
 	normalize_debt_state()
+	debt_changed.emit()
+
+
+func reset_progress():
+	current_day = 1
+	current_week = 1
+	debt_amount = starting_debt
+	days_remaining = week_length
+	debt_progress = 0
+	debt_failed = false
+	debt_changed.emit()
 
 
 func normalize_debt_state():

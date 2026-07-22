@@ -63,6 +63,46 @@ offset_top = 322.0
 offset_right = 1187.0
 offset_bottom = 638.0
 
+[node name="DebtPanel" type="Panel" parent="."]
+layout_mode = 0
+offset_left = 857.0
+offset_top = 414.0
+offset_right = 1209.0
+offset_bottom = 585.0
+
+[node name="WeekLabel" type="Label" parent="DebtPanel"]
+layout_mode = 0
+offset_left = 18.0
+offset_top = 15.0
+offset_right = 328.0
+offset_bottom = 38.0
+text = "Week 1"
+
+[node name="DebtProgressBar" type="ProgressBar" parent="DebtPanel"]
+layout_mode = 0
+offset_left = 18.0
+offset_top = 52.0
+offset_right = 334.0
+offset_bottom = 84.0
+max_value = 300.0
+show_percentage = false
+
+[node name="DebtProgressLabel" type="Label" parent="DebtPanel"]
+layout_mode = 0
+offset_left = 18.0
+offset_top = 94.0
+offset_right = 334.0
+offset_bottom = 119.0
+text = "0 / 300"
+
+[node name="DaysRemainingLabel" type="Label" parent="DebtPanel"]
+layout_mode = 0
+offset_left = 18.0
+offset_top = 128.0
+offset_right = 334.0
+offset_bottom = 153.0
+text = "Days Remaining: 3"
+
 [node name="Unlock New Food" type="TextureButton" parent="."]
 layout_mode = 0
 offset_left = 502.0
@@ -73,6 +113,53 @@ texture_normal = ExtResource("4_yxfa0")
 ignore_texture_size = true
 stretch_mode = 0
 
+[node name="StartMenu" type="Panel" parent="."]
+visible = false
+layout_mode = 0
+offset_left = 12.0
+offset_top = 44.0
+offset_right = 1292.0
+offset_bottom = 764.0
+
+[node name="TitleLabel" type="Label" parent="StartMenu"]
+layout_mode = 0
+offset_left = 498.0
+offset_top = 213.0
+offset_right = 789.0
+offset_bottom = 245.0
+text = "Undersea Restaurant"
+horizontal_alignment = 1
+
+[node name="ContinueButton" type="Button" parent="StartMenu"]
+layout_mode = 0
+offset_left = 524.0
+offset_top = 285.0
+offset_right = 764.0
+offset_bottom = 345.0
+text = "Continue"
+
+[node name="NewGameButton" type="Button" parent="StartMenu"]
+layout_mode = 0
+offset_left = 524.0
+offset_top = 365.0
+offset_right = 764.0
+offset_bottom = 425.0
+text = "New Game"
+
+[node name="NewGameConfirm" type="ConfirmationDialog" parent="."]
+title = "Start a New Game?"
+dialog_text = "This will permanently erase all progress.
+
+• Coins
+• Upgrades
+• Food Unlocks
+• Current Week
+• Debt Progress
+• Best Run"
+
 [connection signal="pressed" from="PlayButton" to="." method="_on_play_button_pressed"]
 [connection signal="pressed" from="Upgrade" to="." method="_on_upgrade_pressed"]
 [connection signal="pressed" from="Unlock New Food" to="." method="_on_unlock_new_food_pressed"]
+[connection signal="pressed" from="StartMenu/ContinueButton" to="." method="_on_continue_button_pressed"]
+[connection signal="pressed" from="StartMenu/NewGameButton" to="." method="_on_new_game_button_pressed"]
+[connection signal="confirmed" from="NewGameConfirm" to="." method="_on_new_game_confirm_confirmed"]

@@ -1,5 +1,6 @@
 extends Node
 func _ready():
+	save_existed_on_start = FileAccess.file_exists("user://savegame.save")
 	load_game()
 	normalize_unlocked_foods()
 	normalize_upgrades()
@@ -11,6 +12,8 @@ var upgrades = {
 	"income": 0
 }
 var last_loaded_save_data = {}
+var save_existed_on_start = false
+var start_menu_seen = false
 
 var foods = {
 	"donut": {
@@ -217,6 +220,34 @@ func normalize_upgrades():
 	upgrades["income"] = clamp(upgrades.get("income", 0), 0, 5)
 
 
+func should_show_start_menu():
+	return save_existed_on_start and not start_menu_seen
+
+
+func mark_start_menu_seen():
+	start_menu_seen = true
+
+
+func reset_progress():
+	coins = 0
+	best_coins = 0
+	upgrades = {
+		"cook_speed": 0,
+		"income": 0
+	}
+	unlocked_foods = []
+	normalize_unlocked_foods()
+	normalize_upgrades()
+
+	var debt_manager = get_node_or_null("/root/DebtManager")
+	if debt_manager != null:
+		debt_manager.reset_progress()
+
+	start_menu_seen = true
+	save_existed_on_start = true
+	save_game()
+
+
 func save_game():
 	var file = FileAccess.open("user://savegame.save", FileAccess.WRITE)
 
@@ -231,6 +262,7 @@ func save_game():
 	if debt_manager != null:
 		data.merge(debt_manager.get_save_data(), true)
 
+	last_loaded_save_data = data
 	file.store_var(data)
 
 
