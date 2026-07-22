@@ -1,11 +1,13 @@
-[gd_scene load_steps=39 format=4 uid="uid://bqi216w3j6cmc"]
+[gd_scene load_steps=41 format=4 uid="uid://bqi216w3j6cmc"]
 
 [ext_resource type="Script" uid="uid://cg6d44c6l386l" path="res://scripts/GameManager.gd" id="1_hyk8p"]
 [ext_resource type="Texture2D" uid="uid://eeb62sb2k455" path="res://assets/chimengAsset/bg-img.jpg" id="2_7nlll"]
 [ext_resource type="Texture2D" uid="uid://rhuq03uk5wgp" path="res://assets/chimengAsset/img-end.png" id="3_ii537"]
 [ext_resource type="Texture2D" uid="uid://b2ayflvuyv8bl" path="res://professional_kitchen/professional_kitchen_withshadows.png" id="3_k2fmo"]
 [ext_resource type="PackedScene" uid="uid://cv3n6a334xap5" path="res://scenes/food/Ingredient.tscn" id="4_6q06x"]
+[ext_resource type="Texture2D" uid="uid://b3ukmgvrujvdu" path="res://assets/chimengAsset/icon2/gameover no bg/restart.png" id="4_tbnf8"]
 [ext_resource type="Texture2D" uid="uid://c87iv7v831pyv" path="res://assets/chimengAsset/steak/raw.png" id="5_ow5a4"]
+[ext_resource type="Texture2D" uid="uid://3buwcaudabpi" path="res://assets/chimengAsset/icon2/gameover no bg/back.png" id="5_r1bmu"]
 [ext_resource type="Texture2D" uid="uid://w5v1o5xk0uvh" path="res://assets/chimengAsset/steak/beefs.png" id="6_hujxm"]
 [ext_resource type="Texture2D" uid="uid://blerxr4pqu723" path="res://assets/chimengAsset/steak/vegetables.png" id="6_ow5a4"]
 [ext_resource type="Texture2D" uid="uid://m8ony3vwoxdq" path="res://assets/chimengAsset/steak/steaks.png" id="8_yyfjg"]
@@ -982,33 +984,36 @@ texture = ExtResource("3_ii537")
 [node name="ResultLabel" type="Label" parent="CanvasLayer/EndPanel"]
 modulate = Color(0.56483185, 0.03564218, 0.11091166, 1)
 layout_mode = 0
-offset_left = 600.0
-offset_top = 289.0
-offset_right = 915.0
-offset_bottom = 426.0
+offset_left = 591.0
+offset_top = 286.0
+offset_right = 906.0
+offset_bottom = 423.0
 theme_override_font_sizes/font_size = 32
 text = "Game Over"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="RestartButton" type="Button" parent="CanvasLayer/EndPanel"]
+[node name="RestartButton" type="TextureButton" parent="CanvasLayer/EndPanel"]
 layout_mode = 0
-offset_left = 692.0
-offset_top = 390.0
-offset_right = 757.0
-offset_bottom = 421.0
-text = "Restart"
-
-[node name="BackButton" type="Button" parent="CanvasLayer/EndPanel"]
-layout_mode = 0
-offset_left = 785.0
-offset_top = 389.0
-offset_right = 835.0
+offset_left = 642.0
+offset_top = 372.0
+offset_right = 750.0
 offset_bottom = 420.0
-text = "BACK"
+texture_normal = ExtResource("4_tbnf8")
+ignore_texture_size = true
+stretch_mode = 0
+
+[node name="BackButton" type="TextureButton" parent="CanvasLayer/EndPanel"]
+layout_mode = 0
+offset_left = 744.0
+offset_top = 375.0
+offset_right = 842.0
+offset_bottom = 417.0
+texture_normal = ExtResource("5_r1bmu")
+ignore_texture_size = true
+stretch_mode = 0
 
 [node name="NewGameButton" type="Button" parent="CanvasLayer/EndPanel"]
-visible = false
 layout_mode = 0
 offset_left = 652.0
 offset_top = 435.0
@@ -1017,7 +1022,9 @@ offset_bottom = 468.0
 text = "New Game"
 
 [node name="NewGameConfirm" type="ConfirmationDialog" parent="CanvasLayer/EndPanel"]
+oversampling_override = 1.0
 title = "Start a New Game?"
+size = Vector2i(327, 262)
 dialog_text = "This will permanently erase all progress.
 
 • Coins
