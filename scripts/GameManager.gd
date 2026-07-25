@@ -220,6 +220,10 @@ func end_game():
 		$CanvasLayer/EndPanel/RestartButton.visible = false
 		$CanvasLayer/EndPanel/BackButton.visible = false
 		$CanvasLayer/NewGameConfirm.hide()
+		$CanvasLayer/EndPanel/ResultLabel.text = \
+			"Restaurant Closed" + \
+			"\nYou failed to pay this week's rent." + \
+			"\n\n" + GameData.get_campaign_stats_text()
 	else:
 		# ✅ SHOW CORRECT DATA
 		$CanvasLayer/EndPanel.visible = true
