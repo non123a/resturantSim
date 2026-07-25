@@ -11,8 +11,6 @@ func _on_play_button_pressed():
 
 func _ready():
 	AudioManager.play_bgm_dashboard()
-	$NewGameConfirm.get_ok_button().text = "Confirm"
-	$NewGameConfirm.get_cancel_button().text = "Cancel"
 	if not DebtManager.debt_changed.is_connected(_on_debt_changed):
 		DebtManager.debt_changed.connect(_on_debt_changed)
 	update_dashboard_ui()
@@ -64,11 +62,6 @@ func _on_continue_button_pressed():
 
 
 func _on_new_game_button_pressed():
-	AudioManager.play_ui_click()
-	$NewGameConfirm.popup_centered()
-
-
-func _on_new_game_confirm_confirmed():
 	AudioManager.play_ui_click()
 	GameData.reset_progress()
 	get_tree().change_scene_to_file("res://scenes/intro/Intro.tscn")

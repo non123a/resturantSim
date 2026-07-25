@@ -146,20 +146,8 @@ offset_right = 764.0
 offset_bottom = 425.0
 text = "New Game"
 
-[node name="NewGameConfirm" type="ConfirmationDialog" parent="."]
-title = "Start a New Game?"
-dialog_text = "This will permanently erase all progress.
-
-• Coins
-• Upgrades
-• Food Unlocks
-• Current Week
-• Debt Progress
-• Best Run"
-
 [connection signal="pressed" from="PlayButton" to="." method="_on_play_button_pressed"]
 [connection signal="pressed" from="Upgrade" to="." method="_on_upgrade_pressed"]
 [connection signal="pressed" from="Unlock New Food" to="." method="_on_unlock_new_food_pressed"]
 [connection signal="pressed" from="StartMenu/ContinueButton" to="." method="_on_continue_button_pressed"]
 [connection signal="pressed" from="StartMenu/NewGameButton" to="." method="_on_new_game_button_pressed"]
-[connection signal="confirmed" from="NewGameConfirm" to="." method="_on_new_game_confirm_confirmed"]
