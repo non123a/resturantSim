@@ -17,6 +17,16 @@ func _ready():
 	home_position = global_position
 
 	$Sprite2D.texture = ingredient_texture
+	debug_lifecycle(
+		"spawn",
+		[
+			"parent", get_parent().name if get_parent() != null else "none",
+			"spawn_type", get_meta("debug_spawn_type", "scene"),
+			"spawn_source_instance_id", get_meta("debug_spawn_source_instance_id", "none"),
+			"spawn_recipe", get_meta("debug_spawn_recipe", "none"),
+			"spawn_station", get_meta("debug_spawn_station", "none")
+		]
+	)
 
 
 func _process(delta):
@@ -50,6 +60,7 @@ func _input(event):
 			dragging = false
 			drop_in_progress = true
 			AudioManager.play_drop()
+			debug_lifecycle("drag end", ["position", global_position])
 
 			var accepted = await get_tree().current_scene.try_drop_ingredient(self)
 			if not accepted:
@@ -62,7 +73,7 @@ func _input(event):
 
 func spawn_drag_instance():
 	var instance = duplicate()
-	get_parent().add_child(instance)
+	debug_lifecycle("spawn drag clone requested", ["clone_instance_id", instance.get_instance_id()])
 
 	instance.is_source = false
 	instance.ingredient_name = ingredient_name
@@ -71,9 +82,12 @@ func spawn_drag_instance():
 	instance.food_id = food_id
 	instance.dragging = false
 	instance.drop_in_progress = false
+	instance.set_meta("debug_spawn_type", "drag_clone")
+	instance.set_meta("debug_spawn_source_instance_id", get_instance_id())
 	instance.visible = true
 	instance.monitoring = true
 	instance.input_pickable = true
+	get_parent().add_child(instance)
 	instance.set_process(true)
 	instance.set_process_input(true)
 	instance.get_node("Sprite2D").texture = ingredient_texture
@@ -86,6 +100,7 @@ func begin_drag_at(position):
 
 	set_home_position(position)
 	dragging = true
+	debug_lifecycle("drag start", ["position", position])
 	AudioManager.play_drag()
 
 
@@ -103,3 +118,16 @@ func set_home_position(position):
 	start_position = position
 	home_position = position
 	global_position = position
+
+func debug_lifecycle(event_name, extra = []):
+	var data = [
+		"event", event_name,
+		"instance_id", get_instance_id(),
+		"name", name,
+		"ingredient", get_ingredient_name(),
+		"food_id", get_food_id(),
+		"is_source", is_source,
+		"queued", is_queued_for_deletion()
+	]
+	data.append_array(extra)
+	print("[IngredientLifecycle] ", data)

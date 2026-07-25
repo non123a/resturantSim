@@ -25,7 +25,7 @@ var customer_spawn_loop_active = false
 
 var run_coins = 0 
 
-var time_left = 60.0
+var time_left = 5.0
 var game_active = true
 
 
@@ -223,10 +223,11 @@ func end_game():
 			"\nYou failed to pay this week's rent." + \
 			"\n\n" + GameData.get_campaign_stats_text()
 		$CanvasLayer/EndPanel/RestartButton.visible = false
-		$CanvasLayer/EndPanel/BackButton.text = "Dashboard"
+		$CanvasLayer/EndPanel/BackButton.visible = true
 		$CanvasLayer/EndPanel/NewGameButton.visible = false
 	else:
 		$CanvasLayer/EndPanel/RestartButton.visible = true
+		$CanvasLayer/EndPanel/BackButton.visible = true
 		$CanvasLayer/EndPanel/NewGameButton.visible = false
 		result_text = \
 			"Run: " + str(run_coins) + \
@@ -253,20 +254,28 @@ func _on_button_pressed() -> void:
 	get_tree().change_scene_to_file("res://scenes/dashboard/dashboard.tscn")
 
 
-func _on_new_game_button_pressed() -> void:
-	AudioManager.play_ui_click()
-	$CanvasLayer/EndPanel/NewGameConfirm.get_ok_button().text = "Confirm"
-	$CanvasLayer/EndPanel/NewGameConfirm.get_cancel_button().text = "Cancel"
-	$CanvasLayer/EndPanel/NewGameConfirm.popup_centered()
+#func _on_new_game_button_pressed() -> void:
+	#AudioManager.play_ui_click()
+	#$CanvasLayer/EndPanel/NewGameConfirm.get_ok_button().text = "Confirm"
+	#$CanvasLayer/EndPanel/NewGameConfirm.get_cancel_button().text = "Cancel"
+	#$CanvasLayer/EndPanel/NewGameConfirm.popup_centered()
+#
+#
+#func _on_new_game_confirm_confirmed() -> void:
+	#AudioManager.play_ui_click()
+	#GameData.reset_progress()
+	#get_tree().change_scene_to_file("res://scenes/intro/Intro.tscn")
 
-
-func _on_new_game_confirm_confirmed() -> void:
+func _on_confirm_button_pressed() -> void:
 	AudioManager.play_ui_click()
+	$CanvasLayer/EndPanel/NewGameConfirm.hide()
+
 	GameData.reset_progress()
 	get_tree().change_scene_to_file("res://scenes/intro/Intro.tscn")
 
 
 func try_drop_ingredient(ingredient):
+	log_ingredient_lifecycle(ingredient, "drop route start", ["position", ingredient.global_position])
 
 	# ---------- STOVE ----------
 	var station_accepted = await try_drop_on_station(ingredient)
@@ -278,10 +287,12 @@ func try_drop_ingredient(ingredient):
 func try_drop_on_station(ingredient):
 
 	if stove_area.overlaps_area(ingredient):
+		log_ingredient_lifecycle(ingredient, "station assignment", ["station", "stove"])
 		return await try_process_single_input_recipe("stove", ingredient)
 
 	var prep_slot = get_overlapping_prep_slot(ingredient)
 	if prep_slot != null:
+		log_ingredient_lifecycle(ingredient, "station assignment", ["station", prep_slot.name])
 		return await try_drop_on_prep_slot(prep_slot, ingredient)
 
 
@@ -372,10 +383,12 @@ func process_prep_recipe(slot, recipe, input_instances):
 	prep_slot_busy_states[slot] = true
 	log_prep_slot(slot, "recipe matched", recipe["recipe_id"])
 	log_prep_slot(slot, "ingredients consumed", get_ingredient_names(input_instances))
+	log_recipe_lifecycle("recipe start", recipe, input_instances, ["station", slot.name])
 
 	lock_ingredient_instances(input_instances)
 
 	await get_tree().create_timer(get_recipe_duration(recipe)).timeout
+	log_recipe_lifecycle("recipe timer complete", recipe, input_instances, ["station", slot.name])
 
 	consume_ingredient_instances(input_instances)
 	clear_prep_slot(slot)
@@ -383,7 +396,10 @@ func process_prep_recipe(slot, recipe, input_instances):
 	var output = spawn_ingredient_instance(
 		recipe["output_ingredient"],
 		recipe["output_food_id"],
-		slot.global_position
+		slot.global_position,
+		"recipe_output",
+		recipe["recipe_id"],
+		slot.name
 	)
 	if output != null:
 		assign_ingredient_to_prep_slot(slot, output)
@@ -442,6 +458,8 @@ func assign_ingredient_to_prep_slot(slot, ingredient):
 		prep_slot_ingredient_instances[slot].append(ingredient)
 
 	prep_ingredient_slot_owners[ingredient] = slot
+	log_ingredient_lifecycle(ingredient, "ownership transfer", ["owner", slot.name])
+	log_ingredient_lifecycle(ingredient, "prep assignment", ["slot", slot.name, "slot_contents", get_prep_slot_contents(slot)])
 	log_prep_slot(slot, "ingredient assigned", [ingredient.get_ingredient_name()])
 
 func remove_ingredient_from_prep_slots(ingredient):
@@ -457,11 +475,13 @@ func remove_ingredient_from_prep_slots(ingredient):
 	prep_ingredient_slot_owners.erase(ingredient)
 
 	if removed_from_slot != null:
+		log_ingredient_lifecycle(ingredient, "ownership transfer", ["owner", "none", "previous_owner", removed_from_slot.name])
 		log_prep_slot(removed_from_slot, "ingredient removed from slot", [ingredient.get_ingredient_name()])
 
 func clear_prep_slot(slot):
 	for ingredient in prep_slot_ingredient_instances[slot]:
 		if ingredient != null:
+			log_ingredient_lifecycle(ingredient, "ownership transfer", ["owner", "none", "previous_owner", slot.name, "reason", "clear_prep_slot"])
 			prep_ingredient_slot_owners.erase(ingredient)
 
 	prep_slot_ingredient_instances[slot] = []
@@ -479,6 +499,7 @@ func cleanup_prep_slot(slot):
 
 		var owner = prep_ingredient_slot_owners.get(ingredient)
 		if owner == null:
+			log_ingredient_lifecycle(ingredient, "stale reference repaired", ["slot", slot.name, "previous_owner", "none"])
 			prep_ingredient_slot_owners[ingredient] = slot
 			owner = slot
 
@@ -493,6 +514,49 @@ func get_prep_slot_contents(slot):
 
 func log_prep_slot(slot, message, data):
 	print("[", slot.name, "] ", message, ": ", data)
+
+func log_ingredient_lifecycle(ingredient, event_name, extra = []):
+	if ingredient == null:
+		print("[IngredientLifecycle] ", ["event", event_name, "instance_id", "null"])
+		return
+
+	if not is_instance_valid(ingredient):
+		print("[IngredientLifecycle] ", ["event", event_name, "instance_id", "invalid"])
+		return
+
+	if ingredient.has_method("debug_lifecycle"):
+		ingredient.debug_lifecycle(event_name, extra)
+		return
+
+	var data = [
+		"event", event_name,
+		"instance_id", ingredient.get_instance_id(),
+		"name", ingredient.name,
+		"queued", ingredient.is_queued_for_deletion()
+	]
+	data.append_array(extra)
+	print("[IngredientLifecycle] ", data)
+
+func log_recipe_lifecycle(event_name, recipe, input_instances, extra = []):
+	var data = [
+		"event", event_name,
+		"recipe", recipe["recipe_id"],
+		"inputs", get_ingredient_debug_refs(input_instances)
+	]
+	data.append_array(extra)
+	print("[RecipeLifecycle] ", data)
+
+func get_ingredient_debug_refs(ingredient_instances):
+	var refs = []
+	for ingredient in ingredient_instances:
+		if ingredient == null:
+			refs.append("null")
+		elif not is_instance_valid(ingredient):
+			refs.append("invalid")
+		else:
+			refs.append(str(ingredient.get_ingredient_name()) + "#" + str(ingredient.get_instance_id()))
+
+	return refs
 
 func get_prep_slot_name(slot):
 	if slot == null:
@@ -511,6 +575,7 @@ func try_process_single_input_recipe(station, ingredient):
 
 	ingredient.dragging = false
 	remove_ingredient_from_prep_slots(ingredient)
+	log_ingredient_lifecycle(ingredient, "station assignment", ["station", station, "recipe", recipe["recipe_id"]])
 
 	await process_recipe(recipe, ingredient.global_position, [ingredient])
 
@@ -518,15 +583,20 @@ func try_process_single_input_recipe(station, ingredient):
 
 func process_recipe(recipe, output_position, input_instances):
 	print("Processing recipe:", recipe["recipe_id"])
+	log_recipe_lifecycle("recipe start", recipe, input_instances, ["station", recipe["station"]])
 
 	await get_tree().create_timer(get_recipe_duration(recipe)).timeout
+	log_recipe_lifecycle("recipe timer complete", recipe, input_instances, ["station", recipe["station"]])
 
 	consume_ingredient_instances(input_instances)
 
 	var output = spawn_ingredient_instance(
 		recipe["output_ingredient"],
 		recipe["output_food_id"],
-		output_position
+		output_position,
+		"recipe_output",
+		recipe["recipe_id"],
+		recipe["station"]
 	)
 	if output == null:
 		return
@@ -540,7 +610,9 @@ func consume_ingredient_instances(ingredient_instances):
 			continue
 
 		ingredient.dragging = false
+		log_ingredient_lifecycle(ingredient, "recipe consumption", ["queued_before", ingredient.is_queued_for_deletion()])
 		remove_ingredient_from_prep_slots(ingredient)
+		log_ingredient_lifecycle(ingredient, "queue_free", ["reason", "recipe consumption"])
 		ingredient.queue_free()
 
 func get_ingredient_names(ingredient_instances):
@@ -553,20 +625,23 @@ func get_ingredient_names(ingredient_instances):
 
 	return ingredient_names
 
-func spawn_ingredient_instance(ingredient_name, food_id, output_position):
+func spawn_ingredient_instance(ingredient_name, food_id, output_position, spawn_type = "manual", recipe_id = "none", station = "none"):
 	var template = get_ingredient_node(ingredient_name)
 	if template == null:
 		return null
 
 	var instance = template.duplicate()
-	template.get_parent().add_child(instance)
 	instance.is_source = false
 	instance.food_id = food_id
 	instance.dragging = false
 	instance.drop_in_progress = false
+	instance.set_meta("debug_spawn_type", spawn_type)
+	instance.set_meta("debug_spawn_recipe", recipe_id)
+	instance.set_meta("debug_spawn_station", station)
 	instance.visible = true
 	instance.monitoring = true
 	instance.input_pickable = true
+	template.get_parent().add_child(instance)
 	instance.set_process(true)
 	instance.set_process_input(true)
 	instance.set_home_position(output_position)
@@ -613,6 +688,7 @@ func try_serve_customer_with_food(customer, food_item):
 
 	print("Served:", served_food_id)
 	AudioManager.play_drop()
+	log_ingredient_lifecycle(food_item, "serving", ["customer_instance_id", customer.get_instance_id(), "order", customer.order])
 
 	remove_ingredient_from_prep_slots(food_item)
 	consume_food_item(food_item)
@@ -643,4 +719,19 @@ func consume_food_item(food_item):
 		return
 
 	food_item.dragging = false
+	log_ingredient_lifecycle(food_item, "queue_free", ["reason", "serving"])
 	food_item.queue_free()
+
+
+func _on_yes_button_pressed() -> void:
+	AudioManager.play_ui_click()
+
+	$CanvasLayer/EndPanel/NewGameConfirm.hide()
+
+	GameData.reset_progress()
+	get_tree().change_scene_to_file("res://scenes/intro/Intro.tscn")
+
+func _on_no_button_pressed() -> void:
+	AudioManager.play_ui_click()
+
+	$CanvasLayer/EndPanel/NewGameConfirm.hide()

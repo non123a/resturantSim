@@ -35,7 +35,9 @@ func complete_run(run_income):
 	}
 
 	if days_remaining <= 0:
-		if debt_progress >= debt_amount:
+		var coins_variable_being_checked = max(GameData.coins, 0)
+		if coins_variable_being_checked >= debt_amount:
+			pay_weekly_debt()
 			advance_week()
 			result["week_advanced"] = true
 		else:
@@ -44,6 +46,12 @@ func complete_run(run_income):
 
 	debt_changed.emit()
 	return result
+
+
+func pay_weekly_debt():
+	var coins_before_rent = GameData.coins
+	var debt_paid = min(debt_amount, max(coins_before_rent, 0))
+	GameData.coins = max(coins_before_rent - debt_paid, 0)
 
 
 func advance_week():

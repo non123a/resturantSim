@@ -265,7 +265,7 @@ func get_campaign_stats_text():
 	return \
 		"Weeks Survived: " + str(weeks_survived) + \
 		"\nDays Played: " + str(days_played) + \
-		"\nLifetime Coins Earned: " + str(lifetime_coins_earned) + \
+		"\nLifetime Coins: " + str(lifetime_coins_earned) + \
 		"\nBest Run Coins: " + str(best_coins) + \
 		"\nCustomers Served: " + str(customers_served) + \
 		"\nHighest Combo: " + str(highest_combo)
