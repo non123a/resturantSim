@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3 uid="uid://bqers1v50jyal"]
+[gd_scene load_steps=13 format=3 uid="uid://bqers1v50jyal"]
 
 [ext_resource type="Script" uid="uid://bs4qevioffwv2" path="res://scripts/dashboard.gd" id="1_iwa43"]
 [ext_resource type="Texture2D" uid="uid://ctipqjgvtpsma" path="res://assets/chimengAsset/icon/photo_2026-07-21_18-28-18-removebg-preview.png" id="2_pq66u"]
@@ -6,8 +6,19 @@
 [ext_resource type="Script" uid="uid://b0s5lcljh8g0m" path="res://scenes/dashboard/play_button.gd" id="3_yxfa0"]
 [ext_resource type="Texture2D" uid="uid://dk4gid1ixre2f" path="res://assets/chimengAsset/icon/photo_2_2026-07-21_18-32-18-removebg-preview.png" id="4_yxfa0"]
 [ext_resource type="Texture2D" uid="uid://q38wwu208xu2" path="res://assets/chimengAsset/photo_2026-07-21_16-54-24.jpg" id="5_ha5bl"]
+[ext_resource type="Texture2D" uid="uid://dpdbdybm3k68t" path="res://assets/chimengAsset/asset part 3/start new game/start a new game.png" id="7_b62bk"]
+[ext_resource type="Texture2D" uid="uid://c7yj1fft8av7q" path="res://assets/chimengAsset/asset part 3/press esc keyboard/continues game.png" id="8_p4tim"]
+[ext_resource type="Texture2D" uid="uid://60v75bnyaeb6" path="res://assets/chimengAsset/asset part 3/start new game/new games.png" id="9_um2kx"]
 
 [sub_resource type="Theme" id="Theme_7agwo"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_continue_button"]
+atlas = ExtResource("8_p4tim")
+region = Rect2(27, 14, 1669, 463)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_new_game_button"]
+atlas = ExtResource("9_um2kx")
+region = Rect2(177, 225, 676, 213)
 
 [node name="Dashboard" type="Control"]
 layout_mode = 3
@@ -121,6 +132,15 @@ offset_top = 44.0
 offset_right = 1292.0
 offset_bottom = 764.0
 
+[node name="MenuBackground" type="TextureRect" parent="StartMenu"]
+layout_mode = 0
+offset_left = 168.0
+offset_top = 16.0
+offset_right = 1111.0
+offset_bottom = 703.0
+mouse_filter = 2
+texture = ExtResource("7_b62bk")
+
 [node name="TitleLabel" type="Label" parent="StartMenu"]
 layout_mode = 0
 offset_left = 498.0
@@ -130,21 +150,25 @@ offset_bottom = 245.0
 text = "Undersea Restaurant"
 horizontal_alignment = 1
 
-[node name="ContinueButton" type="Button" parent="StartMenu"]
+[node name="ContinueButton" type="TextureButton" parent="StartMenu"]
 layout_mode = 0
 offset_left = 524.0
 offset_top = 285.0
 offset_right = 764.0
 offset_bottom = 345.0
-text = "Continue"
+texture_normal = SubResource("AtlasTexture_continue_button")
+ignore_texture_size = true
+stretch_mode = 0
 
-[node name="NewGameButton" type="Button" parent="StartMenu"]
+[node name="NewGameButton" type="TextureButton" parent="StartMenu"]
 layout_mode = 0
 offset_left = 524.0
 offset_top = 365.0
 offset_right = 764.0
 offset_bottom = 425.0
-text = "New Game"
+texture_normal = SubResource("AtlasTexture_new_game_button")
+ignore_texture_size = true
+stretch_mode = 0
 
 [connection signal="pressed" from="PlayButton" to="." method="_on_play_button_pressed"]
 [connection signal="pressed" from="Upgrade" to="." method="_on_upgrade_pressed"]

@@ -1096,7 +1096,7 @@ position = Vector2(560, 569)
 shape = SubResource("RectangleShape2D_hujxm")
 
 [node name="PrepSlot1" type="Area2D" parent="Stations"]
-position = Vector2(433, 467)
+position = Vector2(447, 463)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Stations/PrepSlot1"]
 visible = false
@@ -1104,14 +1104,14 @@ position = Vector2(0, -1)
 shape = SubResource("RectangleShape2D_yyfjg")
 
 [node name="PrepSlot2" type="Area2D" parent="Stations"]
-position = Vector2(353, 465)
+position = Vector2(380, 464)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Stations/PrepSlot2"]
 visible = false
 shape = SubResource("RectangleShape2D_yyfjg")
 
 [node name="PrepSlot3" type="Area2D" parent="Stations"]
-position = Vector2(605, 468)
+position = Vector2(623, 468)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Stations/PrepSlot3"]
 visible = false
@@ -1119,7 +1119,7 @@ position = Vector2(1, 0)
 shape = SubResource("RectangleShape2D_yyfjg")
 
 [node name="PrepSlot4" type="Area2D" parent="Stations"]
-position = Vector2(521, 466)
+position = Vector2(558, 467)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Stations/PrepSlot4"]
 visible = false
