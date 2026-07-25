@@ -213,29 +213,27 @@ func end_game():
 		GameData.best_coins = run_coins
 		print("NEW RECORD!")
 	
-	# ✅ SHOW CORRECT DATA
-	$CanvasLayer/EndPanel.visible = true
-	var result_text = ""
 	if debt_failed:
 		GameData.mark_campaign_failed()
-		result_text = \
-			"Restaurant Closed" + \
-			"\nYou failed to pay this week's rent." + \
-			"\n\n" + GameData.get_campaign_stats_text()
+		$CanvasLayer/EndPanel.visible = true
+		$CanvasLayer/EndPanel/StartNewGameButton.visible = true
 		$CanvasLayer/EndPanel/RestartButton.visible = false
-		$CanvasLayer/EndPanel/BackButton.visible = true
-		$CanvasLayer/EndPanel/NewGameButton.visible = false
+		$CanvasLayer/EndPanel/BackButton.visible = false
+		$CanvasLayer/NewGameConfirm.hide()
 	else:
+		# ✅ SHOW CORRECT DATA
+		$CanvasLayer/EndPanel.visible = true
+		$CanvasLayer/EndPanel/StartNewGameButton.visible = false
 		$CanvasLayer/EndPanel/RestartButton.visible = true
 		$CanvasLayer/EndPanel/BackButton.visible = true
-		$CanvasLayer/EndPanel/NewGameButton.visible = false
-		result_text = \
+		$CanvasLayer/NewGameConfirm.hide()
+		var result_text = \
 			"Run: " + str(run_coins) + \
 			"\nBest: " + str(GameData.best_coins) + \
 			"\n\n" + DebtManager.get_debt_summary_text()
 		if debt_result["week_advanced"]:
 			result_text += "\nDebt Paid! New week started."
-	$CanvasLayer/EndPanel/ResultLabel.text = result_text
+		$CanvasLayer/EndPanel/ResultLabel.text = result_text
 	#for c in customers:
 		#c.stop_all()
 	for c in customers:
@@ -248,31 +246,15 @@ func _on_restart_button_pressed() -> void:
 	AudioManager.play_ui_click()
 	get_tree().reload_current_scene()
 
+func _on_start_new_game_button_pressed() -> void:
+	AudioManager.play_ui_click()
+	$CanvasLayer/NewGameConfirm/CancelButton.visible = false
+	$CanvasLayer/NewGameConfirm.show()
+
 
 func _on_button_pressed() -> void:
 	AudioManager.play_ui_click()
 	get_tree().change_scene_to_file("res://scenes/dashboard/dashboard.tscn")
-
-
-#func _on_new_game_button_pressed() -> void:
-	#AudioManager.play_ui_click()
-	#$CanvasLayer/EndPanel/NewGameConfirm.get_ok_button().text = "Confirm"
-	#$CanvasLayer/EndPanel/NewGameConfirm.get_cancel_button().text = "Cancel"
-	#$CanvasLayer/EndPanel/NewGameConfirm.popup_centered()
-#
-#
-#func _on_new_game_confirm_confirmed() -> void:
-	#AudioManager.play_ui_click()
-	#GameData.reset_progress()
-	#get_tree().change_scene_to_file("res://scenes/intro/Intro.tscn")
-
-func _on_confirm_button_pressed() -> void:
-	AudioManager.play_ui_click()
-	$CanvasLayer/EndPanel/NewGameConfirm.hide()
-
-	GameData.reset_progress()
-	get_tree().change_scene_to_file("res://scenes/intro/Intro.tscn")
-
 
 func try_drop_ingredient(ingredient):
 	log_ingredient_lifecycle(ingredient, "drop route start", ["position", ingredient.global_position])
@@ -726,12 +708,14 @@ func consume_food_item(food_item):
 func _on_yes_button_pressed() -> void:
 	AudioManager.play_ui_click()
 
-	$CanvasLayer/EndPanel/NewGameConfirm.hide()
+	$CanvasLayer/NewGameConfirm.hide()
+	$CanvasLayer/NewGameConfirm/CancelButton.visible = true
 
 	GameData.reset_progress()
 	get_tree().change_scene_to_file("res://scenes/intro/Intro.tscn")
 
-func _on_no_button_pressed() -> void:
+func _on_cancel_button_pressed() -> void:
 	AudioManager.play_ui_click()
 
-	$CanvasLayer/EndPanel/NewGameConfirm.hide()
+	$CanvasLayer/NewGameConfirm.hide()
+	$CanvasLayer/NewGameConfirm/CancelButton.visible = true

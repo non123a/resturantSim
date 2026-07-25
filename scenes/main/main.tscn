@@ -1,4 +1,4 @@
-[gd_scene load_steps=43 format=4 uid="uid://bqi216w3j6cmc"]
+[gd_scene load_steps=44 format=4 uid="uid://bqi216w3j6cmc"]
 
 [ext_resource type="Script" uid="uid://cg6d44c6l386l" path="res://scripts/GameManager.gd" id="1_hyk8p"]
 [ext_resource type="Texture2D" uid="uid://eeb62sb2k455" path="res://assets/chimengAsset/bg-img.jpg" id="2_7nlll"]
@@ -12,6 +12,7 @@
 [ext_resource type="Texture2D" uid="uid://w5v1o5xk0uvh" path="res://assets/chimengAsset/steak/beefs.png" id="6_hujxm"]
 [ext_resource type="Texture2D" uid="uid://blerxr4pqu723" path="res://assets/chimengAsset/steak/vegetables.png" id="6_ow5a4"]
 [ext_resource type="Texture2D" uid="uid://dpdbdybm3k68t" path="res://assets/chimengAsset/asset part 3/start new game/start a new game.png" id="7_os81g"]
+[ext_resource type="Texture2D" uid="uid://0qkloqlkr8w7" path="res://assets/chimengAsset/asset part 3/start new game/cancels.png" id="8_os81g"]
 [ext_resource type="Texture2D" uid="uid://m8ony3vwoxdq" path="res://assets/chimengAsset/steak/steaks.png" id="8_yyfjg"]
 [ext_resource type="Texture2D" uid="uid://b06qjyfs02r8v" path="res://assets/chimengAsset/hamburger/raw beefs.png" id="10_rawbeef"]
 [ext_resource type="Texture2D" uid="uid://12ilrv22ax0e" path="res://assets/chimengAsset/hamburger/beefs.png" id="11_beef"]
@@ -1015,7 +1016,7 @@ texture_normal = ExtResource("5_r1bmu")
 ignore_texture_size = true
 stretch_mode = 0
 
-[node name="NewGameButton" type="TextureButton" parent="CanvasLayer/EndPanel"]
+[node name="StartNewGameButton" type="TextureButton" parent="CanvasLayer/EndPanel"]
 layout_mode = 0
 offset_left = 594.0
 offset_top = 364.0
@@ -1025,14 +1026,14 @@ texture_normal = ExtResource("6_6w6mm")
 ignore_texture_size = true
 stretch_mode = 0
 
-[node name="NewGameConfirm" type="Panel" parent="CanvasLayer/EndPanel"]
+[node name="NewGameConfirm" type="Panel" parent="CanvasLayer"]
 visible = false
-layout_mode = 0
-offset_top = 36.0
-offset_right = 327.0
-offset_bottom = 298.0
+offset_left = -126.0
+offset_top = -53.0
+offset_right = 201.0
+offset_bottom = 209.0
 
-[node name="TextureRect" type="TextureRect" parent="CanvasLayer/EndPanel/NewGameConfirm"]
+[node name="TextureRect" type="TextureRect" parent="CanvasLayer/NewGameConfirm"]
 layout_mode = 0
 offset_left = 310.0
 offset_top = 90.0
@@ -1040,7 +1041,7 @@ offset_right = 1253.0
 offset_bottom = 777.0
 texture = ExtResource("7_os81g")
 
-[node name="Label" type="Label" parent="CanvasLayer/EndPanel/NewGameConfirm"]
+[node name="Label" type="Label" parent="CanvasLayer/NewGameConfirm"]
 layout_mode = 0
 offset_left = 605.0
 offset_top = 364.0
@@ -1054,15 +1055,25 @@ that you may made.
 
 "
 
-[node name="YesButton" type="TextureButton" parent="CanvasLayer/EndPanel/NewGameConfirm"]
+[node name="YesButton" type="TextureButton" parent="CanvasLayer/NewGameConfirm"]
 layout_mode = 0
-offset_right = 40.0
-offset_bottom = 40.0
+offset_left = 701.0
+offset_top = 490.0
+offset_right = 895.0
+offset_bottom = 621.0
+texture_normal = ExtResource("6_6w6mm")
+ignore_texture_size = true
+stretch_mode = 0
 
-[node name="TextureButton" type="TextureButton" parent="CanvasLayer/EndPanel/NewGameConfirm"]
+[node name="CancelButton" type="TextureButton" parent="CanvasLayer/NewGameConfirm"]
 layout_mode = 0
-offset_right = 40.0
-offset_bottom = 40.0
+offset_left = 733.0
+offset_top = 593.0
+offset_right = 865.0
+offset_bottom = 636.0
+texture_normal = ExtResource("8_os81g")
+ignore_texture_size = true
+stretch_mode = 0
 
 [node name="KitchenMap" type="TileMapLayer" parent="."]
 visible = false
@@ -1333,4 +1344,6 @@ food_id = "jelly"
 
 [connection signal="pressed" from="CanvasLayer/EndPanel/RestartButton" to="." method="_on_restart_button_pressed"]
 [connection signal="pressed" from="CanvasLayer/EndPanel/BackButton" to="." method="_on_button_pressed"]
-[connection signal="pressed" from="CanvasLayer/EndPanel/NewGameButton" to="." method="_on_new_game_button_pressed"]
+[connection signal="pressed" from="CanvasLayer/EndPanel/StartNewGameButton" to="." method="_on_start_new_game_button_pressed"]
+[connection signal="pressed" from="CanvasLayer/NewGameConfirm/YesButton" to="." method="_on_yes_button_pressed"]
+[connection signal="pressed" from="CanvasLayer/NewGameConfirm/CancelButton" to="." method="_on_cancel_button_pressed"]
