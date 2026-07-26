@@ -25,7 +25,7 @@ var customer_spawn_loop_active = false
 
 var run_coins = 0 
 
-var time_left = 5.0
+var time_left = 60.0
 var game_active = true
 
 
