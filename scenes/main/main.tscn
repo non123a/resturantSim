@@ -1,4 +1,4 @@
-[gd_scene load_steps=44 format=4 uid="uid://bqi216w3j6cmc"]
+[gd_scene load_steps=48 format=4 uid="uid://bqi216w3j6cmc"]
 
 [ext_resource type="Script" uid="uid://cg6d44c6l386l" path="res://scripts/GameManager.gd" id="1_hyk8p"]
 [ext_resource type="Texture2D" uid="uid://eeb62sb2k455" path="res://assets/chimengAsset/bg-img.jpg" id="2_7nlll"]
@@ -37,6 +37,10 @@
 [ext_resource type="Texture2D" uid="uid://c6i003bpnxf6g" path="res://assets/chimengAsset/burrito/meat totilla vegetables.png" id="29_burrito_meat_tortilla_vegetable"]
 [ext_resource type="Texture2D" uid="uid://bqqvvy7e2top4" path="res://assets/chimengAsset/burrito/rice vegetable and tortilla.png" id="30_burrito_rice_tortilla_vegetable"]
 [ext_resource type="Texture2D" uid="uid://t8kkeiclfmal" path="res://assets/chimengAsset/burrito/beef rice tortilla.png" id="31_burrito_beef_rice_tortilla"]
+[ext_resource type="Script" uid="uid://dyqhbmfcj77n7" path="res://scripts/pause_menu.gd" id="32_pause_menu"]
+[ext_resource type="Texture2D" uid="uid://dal5icophu254" path="res://assets/chimengAsset/asset part 3/press esc keyboard/pause game.png" id="33_pause_panel"]
+[ext_resource type="Texture2D" uid="uid://c7yj1fft8av7q" path="res://assets/chimengAsset/asset part 3/press esc keyboard/continues game.png" id="34_continue_game"]
+[ext_resource type="Texture2D" uid="uid://dsbk6ad2f5sda" path="res://assets/chimengAsset/asset part 3/press esc keyboard/quits.png" id="35_quit"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_l3cfh"]
 texture = ExtResource("3_k2fmo")
@@ -1075,6 +1079,56 @@ texture_normal = ExtResource("8_os81g")
 ignore_texture_size = true
 stretch_mode = 0
 
+[node name="PauseMenu" type="Control" parent="CanvasLayer"]
+process_mode = 3
+visible = false
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("32_pause_menu")
+
+[node name="DimOverlay" type="ColorRect" parent="CanvasLayer/PauseMenu"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0, 0, 0, 0.45)
+
+[node name="PanelBackground" type="TextureRect" parent="CanvasLayer/PauseMenu"]
+layout_mode = 0
+offset_left = 210.0
+offset_top = 17.0
+offset_right = 1070.0
+offset_bottom = 703.0
+mouse_filter = 2
+texture = ExtResource("33_pause_panel")
+
+[node name="ContinueButton" type="TextureButton" parent="CanvasLayer/PauseMenu"]
+layout_mode = 0
+offset_left = 487.0
+offset_top = 310.0
+offset_right = 800.0
+offset_bottom = 396.0
+texture_normal = ExtResource("34_continue_game")
+ignore_texture_size = true
+stretch_mode = 0
+
+[node name="BackButton" type="TextureButton" parent="CanvasLayer/PauseMenu"]
+layout_mode = 0
+offset_left = 499.0
+offset_top = 417.0
+offset_right = 783.0
+offset_bottom = 555.0
+texture_normal = ExtResource("35_quit")
+ignore_texture_size = true
+stretch_mode = 0
+
 [node name="KitchenMap" type="TileMapLayer" parent="."]
 visible = false
 scale = Vector2(2, 2)
@@ -1347,3 +1401,5 @@ food_id = "jelly"
 [connection signal="pressed" from="CanvasLayer/EndPanel/StartNewGameButton" to="." method="_on_start_new_game_button_pressed"]
 [connection signal="pressed" from="CanvasLayer/NewGameConfirm/YesButton" to="." method="_on_yes_button_pressed"]
 [connection signal="pressed" from="CanvasLayer/NewGameConfirm/CancelButton" to="." method="_on_cancel_button_pressed"]
+[connection signal="pressed" from="CanvasLayer/PauseMenu/ContinueButton" to="CanvasLayer/PauseMenu" method="_on_continue_button_pressed"]
+[connection signal="pressed" from="CanvasLayer/PauseMenu/BackButton" to="CanvasLayer/PauseMenu" method="_on_back_button_pressed"]
