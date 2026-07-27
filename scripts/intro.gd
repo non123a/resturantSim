@@ -7,7 +7,7 @@ func _ready():
 	AudioManager.stop_bgm()
 
 	if not GameData.should_play_intro():
-		get_tree().change_scene_to_file(DASHBOARD_SCENE)
+		call_deferred("_change_to_dashboard")
 		return
 
 	if $VideoStreamPlayer.stream == null:
@@ -29,4 +29,8 @@ func _on_video_stream_player_finished():
 
 func _finish_intro():
 	GameData.mark_intro_played()
+	call_deferred("_change_to_dashboard")
+
+
+func _change_to_dashboard():
 	get_tree().change_scene_to_file(DASHBOARD_SCENE)

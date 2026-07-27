@@ -142,6 +142,7 @@ mouse_filter = 2
 texture = ExtResource("7_b62bk")
 
 [node name="TitleLabel" type="Label" parent="StartMenu"]
+visible = false
 layout_mode = 0
 offset_left = 498.0
 offset_top = 213.0

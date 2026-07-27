@@ -8,6 +8,14 @@ extends Control
 	"jelly": $JellyButton
 }
 
+@onready var food_cost_labels = {
+	"donut": $DonutCostLabel,
+	"steak": $SteakCostLabel,
+	"burger": $BurgerCostLabel,
+	"burrito": $BurritoCostLabel,
+	"jelly": $JellyCostLabel
+}
+
 @onready var food_button_visuals = {
 	"donut": {
 		"button": $DonutButton,
@@ -56,6 +64,7 @@ func update_food_button(food_id):
 
 	button.texture_normal = visuals["unlocked_texture"] if is_unlocked else visuals["locked_texture"]
 	button.disabled = is_unlocked
+	food_cost_labels[food_id].text = "Unlock Cost: " + str(GameData.get_food_unlock_cost(food_id))
 
 func try_unlock_food(food_id):
 	if GameData.is_food_unlocked(food_id):

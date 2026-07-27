@@ -9,9 +9,11 @@ func _ready():
 
 func update_ui():
 	$CoinLabel.text = "Coins: " + str(GameData.coins)
-	
+
 	$CookLevelLabel.text = "Cook Lv: " + str(GameData.upgrades["cook_speed"]) + "/" + str(MAX_UPGRADE_LEVEL)
 	$IncomeLevelLabel.text = "Income Lv: " + str(GameData.upgrades["income"]) + "/" + str(MAX_UPGRADE_LEVEL)
+	$CookCostLabel.text = "Cost: " + str(get_upgrade_cost("cook_speed"))
+	$IncomeCostLabel.text = "Cost: " + str(get_upgrade_cost("income"))
 	$CookUpgradeButton.disabled = GameData.upgrades["cook_speed"] >= MAX_UPGRADE_LEVEL
 	$IncomeUpgradeButton.disabled = GameData.upgrades["income"] >= MAX_UPGRADE_LEVEL
 
